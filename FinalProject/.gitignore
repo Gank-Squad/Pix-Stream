@@ -5,6 +5,7 @@ target/
 
 *.log
 /logs/
+/client_files/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
