@@ -18,12 +18,6 @@
     </properties>
 
     <dependencies>
-		<!-- https://github.com/bramp/ffmpeg-cli-wrapper -->
-		<dependency>
-			<groupId>net.bramp.ffmpeg</groupId>
-			<artifactId>ffmpeg</artifactId>
-			<version>0.7.0</version>
-		</dependency>
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>

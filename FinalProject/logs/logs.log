@@ -1,0 +1,33 @@
+[2023-03-06 21:16:16] [INFO   ] uwu.nyaa.owo.finalproject.data.logging.WrappedLogger logger instance created 
+[2023-03-06 21:16:17] [INFO   ] [1%] status:continue frame:1 time:00:00:00.213333 ms fps:0 speed:8.42x 
+[2023-03-06 21:16:17] [INFO   ] [10%] status:continue frame:91 time:00:00:03.946667 ms fps:0 speed:7.51x 
+[2023-03-06 21:16:17] [INFO   ] [18%] status:continue frame:161 time:00:00:06.890667 ms fps:157 speed:6.72x 
+[2023-03-06 21:16:18] [INFO   ] [26%] status:continue frame:232 time:00:00:09.834667 ms fps:152 speed:6.44x 
+[2023-03-06 21:16:18] [INFO   ] [33%] status:continue frame:304 time:00:00:12.821333 ms fps:150 speed:6.32x 
+[2023-03-06 21:16:19] [INFO   ] [41%] status:continue frame:376 time:00:00:15.808 ms fps:149 speed:6.25x 
+[2023-03-06 21:16:19] [INFO   ] [49%] status:continue frame:446 time:00:00:18.730667 ms fps:147 speed:6.18x 
+[2023-03-06 21:16:20] [INFO   ] [57%] status:continue frame:524 time:00:00:22.037333 ms fps:148 speed:6.24x 
+[2023-03-06 21:16:20] [INFO   ] [65%] status:continue frame:597 time:00:00:25.066667 ms fps:148 speed:6.22x 
+[2023-03-06 21:16:21] [INFO   ] [73%] status:continue frame:673 time:00:00:28.245333 ms fps:148 speed:6.23x 
+[2023-03-06 21:16:21] [INFO   ] [81%] status:continue frame:747 time:00:00:31.317333 ms fps:148 speed:6.22x 
+[2023-03-06 21:16:22] [INFO   ] [89%] status:continue frame:822 time:00:00:34.389333 ms fps:149 speed:6.21x 
+[2023-03-06 21:16:22] [INFO   ] [97%] status:continue frame:897 time:00:00:37.546667 ms fps:149 speed:6.22x 
+[2023-03-06 21:16:23] [INFO   ] [100%] status:end frame:925 time:00:00:38.528 ms fps:143 speed:5.96x 
+[2023-03-06 21:16:23] [INFO   ] [0%] status:continue frame:1 time:00:00:00 ms fps:0 speed:-1.00x 
+[2023-03-06 21:16:23] [INFO   ] [100%] status:end frame:925 time:00:00:38.528 ms fps:0 speed:2380.00x 
+[2023-03-06 21:28:59] [INFO   ] uwu.nyaa.owo.finalproject.data.logging.WrappedLogger logger instance created 
+[2023-03-06 21:28:59] [INFO   ] [1%] status:continue frame:1 time:00:00:00.213333 ms fps:0 speed:8.77x 
+[2023-03-06 21:28:59] [INFO   ] [10%] status:continue frame:94 time:00:00:04.032 ms fps:0 speed:7.54x 
+[2023-03-06 21:29:00] [INFO   ] [18%] status:continue frame:166 time:00:00:07.04 ms fps:160 speed:6.80x 
+[2023-03-06 21:29:00] [INFO   ] [26%] status:continue frame:234 time:00:00:09.92 ms fps:152 speed:6.46x 
+[2023-03-06 21:29:01] [INFO   ] [34%] status:continue frame:312 time:00:00:13.141333 ms fps:153 speed:6.45x 
+[2023-03-06 21:29:01] [INFO   ] [42%] status:continue frame:388 time:00:00:16.298666999 ms fps:153 speed:6.42x 
+[2023-03-06 21:29:02] [INFO   ] [51%] status:continue frame:468 time:00:00:19.648 ms fps:154 speed:6.45x 
+[2023-03-06 21:29:02] [INFO   ] [60%] status:continue frame:549 time:00:00:23.04 ms fps:154 speed:6.48x 
+[2023-03-06 21:29:03] [INFO   ] [68%] status:continue frame:626 time:00:00:26.218667 ms fps:154 speed:6.46x 
+[2023-03-06 21:29:03] [INFO   ] [76%] status:continue frame:702 time:00:00:29.418667 ms fps:154 speed:6.45x 
+[2023-03-06 21:29:04] [INFO   ] [85%] status:continue frame:777 time:00:00:32.576 ms fps:154 speed:6.44x 
+[2023-03-06 21:29:04] [INFO   ] [93%] status:continue frame:854 time:00:00:35.754667 ms fps:154 speed:6.43x 
+[2023-03-06 21:29:05] [INFO   ] [100%] status:end frame:925 time:00:00:38.528 ms fps:148 speed:6.16x 
+[2023-03-06 21:29:05] [INFO   ] [0%] status:continue frame:1 time:00:00:00 ms fps:0 speed:-1.00x 
+[2023-03-06 21:29:05] [INFO   ] [100%] status:end frame:925 time:00:00:38.528 ms fps:0 speed:2270.00x 
