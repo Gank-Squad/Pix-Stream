@@ -2,8 +2,13 @@ package uwu.nyaa.owo.finalproject.data.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import uwu.nyaa.owo.finalproject.data.ByteHelper;
+import uwu.nyaa.owo.finalproject.data.FileProcessor;
+import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
 public class DatabaseConnection
 {
@@ -41,6 +46,10 @@ public class DatabaseConnection
         return getConnection(POSTGRES_DATABASE);
     }
 
+    
+    /**
+     * Drops and creates the 'master' database 
+     */
     public static void createNewDatabase()
     {
         try (Connection c = getConnection(""))
@@ -59,39 +68,67 @@ public class DatabaseConnection
                 return;
             }
 
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            WrappedLogger.warning("Error while creating a new database", e);
         }
     }
-
-    public static void main(String args[])
+    
+    /**
+     * Creates all the tables for the database
+     */
+    public static void createTables()
     {
-        // // deletes and remakes any existing database with the name 'master'
-        // createNewDatabase();
-
+        createTables(false);
+    }
+    
+    /**
+     * Creates all the tables for the database
+     * @param fromNew Should all existing tables be dropped first
+     */
+    public static void createTables(boolean fromNew)
+    {
         try (Connection c = getConnection(); Statement statement = c.createStatement())
         {
+            if(fromNew)
+            {
+                statement.execute(TableLocalHash.DELETION_QUERY);
+                statement.execute(TableHash.DELETION_QUERY);
+            }
+            
+            statement.execute(TableHash.CREATION_QUERY);
+            statement.execute(TableLocalHash.CREATION_QUERY);
 
-            statement.execute(String.join("", new String[] {
-                "CREATE TABLE IF NOT EXISTS accounts (",
-                    "user_id serial PRIMARY KEY,",
-                    "username VARCHAR ( 50 ) NOT NULL,",
-                    "password VARCHAR ( 50 ) NOT NULL);"
-            }));
-            
-            statement.execute(String.join("", new String[] {
-                    "INSERT INTO accounts (user_id, username, password)",
-                    "VALUES ('5', 'hell3o', 'password')",
-                }));
-            
-            
         }
         catch (SQLException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            WrappedLogger.warning("Error while creating database tables", e);
         }
+    }
+    
+    
 
+    public static void main(String args[])
+    {
+        String test = "/home/minno/Sync/MSI-Portable-2Way/2023Winter/SoftwareSystems/Assignments/w23-csci2020u-project-team16/LICENSE";
+        // // deletes and remakes any existing database with the name 'master'
+//        createNewDatabase();
 
+        createTables(true);
+        
+        TableHash.printAll();
+        byte[] sha256 = FileProcessor.getSHA256(test);
+        byte[] sha1 = FileProcessor.getSHA1(test);
+        byte[] md5 = FileProcessor.getMD5(test);
+        System.out.println("SHA256 Hash: " + ByteHelper.bytesToHex(sha256));
+        System.out.println("SHA1   Hash: " + ByteHelper.bytesToHex(sha1));
+        System.out.println("MD5    Hash: " + ByteHelper.bytesToHex(md5));
+        
+        int id = TableHash.insertHash(sha256);
+        
+        if(id != -1)
+        {
+            TableLocalHash.insertHashes(id, sha1, md5, null);
+        }
+        
+        System.out.println(String.format("Found hash_id: %d", id));
     }
 }

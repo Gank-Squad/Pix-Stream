@@ -10,43 +10,64 @@ import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
 public class FileProcessor
 {
-    private static final MessageDigest SHA_DIGEST;
+    private static final MessageDigest SHA256_DIGEST;
+    private static final MessageDigest SHA1_DIGEST;
+    private static final MessageDigest MD5_DIGEST;
 
     static {
         try
         {
-            SHA_DIGEST = MessageDigest.getInstance("SHA-256");
+            SHA256_DIGEST = MessageDigest.getInstance("SHA-256");
         }
         catch (NoSuchAlgorithmException e)
         {
             throw new RuntimeException("Cannot get sha256 instance", e);
         }
+        
+        try
+        {
+            SHA1_DIGEST = MessageDigest.getInstance("SHA-1");
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            throw new RuntimeException("Cannot get sha1 instance", e);
+        }
+        
+        try
+        {
+            MD5_DIGEST = MessageDigest.getInstance("MD5");
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            throw new RuntimeException("Cannot get MD5 instance", e);
+        }
     }
     
-
     /**
-     * gets the sha256 file hash of the given file
-     * @param path the path to the file
-     * @return the sha256 file hash or an empty array if there is an error
+     * Computes the file hash of the given file with the given hash algorithm
+     * @param hashAlgorithm The hash algorithm
+     * @param path The path to the file
+     * @return The hash of the file or a byte[] with length 0
      */
-    public static byte[] getSHA256(String path)
+    public static byte[] hashFile(MessageDigest hashAlgorithm, String path)
     {
-        return getSHA256(new File(path));
+        return hashFile(hashAlgorithm, new File(path));
     }
     
     /**
-     * gets the sha256 file hash of the given file
-     * @param path the path to the file
-     * @return the sha256 file hash or an empty array if there is an error
+     * Computes the file hash of the given file with the given hash algorithm
+     * @param hashAlgorithm The hash algorithm
+     * @param path The path to the file
+     * @return The hash of the file or a byte[] with length 0
      */
-    public static byte[] getSHA256(File path)
+    public static byte[] hashFile(MessageDigest hashAlgorithm, File path)
     {
         if(!path.isFile())
             return new byte[0];
         
         try
         {
-            return SHA_DIGEST.digest(Files.readAllBytes(path.toPath()));
+            return hashAlgorithm.digest(Files.readAllBytes(path.toPath()));
         }
         catch (IOException e)
         {
@@ -57,6 +78,66 @@ public class FileProcessor
         return new byte[0];
     }
     
+    
+    /**
+     * Computes the SHA256 file hash of the given file
+     * @param path the path to the file
+     * @return the SHA256 file hash or a byte[] with length 0
+     */
+    public static byte[] getSHA256(String path)
+    {
+        return hashFile(SHA256_DIGEST, path);
+    }
+    
+    /**
+     * Computes the SHA256 file hash of the given file
+     * @param path the path to the file
+     * @return the SHA256 file hash or a byte[] with length 0
+     */
+    public static byte[] getSHA256(File path)
+    {
+        return hashFile(SHA256_DIGEST, path);
+    }
+    
+    /**
+     * Computes the SHA1 file hash of the given file
+     * @param path the path to the file
+     * @return the SHA1 file hash or a byte[] with length 0
+     */
+    public static byte[] getSHA1(String path)
+    {
+        return hashFile(SHA1_DIGEST, path);
+    }
+    
+    /**
+     * Computes the SHA1 file hash of the given file
+     * @param path the path to the file
+     * @return the SHA1 file hash or a byte[] with length 0
+     */
+    public static byte[] getSHA1(File path)
+    {
+        return hashFile(SHA1_DIGEST, path);
+    }
+    
+    /**
+     * Computes the MD5 file hash of the given file
+     * @param path the path to the file
+     * @return the MD5 file hash or a byte[] with length 0
+     */
+    public static byte[] getMD5(String path)
+    {
+        return hashFile(MD5_DIGEST, path);
+    }
+    
+    /**
+     * Computes the MD5 file hash of the given file
+     * @param path the path to the file
+     * @return the MD5 file hash or a byte[] with length 0
+     */
+    public static byte[] getMD5(File path)
+    {
+        return hashFile(MD5_DIGEST, path);
+    }
     
     
     
