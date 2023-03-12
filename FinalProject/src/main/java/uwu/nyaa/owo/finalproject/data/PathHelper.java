@@ -50,11 +50,11 @@ public class PathHelper
             
             File subDir = new File(MEDIA_DIR_BASE, GlobalSettings.MEDIA_PATH_PREFIX + hex);
             subDir.mkdirs();
-            WrappedLogger.log(Level.INFO, "Creating: " + subDir.getAbsolutePath());
+//            WrappedLogger.log(Level.INFO, "Creating: " + subDir.getAbsolutePath());
             
             File subDir2 = new File(MEDIA_DIR_BASE, GlobalSettings.THUMB_PATH_PREFIX + hex);
             subDir2.mkdirs();
-            WrappedLogger.log(Level.INFO, "Creating: " +subDir2.getAbsolutePath());
+//            WrappedLogger.log(Level.INFO, "Creating: " +subDir2.getAbsolutePath());
         }
     }
     

@@ -23,6 +23,25 @@ public interface ImageFormat
     public static final byte JXL = 9;
 
     public static final byte AVIF = 24;
+    
+    
+    public static boolean isImageType(byte mimeType)
+    {
+        switch (mimeType)
+        {
+        default:
+            return false;
+        case PNG:
+        case BMP:
+        case JPG:
+        case GIF:
+        case TIFF:
+        case WEBP:
+        case JXL:
+        case AVIF:
+            return true;
+        }
+    }
 
 
     public static boolean hasNativeSupport(byte format)

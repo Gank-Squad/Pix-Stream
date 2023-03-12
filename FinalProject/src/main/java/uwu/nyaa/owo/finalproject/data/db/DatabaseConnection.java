@@ -1,13 +1,21 @@
 package uwu.nyaa.owo.finalproject.data.db;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.im4java.core.IM4JavaException;
+
 import uwu.nyaa.owo.finalproject.data.ByteHelper;
 import uwu.nyaa.owo.finalproject.data.FileProcessor;
+import uwu.nyaa.owo.finalproject.data.FileProcessor.Hashes;
+import uwu.nyaa.owo.finalproject.data.ImageMagickHelper;
+import uwu.nyaa.owo.finalproject.data.ImageProcessor;
+import uwu.nyaa.owo.finalproject.data.filedetection.ImageFormat;
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
 public class DatabaseConnection
@@ -90,12 +98,21 @@ public class DatabaseConnection
         {
             if(fromNew)
             {
+                // NOTE: order matters!
+                // TableHash is a primary key for a bunch of foreign keys
+                // you must delete all foreign keys first before you can delete it
+                statement.execute(TableFile.DELETION_QUERY);
                 statement.execute(TableLocalHash.DELETION_QUERY);
                 statement.execute(TableHash.DELETION_QUERY);
+                
+                statement.execute(TableUsers.DELETION_QUERY);
             }
             
             statement.execute(TableHash.CREATION_QUERY);
             statement.execute(TableLocalHash.CREATION_QUERY);
+            statement.execute(TableFile.CREATION_QUERY);
+            
+            statement.execute(TableUsers.CREATION_QUERY);
 
         }
         catch (SQLException e)
@@ -106,29 +123,59 @@ public class DatabaseConnection
     
     
 
-    public static void main(String args[])
+    public static void main(String args[]) throws IOException, InterruptedException, IM4JavaException
     {
-        String test = "/home/minno/Sync/MSI-Portable-2Way/2023Winter/SoftwareSystems/Assignments/w23-csci2020u-project-team16/LICENSE";
-        // // deletes and remakes any existing database with the name 'master'
-//        createNewDatabase();
-
+        String test = "/mnt/Data/0_IMAGE/SELF/AOL_35.png";
+        
         createTables(true);
+        
+        ImageMagickHelper.checkImageMagick();
+        
+        BufferedImage image = ImageMagickHelper.loadImageWithMagick(test);
+        
+        ImageProcessor.ImageInfo info = ImageMagickHelper.getImageInfo(test);
+        System.out.println(info);
         
         TableHash.printAll();
         byte[] sha256 = FileProcessor.getSHA256(test);
         byte[] sha1 = FileProcessor.getSHA1(test);
         byte[] md5 = FileProcessor.getMD5(test);
+        Hashes h = FileProcessor.getFileHashes(test);
+        System.out.println(h);
         System.out.println("SHA256 Hash: " + ByteHelper.bytesToHex(sha256));
         System.out.println("SHA1   Hash: " + ByteHelper.bytesToHex(sha1));
         System.out.println("MD5    Hash: " + ByteHelper.bytesToHex(md5));
         
-        int id = TableHash.insertHash(sha256);
+        FileProcessor.addFile(test);
         
-        if(id != -1)
-        {
-            TableLocalHash.insertHashes(id, sha1, md5, null);
-        }
+//        int id = TableHash.insertHash(sha256);
+//        
+//        if(id != -1)
+//        {
+//            System.out.println("Inserted new hash with ID %d".formatted(id));
+//            if(TableLocalHash.insertHashes(id, sha1, md5, null))
+//            {
+//                System.out.println("Inserted local hashes for %d".formatted(id));
+//            }
+//            else 
+//            {
+//                System.out.println("Failed to insert local hashes for %d".formatted(id));
+//            }
+//            
+//            long fileSize = new File(test).length();
+//            byte mime = ImageFormat.JPG;
+//            int width = 0;
+//            int height = 0;
+//            int duration = 0;
+//            boolean has_audio = false;
+//            
+//            if(TableFile.insertFile(id, fileSize, mime, width, height, duration, has_audio))
+//            {
+//                System.out.println("Inserted file information for ID %d".formatted(id));
+//            }
+//            
+//        }
         
-        System.out.println(String.format("Found hash_id: %d", id));
+        
     }
 }
