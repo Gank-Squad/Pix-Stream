@@ -43,7 +43,10 @@ public class FFmpegHelper
         EXECUTOR = new FFmpegExecutor(FFMPEG, FFPROBE);
     }
     
-    
+    public static void checkFFmpeg()
+    {
+        
+    }
     
     /**
      * A progress hook used to display ffmpeg progress and information while encoding

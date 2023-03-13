@@ -32,6 +32,16 @@ public class DatabaseConnection
 
     public static final String POSTGRES_DATABASE = "master";
 
+    static {
+        try
+        {
+            DriverManager.registerDriver(new org.postgresql.Driver());
+        } catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Connect to the PostgreSQL database
      *
@@ -54,20 +64,34 @@ public class DatabaseConnection
         return getConnection(POSTGRES_DATABASE);
     }
 
+    public static void createDatabase()
+    {
+        try (Connection c = getConnection("");
+                Statement statement = c.createStatement())
+        {
+            statement.executeUpdate("CREATE DATABASE master");
+        }
+        catch (SQLException e)
+        {
+            if (e.getMessage().equals("ERROR: database \"master\" already exists"))
+            {
+                return;
+            }
+
+            WrappedLogger.warning("Error while creating a new database", e);
+        }
+    }
     
     /**
      * Drops and creates the 'master' database 
      */
     public static void createNewDatabase()
     {
-        try (Connection c = getConnection(""))
+        try (Connection c = getConnection("");
+                Statement statement = c.createStatement())
         {
-            Statement statement = c.createStatement();
-
             statement.execute("DROP DATABASE IF EXISTS master");
             statement.executeUpdate("CREATE DATABASE master");
-
-            statement.close();
         }
         catch (SQLException e)
         {
@@ -126,7 +150,7 @@ public class DatabaseConnection
     public static void main(String args[]) throws IOException, InterruptedException, IM4JavaException
     {
         String test = "/mnt/Data/0_IMAGE/SELF/AOL_35.png";
-        
+        createDatabase();
         createTables(true);
         
         ImageMagickHelper.checkImageMagick();

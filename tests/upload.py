@@ -2,7 +2,7 @@ import requests
 
 def upload():
 
-    file = "C:\\1.png"
+    file = "C:\\Users\\alice\\Pictures\\screenshots\\00000000000000000006.jpg"
 
     payload = {
         "data": open(file, "rb")

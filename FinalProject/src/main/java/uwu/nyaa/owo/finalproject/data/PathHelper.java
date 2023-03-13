@@ -19,8 +19,6 @@ public class PathHelper
         {
             throw new RuntimeException(String.format("Could not create media directory: %s", MEDIA_DIR_BASE));
         }
-        
-        createMediaDirectory();
     }
     
     /**

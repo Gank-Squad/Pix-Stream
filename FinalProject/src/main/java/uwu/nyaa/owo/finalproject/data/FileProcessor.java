@@ -273,11 +273,13 @@ public class FileProcessor
     }
 
     
-    
     public static boolean addFile(String path)
     {
-        File f = new File(path);
-        
+        return addFile(new File(path));
+    }
+    
+    public static boolean addFile(File f)
+    {
         if(!f.isFile()) 
         {
             WrappedLogger.info(String.format("Could not add file: %s, because it does not exist or is not a file", f));
