@@ -6,7 +6,9 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -293,8 +295,9 @@ public class FileProcessor
         
         String fileHash = ByteHelper.bytesToHex(b.SHA256);
         String mediaPath = PathHelper.getMediaPath(fileHash);
+        File mediaFile = new File(mediaPath);
         
-        if(new File(mediaPath).isFile())
+        if(mediaFile.isFile())
         {
             WrappedLogger.warning(String.format("Ignoring adding file %s because it media file already exist; Assuming it's in the db", f));
             return false;
@@ -302,6 +305,21 @@ public class FileProcessor
         
         long fileSize = f.length();
         byte mimeType = FileDetector.getFileMimeType(f);
+        
+        if(!f.renameTo(mediaFile))
+        {
+            try
+            {
+                Files.copy(f.toPath(), mediaFile.toPath());
+            }
+            catch (IOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return false;
+            }
+        }
+        
         int width = 0;
         int height = 0;
         int duration = 0;

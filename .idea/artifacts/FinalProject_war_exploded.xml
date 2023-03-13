@@ -14,6 +14,7 @@
           <element id="module-output" name="FinalProject" />
         </element>
         <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: org.im4java:im4java:1.4.0" />
           <element id="library" level="project" name="Maven: org.postgresql:postgresql:42.5.4" />
           <element id="library" level="project" name="Maven: org.checkerframework:checker-qual:3.5.0" />
           <element id="library" level="project" name="Maven: net.bramp.ffmpeg:ffmpeg:0.7.0" />
