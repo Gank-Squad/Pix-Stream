@@ -32,30 +32,7 @@ public class APIResource
     private HttpServletRequest request;
     
     
-    @GET
-    @Produces({ "image/png", "image/jpeg", "image/webp", "image/gif" })
-    @Path("/image/{filehash}")
-    public Response getFile(@PathParam("filehash") String filehash)
-    {
-        if (filehash.length() != 64 || !filehash.matches("^[a-fA-F0-9]+$"))
-        {
-            return Response.status(400, "Bad request, must be SHA256").build();
-        }
 
-        WrappedLogger.info(String.format("Request for file with hash: %s", filehash));
-
-        String mediaPath = PathHelper.getMediaPath(filehash);
-        File f = new File(mediaPath);
-
-        WrappedLogger.info(String.format("Found media path: %s", f.getAbsolutePath()));
-
-        if (!f.isFile())
-        {
-            return Response.status(404, "Could not find file").build();
-        }
-
-        return Response.ok(f, "image/png").build();
-    }
 
 
     @POST
@@ -79,5 +56,40 @@ public class APIResource
         System.out.println(message);
         return Response.status(200).build();
     }
+    
 
+    @POST
+    @Path("/upload2")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces
+    public Response upload(@FormParam("file") File file)
+    {
+        WrappedLogger.info(file.toString());
+        WrappedLogger.info(file.getAbsolutePath());
+
+        FileProcessor.addFile(file);
+
+        return Response.status(200).build();
+    }
+    
+    
+    @GET
+    @Path("/files")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFiles()
+    {
+        
+        
+        return Response.status(200).build();
+    }
 }
+
+
+
+
+
+
+
+
+
+

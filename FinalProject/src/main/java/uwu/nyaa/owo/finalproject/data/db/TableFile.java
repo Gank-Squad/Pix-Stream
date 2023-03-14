@@ -2,9 +2,14 @@ package uwu.nyaa.owo.finalproject.data.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
+import uwu.nyaa.owo.finalproject.data.FileProcessor.ImmutableMessageDigest;
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
+import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 
 public class TableFile
 {
@@ -55,5 +60,78 @@ public class TableFile
         }
         
         return false;
+    }
+    
+
+    
+    public static List<HashInfo> getFiles(int limit)
+    {
+        LinkedList<HashInfo> items = new LinkedList<>();
+        
+        final String SQL = "SELECT tbl_hash.hash_id, hash, mime, tbl_file.size, width, height, duration, has_audio FROM tbl_file JOIN tbl_hash ON tbl_file.hash_id = tbl_hash.hash_id LIMIT ?";
+        
+        try (Connection c = DatabaseConnection.getConnection(); 
+                PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+          
+            pstmt.setInt(1, limit);
+            ResultSet rs = pstmt.executeQuery();
+            
+            while(rs.next())
+            {
+                HashInfo a = new HashInfo();
+                
+                a.hash_id = rs.getInt(1);
+                a.hash = rs.getBytes(2);
+                a.mime = rs.getInt(3);
+                a.fileSize = rs.getLong(4);
+                a.width = rs.getInt(5);
+                a.height = rs.getInt(6);
+                a.duration = rs.getInt(7);
+                a.has_audio = rs.getBoolean(8);
+                
+                items.add(a);
+            }
+            return items;
+        }
+        catch (SQLException e)
+        {
+            WrappedLogger.warning("Error searching for files", e);
+        }
+        
+        return items;
+    }
+    
+    
+    
+
+    
+    
+    public static void addFakeFiles(int amount)
+    {
+        for(int i = 0; i < amount; i++)
+        {
+            long shittyRandom1 = ((long)System.currentTimeMillis()/(1 + i) % 200) + (int)(System.nanoTime() * (1+i) * (1+i)) / 3;
+            long shittyRandom2 = ((long)System.nanoTime()/(1 + i) % 200) + (int)(System.currentTimeMillis() * (1+i) * (1+i)) / 3;
+            
+            if(shittyRandom1 < 0)
+                shittyRandom1 = - shittyRandom1;
+            
+            if(shittyRandom2 < 0)
+                shittyRandom2 = - shittyRandom2;
+     
+            long fakeSize = shittyRandom1 % 1024*1024*5;
+            int fakeMime = (int)shittyRandom1 % 25;
+            int fakeWidth = 10 + (int)shittyRandom1 % 1000;
+            int fakeHeight = 10 + (int)shittyRandom2 % 1000;
+            
+            byte[] hash = ImmutableMessageDigest.getSHA256().digest((shittyRandom1 + "Hello").getBytes());
+            int hash_id = TableHash.insertHash(hash);
+            
+            if(hash_id != -1)
+            {
+                TableFile.insertFile(hash_id, fakeSize, (byte)fakeMime, fakeWidth, fakeHeight, 0, false);
+            }    
+        }
     }
 }

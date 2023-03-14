@@ -1,6 +1,7 @@
 # Compiled class file
 *.class
 
+/tests/data_files
 /bin/
 /.metadata/
 /Lib/

@@ -210,8 +210,7 @@ public class FileProcessor
         
         return new byte[0];
     }
-    
-    
+
     /**
      * Computes the SHA256 file hash of the given file
      * @param path the path to the file
@@ -307,7 +306,8 @@ public class FileProcessor
         
         long fileSize = f.length();
         byte mimeType = FileDetector.getFileMimeType(f);
-        
+
+        WrappedLogger.info("Moving file to: " + mediaFile.getAbsolutePath());
         if(!f.renameTo(mediaFile))
         {
             try
@@ -330,7 +330,7 @@ public class FileProcessor
         
         if(ImageFormat.isImageType(mimeType))
         {
-            ImageInfo i = ImageMagickHelper.getImageInfo(f.getAbsolutePath());
+            ImageInfo i = ImageMagickHelper.getImageInfo(mediaFile.getAbsolutePath());
             
             width = i.width;
             height = i.height;

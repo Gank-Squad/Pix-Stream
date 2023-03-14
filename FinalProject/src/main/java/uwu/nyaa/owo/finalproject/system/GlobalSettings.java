@@ -6,8 +6,9 @@ import java.util.logging.Level;
 
 public class GlobalSettings
 {
-    public static String FFMPEG_PATH = "/bin/ffmpeg";
-    public static String FFPROBE_PATH = "/bin/ffprobe";
+    public static String IMAGE_MAGICK_PATH = "C:/bin/imageMagick";
+    public static String FFMPEG_PATH = "C:/bin/ffmpeg/ffmpeg.exe";
+    public static String FFPROBE_PATH = "C:/bin/ffmpeg/ffprobe.exe";
     
     public static final Path LOG_FILE_DIRECTORY = Paths.get(".", "logs");
     
@@ -16,7 +17,7 @@ public class GlobalSettings
     /**
      * the directory where all dynamic media will be stored
      */
-    public static String MEDIA_PATH = "./client_files/";
+    public static String MEDIA_PATH = "client_files/";
     
     /**
      * the value starting each of the subdirectories for media
@@ -27,4 +28,15 @@ public class GlobalSettings
      * the value starting each of the subdirectories for thumbnails
      */
     public static String THUMB_PATH_PREFIX = "t";
+    
+    
+    public static void updatePathsForLinux()
+    {
+        if(System.getProperty("os.name").equals("linux"))
+        {
+            GlobalSettings.IMAGE_MAGICK_PATH = "/bin/";
+            GlobalSettings.FFMPEG_PATH = "/bin/ffmpeg";
+            GlobalSettings.FFPROBE_PATH = "/bin/ffprobe";
+        }
+    }
 }

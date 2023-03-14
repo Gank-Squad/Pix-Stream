@@ -1,8 +1,10 @@
 package uwu.nyaa.owo.finalproject.data;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 
 import org.im4java.core.ConvertCmd;
@@ -16,6 +18,8 @@ import org.im4java.core.Stream2BufferedImage;
 import org.im4java.process.ProcessStarter;
 
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
+
+import javax.imageio.ImageIO;
 
 public class ImageMagickHelper
 {
@@ -101,7 +105,7 @@ public class ImageMagickHelper
         try
         {
             BufferedImage buff = loadImageWithMagick(filename);
-            
+
             if(buff != null)
             {
                 simpleInfo.width = buff.getWidth();
@@ -110,7 +114,7 @@ public class ImageMagickHelper
                 buff.flush();
                 buff = null;
             }
-            else 
+            else
             {
                 simpleInfo.is_valid = false;
             }
@@ -130,6 +134,7 @@ public class ImageMagickHelper
     {
         IMOperation op = new IMOperation();
 
+        WrappedLogger.info(path);
         // input image path, take only first image in the file
         op.addImage(path + "[0]");
 
@@ -147,8 +152,18 @@ public class ImageMagickHelper
         if (s2b.getImage() == null)
             throw new IM4JavaException("null image recieved from magick");
 
-        BufferedImage b = ImageProcessor.createOptimalImageFrom(s2b.getImage());
+        return ImageProcessor.createOptimalImageFrom(s2b.getImage());
+    }
 
-        return b;
+
+
+    public static void main(String[] args) throws IOException, InterruptedException, IM4JavaException
+    {
+        ProcessStarter.setGlobalSearchPath("C:\\bin\\imageMagick");
+
+        String test = "C:\\bin\\1.png";
+checkImageMagick();
+
+        FileProcessor.addFile(test);
     }
 }

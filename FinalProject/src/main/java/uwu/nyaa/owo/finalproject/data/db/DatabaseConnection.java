@@ -10,6 +10,7 @@ import java.sql.Statement;
 
 import org.im4java.core.IM4JavaException;
 
+import org.im4java.process.ProcessStarter;
 import uwu.nyaa.owo.finalproject.data.ByteHelper;
 import uwu.nyaa.owo.finalproject.data.FileProcessor;
 import uwu.nyaa.owo.finalproject.data.FileProcessor.Hashes;
@@ -17,6 +18,7 @@ import uwu.nyaa.owo.finalproject.data.ImageMagickHelper;
 import uwu.nyaa.owo.finalproject.data.ImageProcessor;
 import uwu.nyaa.owo.finalproject.data.filedetection.ImageFormat;
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
+import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 
 public class DatabaseConnection
 {
@@ -149,57 +151,23 @@ public class DatabaseConnection
 
     public static void main(String args[]) throws IOException, InterruptedException, IM4JavaException
     {
+        GlobalSettings.updatePathsForLinux();
+        ProcessStarter.setGlobalSearchPath(GlobalSettings.IMAGE_MAGICK_PATH);
+        
         String test = "/mnt/Data/0_IMAGE/SELF/AOL_35.png";
         createDatabase();
-        createTables(true);
+        createTables();
         
         ImageMagickHelper.checkImageMagick();
         
-        BufferedImage image = ImageMagickHelper.loadImageWithMagick(test);
+        TableFile.addFakeFiles(10);
         
-        ImageProcessor.ImageInfo info = ImageMagickHelper.getImageInfo(test);
-        System.out.println(info);
-        
-        TableHash.printAll();
-        byte[] sha256 = FileProcessor.getSHA256(test);
-        byte[] sha1 = FileProcessor.getSHA1(test);
-        byte[] md5 = FileProcessor.getMD5(test);
-        Hashes h = FileProcessor.getFileHashes(test);
-        System.out.println(h);
-        System.out.println("SHA256 Hash: " + ByteHelper.bytesToHex(sha256));
-        System.out.println("SHA1   Hash: " + ByteHelper.bytesToHex(sha1));
-        System.out.println("MD5    Hash: " + ByteHelper.bytesToHex(md5));
-        
-        FileProcessor.addFile(test);
-        
-//        int id = TableHash.insertHash(sha256);
-//        
-//        if(id != -1)
-//        {
-//            System.out.println("Inserted new hash with ID %d".formatted(id));
-//            if(TableLocalHash.insertHashes(id, sha1, md5, null))
-//            {
-//                System.out.println("Inserted local hashes for %d".formatted(id));
-//            }
-//            else 
-//            {
-//                System.out.println("Failed to insert local hashes for %d".formatted(id));
-//            }
-//            
-//            long fileSize = new File(test).length();
-//            byte mime = ImageFormat.JPG;
-//            int width = 0;
-//            int height = 0;
-//            int duration = 0;
-//            boolean has_audio = false;
-//            
-//            if(TableFile.insertFile(id, fileSize, mime, width, height, duration, has_audio))
-//            {
-//                System.out.println("Inserted file information for ID %d".formatted(id));
-//            }
-//            
-//        }
-        
-        
+        TableFile.getFiles(10).forEach(x -> {
+            System.out.println(x);
+        });
     }
 }
+
+
+
+
