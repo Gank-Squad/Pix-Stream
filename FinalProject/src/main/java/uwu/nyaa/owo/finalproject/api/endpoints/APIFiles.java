@@ -3,6 +3,9 @@ package uwu.nyaa.owo.finalproject.api.endpoints;
 import java.io.File;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -18,18 +21,24 @@ import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 @Path("/files")
 public class APIFiles
 {
+    private final ObjectMapper jsonMapper = new ObjectMapper();
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getFileMetadata(@QueryParam("limit") int limit)
+    public Response getFileMetadata(@QueryParam("limit") int limit) throws JsonProcessingException
     {
-        if(limit < 0 || limit > 200)
+        if(limit <= 0 || limit > 200)
         {
             limit = 200;
         }
         
+        WrappedLogger.info(Integer.toString(limit));
+        
         List<HashInfo> items = TableFile.getFiles(limit);
         
-        return Response.status(200).entity(items).build();
+        return Response.status(200)
+                .entity(this.jsonMapper.writeValueAsString(items))
+                .build();
     }
     
     
