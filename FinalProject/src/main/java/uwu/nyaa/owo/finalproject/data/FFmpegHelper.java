@@ -16,12 +16,14 @@ import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 
 public class FFmpegHelper
 {
-    public static final FFmpeg FFMPEG;
-    public static final FFprobe FFPROBE;
-    public static final FFmpegExecutor EXECUTOR;
-    
-    static
+    public static  FFmpeg FFMPEG;
+    public static FFprobe FFPROBE;
+    public static  FFmpegExecutor EXECUTOR;
+ 
+    public static void checkFFmpeg()
     {
+        GlobalSettings.updatePathsForLinux();
+
         try
         {
             FFMPEG = new FFmpeg(GlobalSettings.FFMPEG_PATH);
@@ -41,11 +43,6 @@ public class FFmpegHelper
         }
 
         EXECUTOR = new FFmpegExecutor(FFMPEG, FFPROBE);
-    }
-    
-    public static void checkFFmpeg()
-    {
-        
     }
     
     /**

@@ -1,19 +1,18 @@
 package uwu.nyaa.owo.finalproject.data;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 import net.bramp.ffmpeg.FFmpeg;
-import net.bramp.ffmpeg.FFmpegUtils;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
 import net.bramp.ffmpeg.job.FFmpegJob;
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
-import net.bramp.ffmpeg.progress.Progress;
-import net.bramp.ffmpeg.progress.ProgressListener;
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
+import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 
 /**
  * A processing class wrapping ffmpeg, implements all the stuff we need to prepare video for streaming
@@ -23,10 +22,6 @@ import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 public class VideoProcessor
 {
 
-    
-
-    
-   
     /**
      * Encodes the given file to the given output file with settings designed to be universally playable
      * @param input The file to encode
@@ -60,7 +55,8 @@ public class VideoProcessor
 
                 // playable anywhere
                 .setVideoCodec("libx264") // Video using x264
-                .setVideoPixelFormat("yuv420p").setVideoFrameRate(FFmpeg.FPS_23_976)
+                .setVideoPixelFormat("yuv420p")
+                .setVideoFrameRate(FFmpeg.FPS_23_976)
 
                 // i'm assuming this is the crf, if it's not, literally no idea what this is 
                 // 18 -> no visible quality loss
@@ -69,11 +65,21 @@ public class VideoProcessor
                 
                 .addExtraArgs("-g", "48")
                 .addExtraArgs("-keyint_min", "48")
+                
+//                .addExtraArgs("-preset", "veryfast")
 
                 .setStrict(FFmpegBuilder.Strict.EXPERIMENTAL) // Allow FFmpeg to use experimental specs
                 .done();
 
-        FFmpegJob job = FFmpegHelper.EXECUTOR.createJob(builder, new FFmpegHelper.FFmpegProgressHook(FFmpegHelper.FFPROBE.probe(input)));
+        FFmpegJob job ;
+        if(GlobalSettings.IS_DEBUG)
+        {
+            job= FFmpegHelper.EXECUTOR.createJob(builder, new FFmpegHelper.FFmpegProgressHook(FFmpegHelper.FFPROBE.probe(input)));
+        }
+        else 
+        {
+            job= FFmpegHelper.EXECUTOR.createJob(builder);
+        }
 
         job.run();
     }
@@ -138,11 +144,14 @@ public class VideoProcessor
             hlsSegmentSize = 5;
         }
         
+        String outputTmpIndex = Paths.get(outputDirectory, "index.og.m3u8").toString();
+        String outputIndex = Paths.get(outputDirectory, "index.m3u8").toString();
+        
         FFmpegBuilder builder = new FFmpegBuilder()
 
                 .setInput(input)
                 .overrideOutputFiles(true)
-                .addOutput(Paths.get(outputDirectory, "index.m3u8").toString())
+                .addOutput(outputTmpIndex)
 
                 .disableSubtitle()
                 
@@ -164,9 +173,99 @@ public class VideoProcessor
                 .setStrict(FFmpegBuilder.Strict.EXPERIMENTAL) // Allow FFmpeg to use experimental specs
                 .done();
 
-        FFmpegJob job = FFmpegHelper.EXECUTOR.createJob(builder, new FFmpegHelper.FFmpegProgressHook(FFmpegHelper.FFPROBE.probe(input)));
+        
+        FFmpegJob job ;
+        if(GlobalSettings.IS_DEBUG)
+        {
+            job = FFmpegHelper.EXECUTOR.createJob(builder, new FFmpegHelper.FFmpegProgressHook(FFmpegHelper.FFPROBE.probe(input)));
+        }
+        else 
+        {
+            job = FFmpegHelper.EXECUTOR.createJob(builder);
+        }
 
         job.run();
         
+        try(BufferedReader br = new BufferedReader(new FileReader(outputTmpIndex));
+            FileWriter writer = new FileWriter(outputIndex, false)) 
+        {
+            for(String line; (line = br.readLine().strip()) != null; ) 
+            {
+                if(line.endsWith(".ts"))
+                {
+                    writer.append("{FMT}" + line + "\n");
+                }
+                else 
+                {
+                    writer.append(line + "\n");
+                }
+            }
+        }
+        
+    }
+    
+    public static VideoInfo getVideoInfo(File f)
+    {
+        return getVideoInfo(f.getAbsolutePath());
+    }
+    public static VideoInfo getVideoInfo(String f)
+    {
+        VideoInfo info = new VideoInfo();
+        info.is_valid = true;
+        
+        try
+        {
+            FFmpegProbeResult p = FFmpegHelper.FFPROBE.probe(f);
+            
+            info.result = p;
+            
+            info.duration_ms = (int)(p.format.duration * 1000);
+            
+            p.getStreams().forEach(x -> 
+            {
+                switch (x.codec_type)
+                {
+                case VIDEO:
+                    info.hasVideo = true;
+                    info.videoFormat = x.codec_name;
+                    info.width = x.width;
+                    info.height = x.height;
+                    break;
+
+                case AUDIO:
+                    info.hasAudio = true;
+                    info.audioFormat = x.codec_name;
+                    break;
+                }
+            });
+        }
+        catch (IOException e)
+        {
+            info.is_valid = false;
+            WrappedLogger.warning(String.format("Error while probing %s for information",f), e);
+        }
+        
+        return info;
+    }
+    
+    public static class VideoInfo
+    {
+        public boolean is_valid;
+        
+        public byte mime;
+        
+        public int width;
+        public int height;
+        
+        public int duration_ms;
+        public int streamDuration;
+        
+        public String audioFormat;
+        public String videoFormat;
+        
+        public boolean hasVideo;
+        public boolean hasAudio;
+        
+        FFmpegProbeResult result;
     }
 }

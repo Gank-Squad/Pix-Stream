@@ -2,8 +2,12 @@ package uwu.nyaa.owo.finalproject;
 
 import java.io.File;
 
+import uwu.nyaa.owo.finalproject.data.FFmpegHelper;
+import uwu.nyaa.owo.finalproject.data.FileProcessor;
+import uwu.nyaa.owo.finalproject.data.VideoProcessor;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector;
 import uwu.nyaa.owo.finalproject.data.filedetection.ImageDetector;
+import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector.FileHeader;
 
 public class Program
@@ -36,6 +40,9 @@ public class Program
     
     public static void main(String[] args)
     {
+        GlobalSettings.IS_DEBUG = true;
+        GlobalSettings.updatePathsForLinux();
+        FFmpegHelper.checkFFmpeg();
         String[] tests = new String[] {
                 "/home/minno/Pictures/010.jpg",
                 "/home/minno/Pictures/010.png",
@@ -53,13 +60,16 @@ public class Program
                 "/home/minno/Pictures/010.wav",
         };
    
-        for(String file : tests)
-        {
-            byte mime = FileDetector.getFileMimeType(new File(file));    
-            
-            System.out.println("File %s was detected as %s".formatted(file, FileDetector.getReadableMime(mime)));
-        }
         
-        
+//        for(String file : tests)
+//        {
+//            byte mime = FileDetector.getFileMimeType(new File(file));    
+//            
+//            System.out.println("File %s was detected as %s".formatted(file, FileDetector.getReadableMime(mime)));
+//        }
+//        
+        String t =  "/home/minno/Pictures/0100.mkv";
+        FileProcessor.addFile(new File(t));
+//        VideoProcessor.getVideoInfo(new File(t));
     }
 }

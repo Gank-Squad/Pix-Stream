@@ -9,6 +9,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import uwu.nyaa.owo.finalproject.data.ImageProcessor.ImageInfo;
+import uwu.nyaa.owo.finalproject.data.VideoProcessor.VideoInfo;
 import uwu.nyaa.owo.finalproject.data.db.TableFile;
 import uwu.nyaa.owo.finalproject.data.db.TableHash;
 import uwu.nyaa.owo.finalproject.data.db.TableLocalHash;
@@ -291,8 +292,9 @@ public class FileProcessor
         String fileHash = ByteHelper.bytesToHex(b.SHA256);
         String mediaPath = PathHelper.getMediaPath(fileHash);
         File mediaFile = new File(mediaPath);
+        File tmpMediaFile = new File(mediaFile.getAbsoluteFile() + ".tmp");
         
-        if(mediaFile.isFile())
+        if(mediaFile.exists())
         {
             WrappedLogger.warning(String.format("Ignoring adding file %s because it media file already exist; Assuming it's in the db", f));
             return false;
@@ -300,22 +302,6 @@ public class FileProcessor
         
         long fileSize = f.length();
         byte mimeType = FileDetector.getFileMimeType(f);
-
-        WrappedLogger.info("Moving file to: " + mediaFile.getAbsolutePath());
-        if(!f.renameTo(mediaFile))
-        {
-            try
-            {
-                Files.copy(f.toPath(), mediaFile.toPath());
-            }
-            catch (IOException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return false;
-            }
-        }
-        
         int width = 0;
         int height = 0;
         int duration = 0;
@@ -324,7 +310,7 @@ public class FileProcessor
         
         if(FileFormat.isImageType(mimeType))
         {
-            ImageInfo i = ImageMagickHelper.getImageInfo(mediaFile.getAbsolutePath());
+            ImageInfo i = ImageMagickHelper.getImageInfo(f);
             
             width = i.width;
             height = i.height;
@@ -334,17 +320,52 @@ public class FileProcessor
                 WrappedLogger.warning(String.format("Failed to add file %s, because the image was invalid", f));
                 return false;
             }
+            
+            if(!f.renameTo(mediaFile))
+            {
+                try
+                {
+                    Files.copy(f.toPath(), mediaFile.toPath());
+                }
+                catch (IOException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    return false;
+                }
+            }
         }
         else if(FileFormat.isVideoType(mimeType))
         {
+            VideoInfo i = VideoProcessor.getVideoInfo(f);
             
+            width = i.width;
+            height = i.height;
+            duration = i.duration_ms;
+            has_audio = i.hasAudio;
+            
+            if(!i.is_valid)
+            {
+                WrappedLogger.warning(String.format("Failed to add file %s, because the video was invalid", f));
+                return false;
+            }
+            
+            try
+            {
+                VideoProcessor.encodeUniversal(f, tmpMediaFile);
+                VideoProcessor.splitVideoForHLS(tmpMediaFile, mediaFile);
+            }
+            catch (IOException e)
+            {
+                WrappedLogger.warning(String.format("Failed to encode video file %s", f), e);
+                return false;
+            }
         }
         else if(FileFormat.isAudioType(mimeType))
         {
             has_audio = true;
         }
-        
-
+   
         int hash_id = TableHash.insertHash(b.SHA256);
         
         if(hash_id == -1)

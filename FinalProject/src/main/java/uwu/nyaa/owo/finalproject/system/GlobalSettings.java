@@ -6,6 +6,8 @@ import java.util.logging.Level;
 
 public class GlobalSettings
 {
+    public static boolean IS_DEBUG = false;
+    
     public static String IMAGE_MAGICK_PATH = "C:/bin/imageMagick";
     public static String FFMPEG_PATH = "C:/bin/ffmpeg/ffmpeg.exe";
     public static String FFPROBE_PATH = "C:/bin/ffmpeg/ffprobe.exe";
@@ -32,7 +34,7 @@ public class GlobalSettings
     
     public static void updatePathsForLinux()
     {
-        if(System.getProperty("os.name").equals("linux"))
+        if(System.getProperty("os.name").toLowerCase().equals("linux"))
         {
             GlobalSettings.IMAGE_MAGICK_PATH = "/bin/";
             GlobalSettings.FFMPEG_PATH = "/bin/ffmpeg";
