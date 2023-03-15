@@ -1,7 +1,5 @@
 package uwu.nyaa.owo.finalproject.data.db;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,14 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.im4java.core.IM4JavaException;
-
 import org.im4java.process.ProcessStarter;
-import uwu.nyaa.owo.finalproject.data.ByteHelper;
-import uwu.nyaa.owo.finalproject.data.FileProcessor;
-import uwu.nyaa.owo.finalproject.data.FileProcessor.Hashes;
+
 import uwu.nyaa.owo.finalproject.data.ImageMagickHelper;
-import uwu.nyaa.owo.finalproject.data.ImageProcessor;
-import uwu.nyaa.owo.finalproject.data.filedetection.ImageFormat;
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 

@@ -1,44 +1,65 @@
 package uwu.nyaa.owo.finalproject;
 
-import uwu.nyaa.owo.finalproject.data.PathHelper;
+import java.io.File;
+
+import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector;
+import uwu.nyaa.owo.finalproject.data.filedetection.ImageDetector;
+import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector.FileHeader;
 
 public class Program
 {
+    
+    private static FileHeader[] combineArr(FileHeader[] ...arrs)
+    {
+        int sum = 0;
+        for(FileHeader[] h : arrs)
+        {
+            sum += h.length;
+        }
+
+        FileHeader[] headers = new FileHeader[sum];
+        
+        int i = 0;
+        
+        for(FileHeader[] h : arrs)
+        {
+            for(int j = 0; j < h.length; j++)
+            {
+                headers[i + j] = h[j];
+            }
+            
+            i += h.length;
+        }
+
+        return headers;
+    }
+    
     public static void main(String[] args)
     {
-        System.out.println(PathHelper.MEDIA_DIR_BASE);
+        String[] tests = new String[] {
+                "/home/minno/Pictures/010.jpg",
+                "/home/minno/Pictures/010.png",
+                "/home/minno/Pictures/010.webp",
+                "/home/minno/Pictures/010.tiff",
+                "/home/minno/Pictures/010.jxl",
+                "/home/minno/Pictures/010.gif",
+                "/home/minno/Pictures/010.bmp",
+                "/home/minno/Pictures/010.avif",
+                "/home/minno/Pictures/010.mkv",
+                "/home/minno/Pictures/010.mov",
+                "/home/minno/Pictures/010.mp4",
+                "/home/minno/Pictures/010.flv",
+                "/home/minno/Pictures/010.flac",
+                "/home/minno/Pictures/010.wav",
+        };
+   
+        for(String file : tests)
+        {
+            byte mime = FileDetector.getFileMimeType(new File(file));    
+            
+            System.out.println("File %s was detected as %s".formatted(file, FileDetector.getReadableMime(mime)));
+        }
         
-        String input = "/mnt/Data/0_VIDEO/VTUBERS/Shondo/1601284004506112002_1.mp4";
-//
-        String output = "/home/minno/Videos/uwu.mp4";
-//
-        String outputDir = "/home/minno/Videos/uwu/";
         
-
-        
-        String sha256Hex = PathHelper.getMediaPath(input);
-        
-        System.out.println(sha256Hex);
-        
-//        
-//        try
-//        {
-//            VideoProcessor.encodeUniversal(input, output);
-//        }
-//        catch (IOException e)
-//        {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//        
-//        try
-//        {
-//            VideoProcessor.splitVideoForHLS(output, outputDir);
-//        }
-//        catch (IOException e)
-//        {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
     }
 }

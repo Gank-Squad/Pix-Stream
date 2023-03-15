@@ -39,7 +39,7 @@ public class ByteHelper
      * checks if thatBytes starts with thisBytes
      * @param thisBytes the bytes to check if the otherbyte startswith
      * @param thatBytes the bytes to see if it starts with
-     * @param offset the offset to apply for thisBytes indexing
+     * @param offset the offset to apply for thatBytes indexing
      * @return true if thatBytes starts with thisBytes else false
      */
     public static boolean startsWith(byte[] thisBytes, byte[] thatBytes, int offset)
@@ -51,10 +51,15 @@ public class ByteHelper
             shortest = thatBytes.length;
 
         for (int i = 0; i < shortest; i += 1)
-
-            if (thatBytes[i] != thisBytes[i + offset])
-
+        {
+            if(i + offset >= thatBytes.length)
                 return false;
+            
+            if (thatBytes[i  + offset] != thisBytes[i])
+                return false;
+        }
+
+            
 
         return true;
     }

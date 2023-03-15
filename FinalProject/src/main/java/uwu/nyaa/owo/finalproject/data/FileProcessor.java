@@ -1,14 +1,10 @@
 package uwu.nyaa.owo.finalproject.data;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -16,10 +12,8 @@ import uwu.nyaa.owo.finalproject.data.ImageProcessor.ImageInfo;
 import uwu.nyaa.owo.finalproject.data.db.TableFile;
 import uwu.nyaa.owo.finalproject.data.db.TableHash;
 import uwu.nyaa.owo.finalproject.data.db.TableLocalHash;
-import uwu.nyaa.owo.finalproject.data.filedetection.AudioFormat;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector;
-import uwu.nyaa.owo.finalproject.data.filedetection.ImageFormat;
-import uwu.nyaa.owo.finalproject.data.filedetection.VideoFormat;
+import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
 public class FileProcessor
@@ -328,7 +322,7 @@ public class FileProcessor
         boolean has_audio = false;
         
         
-        if(ImageFormat.isImageType(mimeType))
+        if(FileFormat.isImageType(mimeType))
         {
             ImageInfo i = ImageMagickHelper.getImageInfo(mediaFile.getAbsolutePath());
             
@@ -341,11 +335,11 @@ public class FileProcessor
                 return false;
             }
         }
-        else if(VideoFormat.isVideoType(mimeType))
+        else if(FileFormat.isVideoType(mimeType))
         {
             
         }
-        else if(AudioFormat.isAudioType(mimeType))
+        else if(FileFormat.isAudioType(mimeType))
         {
             has_audio = true;
         }
