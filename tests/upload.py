@@ -4,7 +4,7 @@ DATA = "./data_files/img/"
 
 def upload():
 
-    file = DATA + "2.jpg"
+    file = DATA + "4.jpg"
 
     payload = {
         "file": open(file, "rb")

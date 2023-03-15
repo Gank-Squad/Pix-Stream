@@ -64,7 +64,7 @@ public class ImageMagickHelper
     
     public static ImageProcessor.ImageInfo getImageInfo(File filename)
     {
-        return getImageInfo(filename.getAbsoluteFile());
+        return getImageInfo(filename.getAbsolutePath());
     }
     
     public static ImageProcessor.ImageInfo getImageInfo(String filename)

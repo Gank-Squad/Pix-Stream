@@ -69,6 +69,36 @@ public class APIFiles
     
     
     @GET
+    @Produces({ "video/ts", "video/mp4" })
+    @Path("/{filehash}/{video_fragment}")
+    public Response getContentVideoFiles(@PathParam("filehash") String filehash, @PathParam("video_fragment") String video)
+    {
+        if (filehash.length() != 64 || !filehash.matches("^[a-fA-F0-9]+$"))
+        {
+            return Response.status(400, "Bad request, must be SHA256").build();
+        }
+        
+        if(video.length() <= 3 || !video.matches("^[0-9]+\\.ts$"))
+        {
+            return Response.status(400, "Bad request, video fragment should be in the form 0000.ts").build();
+        }
+
+        WrappedLogger.info(String.format("Request for file with hash: %s", filehash));
+
+        String mediaPath = PathHelper.getMediaPath(filehash);
+        File f = new File(mediaPath, video);
+
+        WrappedLogger.info(String.format("Found media path: %s", f.getAbsolutePath()));
+
+        if (!f.isFile())
+        {
+            return Response.status(404, "Could not find file").build();
+        }
+
+        return Response.ok(f, "video/ts").build();
+    }
+    
+    @GET
     @Produces({ "image/png", "image/jpeg", "image/webp", "image/gif" })
     @Path("/t/{filehash}")
     public Response getThumbnails(@PathParam("filehash") String filehash)

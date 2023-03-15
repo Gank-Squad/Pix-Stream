@@ -32,7 +32,7 @@ public class APIApplication extends Application
         
         if(debug)
         {
-            TableFile.addFakeFiles(50);    
+//            TableFile.addFakeFiles(50);
         }
     }
 
