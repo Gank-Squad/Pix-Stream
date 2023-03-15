@@ -43,7 +43,7 @@ public class APIFiles
     
     
     @GET
-    @Produces({ "image/png", "image/jpeg", "image/webp", "image/gif" })
+    @Produces({ "image/png", "image/jpeg", "image/webp", "image/gif", "application/vnd.apple.mpegurl" })
     @Path("/{filehash}")
     public Response getContentFiles(@PathParam("filehash") String filehash)
     {
@@ -59,12 +59,25 @@ public class APIFiles
 
         WrappedLogger.info(String.format("Found media path: %s", f.getAbsolutePath()));
 
-        if (!f.isFile())
+        if (f.isFile())
         {
-            return Response.status(404, "Could not find file").build();
+            return Response.ok(f, "image/png").build();
         }
+        else if(f.isDirectory())
+        {
+            File m3u8 = new File(f, "index.m3u8");
 
-        return Response.ok(f, "image/png").build();
+            if(m3u8.isFile())
+            {
+                // TODO: read the m3u8 file, and replace all occurance of {FMT} with the server address
+                // Pointing to the endpoint for video files below
+                // I.E http://localhost:xzy/
+
+                return Response.ok(m3u8, "application/vnd.apple.mpegurl").build();
+            }
+        }
+        return Response.status(404, "Could not find file").build();
+
     }
     
     
