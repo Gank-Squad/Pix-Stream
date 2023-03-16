@@ -172,7 +172,7 @@ public class MultiPartMessageProvider implements MessageBodyReader<MultiPartMess
     private Map<String, String> extractQualifiers(String headerValue)
     {
         Map<String, String> qualifiers = new HashMap<>();
-        String assignments[] = headerValue.split(";");
+        String[] assignments = headerValue.split(";");
         for (String assignment : assignments)
         {
             String lr[] = assignment.split("=");

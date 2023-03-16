@@ -1,9 +1,6 @@
 package uwu.nyaa.owo.finalproject.data.filedetection;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
 import uwu.nyaa.owo.finalproject.data.ByteHelper;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector.FileHeader;
@@ -71,6 +68,44 @@ public class FileDetector
         }
 
         return "application/unknown";
+    }
+
+    public static byte getFileMimeType(byte[] header)
+    {
+        for(FileHeader f : HEADER_MAP)
+        {
+            if(ByteHelper.startsWith(f.header, header, f.offset))
+            {
+                return f.mime;
+            }
+        }
+
+        return FileFormat.UNKNOWN;
+    }
+    public static byte getFileMimeType(InputStream stream)
+    {
+        byte[] header;
+
+        try
+        {
+            header = stream.readNBytes(256);
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return FileFormat.UNKNOWN;
+        }
+
+        for(FileHeader f : HEADER_MAP)
+        {
+            if(ByteHelper.startsWith(f.header, header, f.offset))
+            {
+                return f.mime;
+            }
+        }
+
+        return FileFormat.UNKNOWN;
     }
 
     public static byte getFileMimeType(File file)

@@ -189,8 +189,13 @@ public class VideoProcessor
         try(BufferedReader br = new BufferedReader(new FileReader(outputTmpIndex));
             FileWriter writer = new FileWriter(outputIndex, false)) 
         {
-            for(String line; (line = br.readLine().strip()) != null; ) 
+            for(String line; (line = br.readLine()) != null; )
             {
+                if(line == null)
+                    continue;
+
+                line = line.strip();
+
                 if(line.endsWith(".ts"))
                 {
                     writer.append("{FMT}" + line + "\n");

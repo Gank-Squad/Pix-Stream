@@ -1,21 +1,17 @@
 package uwu.nyaa.owo.finalproject;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.Paths;
 import java.net.URLEncoder;
 import java.net.URLDecoder;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -25,8 +21,11 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import uwu.nyaa.owo.finalproject.api.multipart.FilePart;
 import uwu.nyaa.owo.finalproject.api.multipart.MultiPartMessage;
+import uwu.nyaa.owo.finalproject.api.multipart.PartInputStream;
 import uwu.nyaa.owo.finalproject.data.FileProcessor;
-import uwu.nyaa.owo.finalproject.data.PathHelper;
+import uwu.nyaa.owo.finalproject.data.MultiPartFormDataParser;
+import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector;
+import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
 @Path("/media")
@@ -77,13 +76,52 @@ public class APIResource
     }
     
     
-    @GET
-    @Path("/files")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getFiles()
+    @POST
+    @Path("/upload3")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response getFiles() throws IOException, ServletException
     {
-        
-        
+        final String BOUNDARY = MultiPartFormDataParser.getBoundary(request);
+        final InputStream FORM_STREAM = MultiPartFormDataParser.getResetableInputStream(request.getInputStream());
+
+        WrappedLogger.info(BOUNDARY);
+
+        if(BOUNDARY == null)
+        {
+            return Response.status(400, "Bad format data").build();
+        }
+
+        PartInputStream partInputStream = MultiPartFormDataParser.readPrecedingBoundary(BOUNDARY, FORM_STREAM);
+
+        if(partInputStream.isLastPart())
+        {
+            return Response.status(400, "Bad format data").build();
+        }
+
+        MultiPartFormDataParser.Part p = MultiPartFormDataParser.readNextPart(BOUNDARY, FORM_STREAM);
+
+        if(p == null || p.qualifiers.get("name") == null || !p.qualifiers.get("name").equals("data"))
+        {
+            return Response.status(400, "Could not read 'data' field from form data first").build();
+        }
+
+        byte[] header = p.partInputStream.readNBytes(256);
+        byte mime = FileDetector.getFileMimeType(header);
+
+        if(mime == FileFormat.UNKNOWN)
+        {
+            return Response.status(400, "Unknown data format").build();
+        }
+
+        String tempPath = Files.createTempDirectory("upload").toString();
+        File file = Paths.get(tempPath, Long.toString(System.currentTimeMillis())).toFile();
+
+        FileOutputStream fout = new FileOutputStream(file);
+        fout.write(header);
+        p.partInputStream.transferTo(fout);
+
+        FileProcessor.addFile(file);
+
         return Response.status(200).build();
     }
 

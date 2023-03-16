@@ -1,16 +1,16 @@
 import requests
 
-DATA = "./data_files/img/"
+DATA = "./data_files/"
 
 def upload():
 
-    file = DATA + "4.jpg"
+    file = DATA + "/img/2.jpg"
 
     payload = {
-        "file": open(file, "rb")
+        "data": open(file, "rb")
     }
 
-    a = requests.post("http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/media/upload2/", files=payload)
+    a = requests.post("http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/media/upload3/", files=payload)
 
     print(a.status_code)
     print(a.text)

@@ -18,7 +18,7 @@ public class APIApplication extends Application
     // this is my makeshift main method
     public APIApplication()
     {
-        boolean debug = true;
+        GlobalSettings.IS_DEBUG = true;
         
         GlobalSettings.updatePathsForLinux();
         
@@ -30,7 +30,7 @@ public class APIApplication extends Application
         ImageMagickHelper.checkImageMagick();
         FFmpegHelper.checkFFmpeg();
         
-        if(debug)
+        if(GlobalSettings.IS_DEBUG)
         {
 //            TableFile.addFakeFiles(50);
         }
