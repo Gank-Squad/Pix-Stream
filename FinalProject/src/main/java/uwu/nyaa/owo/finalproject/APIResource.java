@@ -76,6 +76,7 @@ public class APIResource
             return Response.status(400, "Could not read 'data' field from form data first").build();
         }
 
+        // partInputStream doesn't support #mark and #reset, so we need to read these here to add later
         byte[] header = p.partInputStream.readNBytes(256);
         byte mime = FileDetector.getFileMimeType(header);
 
@@ -87,10 +88,12 @@ public class APIResource
         String tempPath = Files.createTempDirectory("upload").toString();
         File file = Paths.get(tempPath, Long.toString(System.currentTimeMillis())).toFile();
 
-        FileOutputStream fout = new FileOutputStream(file);
-        fout.write(header);
-        p.partInputStream.transferTo(fout);
-
+        try(FileOutputStream fout = new FileOutputStream(file))
+        {
+            fout.write(header);
+            p.partInputStream.transferTo(fout);
+        }
+        
         FileProcessor.addFile(file);
 
         return Response.status(200).build();
