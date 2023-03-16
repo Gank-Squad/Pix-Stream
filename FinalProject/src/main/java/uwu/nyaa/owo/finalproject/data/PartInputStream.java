@@ -1,4 +1,4 @@
-package uwu.nyaa.owo.finalproject.api.multipart;
+package uwu.nyaa.owo.finalproject.data;
 
 import java.io.IOException;
 import java.io.InputStream;

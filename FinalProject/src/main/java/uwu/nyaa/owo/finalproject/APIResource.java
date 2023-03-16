@@ -19,9 +19,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import uwu.nyaa.owo.finalproject.api.multipart.FilePart;
-import uwu.nyaa.owo.finalproject.api.multipart.MultiPartMessage;
-import uwu.nyaa.owo.finalproject.api.multipart.PartInputStream;
+import uwu.nyaa.owo.finalproject.data.PartInputStream;
 import uwu.nyaa.owo.finalproject.data.FileProcessor;
 import uwu.nyaa.owo.finalproject.data.MultiPartFormDataParser;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector;
@@ -33,33 +31,6 @@ public class APIResource
 {
     @Context
     private HttpServletRequest request;
-    
-    
-
-
-
-    @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Path("upload/")
-    public Response postFormData(MultiPartMessage message)
-    {
-        // this MultiPartMessage thing i stole is a pain in the ass
-        // it downloads the whole file and all the content posted without checking anything
-        // but hey, it works 
-        message.getParts().forEach(part -> {
-           
-            if(part instanceof FilePart)
-            {
-                FilePart fPart = (FilePart)part;
-                
-                FileProcessor.addFile(fPart.getFile());
-            }
-        });
-
-        System.out.println(message);
-        return Response.status(200).build();
-    }
-    
 
     @POST
     @Path("/upload2")

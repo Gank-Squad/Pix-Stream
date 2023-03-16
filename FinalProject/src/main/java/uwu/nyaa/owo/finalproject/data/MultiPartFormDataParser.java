@@ -1,13 +1,8 @@
 package uwu.nyaa.owo.finalproject.data;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.core.MultivaluedMap;
-import uwu.nyaa.owo.finalproject.api.multipart.MultiPartMessage;
-import uwu.nyaa.owo.finalproject.api.multipart.PartInputStream;
-import uwu.nyaa.owo.finalproject.data.ByteHelper;
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
-import java.awt.desktop.QuitResponse;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class MultiPartFormDataParser
