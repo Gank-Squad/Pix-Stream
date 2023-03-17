@@ -291,7 +291,9 @@ public class FileProcessor
         
         String fileHash = ByteHelper.bytesToHex(b.SHA256);
         String mediaPath = PathHelper.getMediaPath(fileHash);
+        String thumbPath = PathHelper.getThmbnailPath(fileHash);
         File mediaFile = new File(mediaPath);
+        File thumbFile = new File(thumbPath);
         File tmpMediaFile = new File(mediaFile.getAbsoluteFile() + ".tmp");
         
         if(mediaFile.exists())
@@ -310,7 +312,7 @@ public class FileProcessor
         
         if(FileFormat.isImageType(mimeType))
         {
-            ImageInfo i = ImageMagickHelper.getImageInfo(f);
+            ImageInfo i = ImageProcessor.getImageInfo(f);
             
             width = i.width;
             height = i.height;
@@ -334,6 +336,8 @@ public class FileProcessor
                     return false;
                 }
             }
+            
+            ImageProcessor.createThumbnail(mediaFile, thumbFile);
         }
         else if(FileFormat.isVideoType(mimeType))
         {
@@ -360,6 +364,10 @@ public class FileProcessor
                 WrappedLogger.warning(String.format("Failed to encode video file %s", f), e);
                 return false;
             }
+            
+            VideoProcessor.createThumbnail(tmpMediaFile, thumbFile);
+            
+            tmpMediaFile.delete();
         }
         else if(FileFormat.isAudioType(mimeType))
         {

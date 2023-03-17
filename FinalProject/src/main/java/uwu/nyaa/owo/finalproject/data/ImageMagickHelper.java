@@ -17,6 +17,7 @@ import org.im4java.core.Operation;
 import org.im4java.core.Stream2BufferedImage;
 import org.im4java.process.ProcessStarter;
 
+import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
 import javax.imageio.ImageIO;
@@ -44,11 +45,11 @@ public class ImageMagickHelper
     public static boolean checkImageMagick()
     {
         ImageCommand cmd = new ImageCommand();
-        
+
         Operation op = new Operation();
-        
+
         op.addRawArgs("magick", "--version");
-        
+
         try
         {
             cmd.run(op);
@@ -59,80 +60,6 @@ public class ImageMagickHelper
             WrappedLogger.warning("Could not run 'magick --version' something is wrong", e);
             throw new RuntimeException("Could not run 'magick --version' something is wrong", e);
         }
-    }
-
-    
-    public static ImageProcessor.ImageInfo getImageInfo(File filename)
-    {
-        return getImageInfo(filename.getAbsolutePath());
-    }
-    
-    public static ImageProcessor.ImageInfo getImageInfo(String filename)
-    {
-        ImageProcessor.ImageInfo simpleInfo = new ImageProcessor.ImageInfo();
-
-        // // this doesn't work for some reason, so i'm just loading the image cause idrc
-//        Info imageInfo;
-//        try
-//        {
-//            imageInfo = new Info(filename, true);
-//        }
-//        catch (InfoException e)
-//        {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//            return simpleInfo;
-//        }
-//
-//        try
-//        {
-//            simpleInfo.width = imageInfo.getImageWidth();
-//        }
-//        catch (InfoException e)
-//        {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//
-//        try
-//        {
-//            simpleInfo.height = imageInfo.getImageHeight();
-//        }
-//        catch (InfoException e)
-//        {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//
-//        simpleInfo.magickFormat = imageInfo.getImageFormat();
-
-        
-        
-        try
-        {
-            BufferedImage buff = loadImageWithMagick(filename);
-
-            if(buff != null)
-            {
-                simpleInfo.width = buff.getWidth();
-                simpleInfo.height = buff.getHeight();
-                simpleInfo.is_valid = true;
-                buff.flush();
-                buff = null;
-            }
-            else
-            {
-                simpleInfo.is_valid = false;
-            }
-        }
-        catch (IOException | InterruptedException | IM4JavaException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        
-        return simpleInfo;
     }
 
     public static BufferedImage loadImageWithMagick(String path)
@@ -161,14 +88,32 @@ public class ImageMagickHelper
         return ImageProcessor.createOptimalImageFrom(s2b.getImage());
     }
 
+    public static void saveImageWithMagick(BufferedImage buf, String path, byte imgformat)
+            throws IOException, InterruptedException, IM4JavaException
+    {
+        if (buf == null)
+            return;
 
+        IMOperation op = new IMOperation();
+        op.addImage(); // input
+        op.addImage(path); // output
+
+        if(imgformat != FileFormat.UNKNOWN && FileFormat.isImageType(imgformat))
+        {
+            op.format(FileFormat.getFileExtension(imgformat));
+        }
+        
+        ConvertCmd convert = new ConvertCmd();
+
+        convert.run(op, buf);
+    }
 
     public static void main(String[] args) throws IOException, InterruptedException, IM4JavaException
     {
         ProcessStarter.setGlobalSearchPath("C:\\bin\\imageMagick");
 
         String test = "C:\\bin\\1.png";
-checkImageMagick();
+        checkImageMagick();
 
         FileProcessor.addFile(test);
     }

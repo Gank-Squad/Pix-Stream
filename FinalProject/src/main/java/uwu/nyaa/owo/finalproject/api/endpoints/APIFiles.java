@@ -133,6 +133,6 @@ public class APIFiles
             return Response.status(404, "Could not find file").build();
         }
 
-        return Response.ok(f, "image/png").build();
+        return Response.ok(f, "image/jpeg").build();
     }
 }

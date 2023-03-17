@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import uwu.nyaa.owo.finalproject.data.ByteHelper;
+import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
 
 
 
@@ -35,6 +36,13 @@ public class HashInfo
     public boolean has_audio;
     
     private String hash_string = null;
+    
+    @JsonGetter
+    @JsonProperty("mime")
+    public String getMime()
+    {
+        return FileFormat.getMimeType((byte)this.mime);
+    }
     
     @JsonGetter
     @JsonProperty("sha256")

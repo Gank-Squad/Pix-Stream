@@ -7,7 +7,7 @@ def upload():
     file = DATA + "/img/2.jpg"
     file = DATA + "/bad/conjure.exe"
     file = DATA + "/vid/1.mp4"
-    file = DATA + "/img/1.jpg"
+    # file = DATA + "/img/4.jpg"
 
     payload = {
         "data": open(file, "rb")

@@ -1,5 +1,6 @@
 package uwu.nyaa.owo.finalproject.data;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -45,6 +46,7 @@ public class FFmpegHelper
         EXECUTOR = new FFmpegExecutor(FFMPEG, FFPROBE);
     }
     
+
     /**
      * A progress hook used to display ffmpeg progress and information while encoding
      * @author minno
