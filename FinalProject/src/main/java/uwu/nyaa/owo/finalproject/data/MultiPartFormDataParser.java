@@ -1,18 +1,21 @@
 package uwu.nyaa.owo.finalproject.data;
 
-import jakarta.servlet.http.HttpServletRequest;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import jakarta.servlet.http.HttpServletRequest;
+import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
 public class MultiPartFormDataParser
 {
@@ -125,12 +128,18 @@ public class MultiPartFormDataParser
     {
         List<String> lines = readLines(inputStream);
         return lines.stream()
-                .map(l -> l.split(":"))
-                .collect(Collectors.toMap(a -> a[0].trim().toLowerCase(), a -> a[1].trim()));
+                .map(l -> l.split(":", 2))
+                .collect(Collectors.toMap(
+                        a -> a[0].trim().toLowerCase(),
+                        a -> a[1].trim(),
+                        (v1, v2) -> v1,    // keep first value if duplicate key found
+                        LinkedHashMap::new // preserve order of header fields
+                ));
+//                .collect(Collectors.toMap(a -> a[0].trim().toLowerCase(), a -> a[1].trim()));
     }
     
     public static List<String> readLines(PartInputStream is) throws IOException
-    {
+    {        
         List<String> lines = new ArrayList<>();
         String line = readLine(is);
 
@@ -140,6 +149,11 @@ public class MultiPartFormDataParser
             line = readLine(is);
         }
         return lines;
+
+    //  Uncomment the following code to use streams instead of the loop above
+    //  return Stream.generate(() -> readLine(is))
+//                    .takeWhile(line -> !line.isEmpty())
+//                    .collect(Collectors.toList());    
     }
 
     public static String readLine(PartInputStream is) throws IOException
