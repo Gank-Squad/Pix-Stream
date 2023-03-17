@@ -16,6 +16,7 @@ export default function VideoPlayer(props)
         }
             
         const hlsUrl = props.m3u8;
+        const hlsDomain = props.domain;
         const video = playerRef.current;
 
         // If HLS is natively supported, let the browser do the work!
@@ -49,6 +50,21 @@ export default function VideoPlayer(props)
                     video.play(); 
                 });
             }
+
+            hls.on(Hls.Events.FRAG_LOADING, function(event, data)
+            {
+                const lastSlashIndex = data.frag.url.lastIndexOf("/");
+                const filename = data.frag.url.substring(lastSlashIndex + 1);
+
+                if(hlsDomain.endsWith("/"))
+                {
+                    data.frag.url = hlsDomain + filename;
+                }
+                else 
+                {
+                    data.frag.url = hlsDomain + "/" + filename;
+                }
+            });
 
             hls.on(Hls.Events.ERROR, function (event, data) 
             {

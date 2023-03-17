@@ -191,26 +191,27 @@ public class VideoProcessor
 
         job.run();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(outputTmpIndex));
-                FileWriter writer = new FileWriter(outputIndex, false))
-        {
-            for (String line; (line = br.readLine()) != null;)
-            {
-                if (line == null)
-                    continue;
-
-                line = line.strip();
-
-                if (line.endsWith(".ts"))
-                {
-                    writer.append("{FMT}" + line + "\n");
-                }
-                else
-                {
-                    writer.append(line + "\n");
-                }
-            }
-        }
+        // we don't need this because the frontend handles the rest
+//        try (BufferedReader br = new BufferedReader(new FileReader(outputTmpIndex));
+//                FileWriter writer = new FileWriter(outputIndex, false))
+//        {
+//            for (String line; (line = br.readLine()) != null;)
+//            {
+//                if (line == null)
+//                    continue;
+//
+//                line = line.strip();
+//
+//                if (line.endsWith(".ts"))
+//                {
+//                    writer.append("{FMT}" + line + "\n");
+//                }
+//                else
+//                {
+//                    writer.append(line + "\n");
+//                }
+//            }
+//        }
 
     }
 
