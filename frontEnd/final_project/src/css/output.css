@@ -418,6 +418,15 @@ video {
   display: none;
 }
 
+body {
+  min-height: 100vh;
+  background-image: linear-gradient(to top left, var(--tw-gradient-stops));
+  --tw-gradient-from: #4b5563;
+  --tw-gradient-to: rgb(75 85 99 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  --tw-gradient-to: #374151;
+}
+
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -595,6 +604,8 @@ video {
 .font-bold {
   font-weight: 700;
 }
+
+/* Base, to my understanding always applies */
 
 .hover\:box-content:hover {
   box-sizing: content-box;

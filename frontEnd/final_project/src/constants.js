@@ -11,4 +11,8 @@ export const ROUTES = {
     register : "/register",
     upload   : "/upload",
     media    : "/media",
+    search_results : "/results",
+    tags     : "/tags",
+    upload   : "/upload",
+    user     : "/user",
 }
