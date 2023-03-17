@@ -1,5 +1,6 @@
 # Custom stuff
 
+.idea/
 /tests/data_files
 *.log
 
