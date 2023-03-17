@@ -2,13 +2,17 @@ import requests
 
 DATA = "./data_files/"
 
+DATA = "E:/Data/"
+
 def upload():
 
-    file = DATA + "/img/2.jpg"
-    file = DATA + "/bad/conjure.exe"
-    file = DATA + "/vid/1.mp4"
-    file = DATA + "/vid/2.mkv"
+    # file = DATA + "/img/2.jpg"
+    # file = DATA + "/bad/conjure.exe"
+    # file = DATA + "/vid/1.mp4"
+    # file = DATA + "/vid/2.mkv"
     # file = DATA + "/img/4.jpg"
+    file = DATA + "4.mp4"
+    # file = DATA + "1.png"
 
     payload = {
         "data": open(file, "rb")
