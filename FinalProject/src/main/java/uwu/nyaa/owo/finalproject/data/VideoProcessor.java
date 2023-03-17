@@ -153,8 +153,8 @@ public class VideoProcessor
             hlsSegmentSize = 5;
         }
 
-        String outputTmpIndex = Paths.get(outputDirectory, "index.og.m3u8").toString();
-        String outputIndex = Paths.get(outputDirectory, "index.m3u8").toString();
+        String outputTmpIndex = Paths.get(outputDirectory, "index.m3u8").toString();
+//        String outputIndex = Paths.get(outputDirectory, "index.m3u8").toString();
 
         FFmpegBuilder builder = new FFmpegBuilder()
 
@@ -269,6 +269,10 @@ public class VideoProcessor
             info.duration_ms = (int) (p.format.duration * 1000);
 
             p.getStreams().forEach(x -> {
+
+                if(x.codec_type == null)
+                    return;
+
                 switch (x.codec_type)
                 {
                 case VIDEO:

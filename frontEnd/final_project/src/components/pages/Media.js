@@ -10,8 +10,8 @@ export default function Default(props)
     const page = parseInt(params.get('page')) || 1;
 
     const vprops = {
-        m3u8: "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/files/1073d143a1848e66c9a093eeca19ba6c76608c150a056b7208fc8c369ee1a386",
-        domain: "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/files/1073d143a1848e66c9a093eeca19ba6c76608c150a056b7208fc8c369ee1a386/"
+        m3u8: "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/files/5d4256aa61a2a4ef8ee62031f0ae699e90912579449f7ac45a0b154ef420b349",
+        domain: "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/files/5d4256aa61a2a4ef8ee62031f0ae699e90912579449f7ac45a0b154ef420b349/"
     };
 
     React.useEffect(() => 
