@@ -128,6 +128,10 @@ public class DatabaseConnection
                 statement.execute(TableHash.DELETION_QUERY);
                 
                 statement.execute(TableUsers.DELETION_QUERY);
+
+                statement.execute(TableTag.DELETION_QUERY);
+                statement.execute(TableSubtag.DELETION_QUERY);
+                statement.execute(TableNamespace.DELETION_QUERY);
             }
             
             statement.execute(TableHash.CREATION_QUERY);
@@ -136,6 +140,9 @@ public class DatabaseConnection
             
             statement.execute(TableUsers.CREATION_QUERY);
 
+            statement.execute(TableSubtag.CREATION_QUERY);
+            statement.execute(TableNamespace.CREATION_QUERY);
+            statement.execute(TableTag.CREATION_QUERY);
         }
         catch (SQLException e)
         {
@@ -156,14 +163,12 @@ public class DatabaseConnection
         
         ImageMagickHelper.checkImageMagick();
 
-        FileProcessor.Hashes a = FileProcessor.getFileHashes(test);
-        int id = TableHash.insertHash(a.SHA256);
-        TableFile.insertFile(id, 11L, (byte)0, 0, 0, 0, true);
 
-        String b = "5d89ec9ee88a323cc0ccbb1e792bd0bca123347e036e9cd129177a7fce3e9fd9";
-        System.out.println(TableFile.getFile(a.SHA256));
-        System.out.println(TableFile.getFile(a.SHA256));
-        System.out.println(Arrays.toString(ByteHelper.bytesFromHex(b)));
+//        System.out.println( TableNamespace.insertOrSelectByNamespace("hello"));
+        System.out.println( TableTag.insertTag("hello:world"));
+        System.out.println( TableTag.insertTag("hello:dog"));
+        System.out.println( TableTag.insertTag("hello:cat"));
+        System.out.println( TableTag.insertTag("hello:person"));
     }
 }
 
