@@ -1,12 +1,16 @@
 package uwu.nyaa.owo.finalproject.data.db;
 
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
+import uwu.nyaa.owo.finalproject.data.models.FullTag;
+import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class TableTag
 {
@@ -63,4 +67,47 @@ public class TableTag
 
         return -1;
     }
+
+
+
+    public static List<FullTag> getTags(int limit)
+    {
+        LinkedList<FullTag> items = new LinkedList<>();
+
+        final String SQL = "SELECT tbl_tag.tag_id, tbl_tag.namespace_id, tbl_tag.subtag_id, tbl_namespace.namespace, tbl_subtag.subtag " +
+                "FROM tbl_tag " +
+                "JOIN tbl_namespace ON tbl_tag.namespace_id = tbl_namespace.namespace_id " +
+                "JOIN tbl_subtag ON tbl_tag.subtag_id = tbl_subtag.subtag_id " +
+                "LIMIT ?";
+
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+
+            pstmt.setInt(1, limit);
+            ResultSet rs = pstmt.executeQuery();
+
+            while(rs.next())
+            {
+                FullTag a = new FullTag();
+
+                a.tag_id = rs.getInt(1);
+                a.namespace_id = rs.getInt(2);
+                a.subtag_id = rs.getInt(3);
+                a.namespace = rs.getString(4);
+                a.subtag = rs.getString(5);
+
+                items.add(a);
+            }
+            return items;
+        }
+        catch (SQLException e)
+        {
+            WrappedLogger.warning("Error searching for files", e);
+        }
+
+        return items;
+    }
+
+
 }

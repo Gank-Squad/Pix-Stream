@@ -24,7 +24,7 @@ public class APIApplication extends Application
         
         PathHelper.createMediaDirectory();
         DatabaseConnection.createDatabase();
-        DatabaseConnection.createTables(true);
+        DatabaseConnection.createTables();
 
         ProcessStarter.setGlobalSearchPath(GlobalSettings.IMAGE_MAGICK_PATH);
         ImageMagickHelper.checkImageMagick();
