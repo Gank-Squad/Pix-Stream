@@ -23,7 +23,26 @@ public class ByteHelper
         }
         return new String(hexChars);
     }
-    
+
+    public static byte[] bytesFromHex(String s)
+    {
+        if(s == null || s.length() == 0 || s.length() % 2 != 0)
+        {
+            return new byte[0];
+        }
+
+        int len = s.length();
+
+        byte[] data = new byte[len / 2];
+
+        for (int i = 0; i < len; i += 2)
+        {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
+    }
+
     /**
      * checks if thatBytes starts with thisBytes
      * @param thisBytes the bytes to check if the otherbyte startswith

@@ -13,6 +13,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import uwu.nyaa.owo.finalproject.data.ByteHelper;
 import uwu.nyaa.owo.finalproject.data.PathHelper;
 import uwu.nyaa.owo.finalproject.data.db.TableFile;
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
@@ -25,7 +26,7 @@ public class APIFiles
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getFileMetadata(@QueryParam("limit") int limit) throws JsonProcessingException
+    public Response getBulkFileMetadata(@QueryParam("limit") int limit) throws JsonProcessingException
     {
         if(limit <= 0 || limit > 200)
         {
@@ -134,5 +135,29 @@ public class APIFiles
         }
 
         return Response.ok(f, "image/jpeg").build();
+    }
+
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{filehash}/info")
+    public Response getFileMetadata(@PathParam("filehash") String fileHash) throws JsonProcessingException
+    {
+        if (fileHash.length() != 64 || !fileHash.matches("^[a-fA-F0-9]+$"))
+        {
+            return Response.status(400, "Bad request, must be SHA256").build();
+        }
+
+        byte[] sha256 = ByteHelper.bytesFromHex(fileHash);
+        HashInfo items = TableFile.getFile(sha256);
+
+        if(items == null)
+        {
+            return Response.status(404, "Could not find metadata").build();
+        }
+
+        return Response.status(200)
+                .entity(this.jsonMapper.writeValueAsString(items))
+                .build();
     }
 }

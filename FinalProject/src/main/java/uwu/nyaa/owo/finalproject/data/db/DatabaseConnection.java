@@ -5,10 +5,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 
 import org.im4java.core.IM4JavaException;
 import org.im4java.process.ProcessStarter;
 
+import uwu.nyaa.owo.finalproject.data.ByteHelper;
+import uwu.nyaa.owo.finalproject.data.FileProcessor;
 import uwu.nyaa.owo.finalproject.data.ImageMagickHelper;
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 import uwu.nyaa.owo.finalproject.system.GlobalSettings;
@@ -147,17 +150,20 @@ public class DatabaseConnection
         GlobalSettings.updatePathsForLinux();
         ProcessStarter.setGlobalSearchPath(GlobalSettings.IMAGE_MAGICK_PATH);
         
-        String test = "/mnt/Data/0_IMAGE/SELF/AOL_35.png";
+        String test = "C:/bin/1.png";
         createDatabase();
         createTables();
         
         ImageMagickHelper.checkImageMagick();
-        
-        TableFile.addFakeFiles(10);
-        
-        TableFile.getFiles(10).forEach(x -> {
-            System.out.println(x);
-        });
+
+        FileProcessor.Hashes a = FileProcessor.getFileHashes(test);
+        int id = TableHash.insertHash(a.SHA256);
+        TableFile.insertFile(id, 11L, (byte)0, 0, 0, 0, true);
+
+        String b = "5d89ec9ee88a323cc0ccbb1e792bd0bca123347e036e9cd129177a7fce3e9fd9";
+        System.out.println(TableFile.getFile(a.SHA256));
+        System.out.println(TableFile.getFile(a.SHA256));
+        System.out.println(Arrays.toString(ByteHelper.bytesFromHex(b)));
     }
 }
 

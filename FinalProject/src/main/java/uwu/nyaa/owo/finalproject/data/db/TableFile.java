@@ -101,12 +101,52 @@ public class TableFile
         
         return items;
     }
-    
-    
-    
 
-    
-    
+
+
+
+    public static HashInfo getFile(byte[] hash)
+    {
+        final String SQL = "SELECT tbl_hash.hash_id, hash, mime, tbl_file.size, width, height, duration, has_audio FROM tbl_file JOIN tbl_hash ON tbl_file.hash_id = tbl_hash.hash_id WHERE tbl_hash.hash = ?";
+
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+
+            pstmt.setBytes(1, hash);
+            ResultSet rs = pstmt.executeQuery();
+
+            while(rs.next())
+            {
+                HashInfo a = new HashInfo();
+
+                a.hash_id = rs.getInt(1);
+                a.hash = rs.getBytes(2);
+                a.mime = rs.getInt(3);
+                a.fileSize = rs.getLong(4);
+                a.width = rs.getInt(5);
+                a.height = rs.getInt(6);
+                a.duration = rs.getInt(7);
+                a.has_audio = rs.getBoolean(8);
+
+                return a;
+            }
+
+            return null;
+        }
+        catch (SQLException e)
+        {
+            WrappedLogger.warning("Error searching for files", e);
+        }
+
+        return null;
+    }
+
+
+
+
+
+
     public static void addFakeFiles(int amount)
     {
         for(int i = 0; i < amount; i++)
