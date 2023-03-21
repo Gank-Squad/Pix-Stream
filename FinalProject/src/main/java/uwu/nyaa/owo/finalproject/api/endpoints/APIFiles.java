@@ -35,7 +35,7 @@ public class APIFiles
         
         WrappedLogger.info(Integer.toString(limit));
         
-        List<HashInfo> items = TableFile.getFiles(limit);
+        List<HashInfo> items = TableFile.getFiles(limit, true);
         
         return Response.status(200)
                 .entity(this.jsonMapper.writeValueAsString(items))
@@ -149,7 +149,7 @@ public class APIFiles
         }
 
         byte[] sha256 = ByteHelper.bytesFromHex(fileHash);
-        HashInfo items = TableFile.getFile(sha256);
+        HashInfo items = TableFile.getFile(sha256, true);
 
         if(items == null)
         {

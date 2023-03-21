@@ -10,12 +10,6 @@ public class FullTag
     public String subtag;
     public String namespace;
 
-    @JsonGetter
-    public String getTag()
-    {
-        return namespace + ":" + subtag;
-    }
-
     public String toString()
     {
         return String.format("<Tag: %d %s:%s>", tag_id, namespace, subtag);

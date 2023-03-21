@@ -64,7 +64,7 @@ public class TableFile
     
 
     
-    public static List<HashInfo> getFiles(int limit)
+    public static List<HashInfo> getFiles(int limit, boolean includeTags)
     {
         LinkedList<HashInfo> items = new LinkedList<>();
         
@@ -89,6 +89,11 @@ public class TableFile
                 a.height = rs.getInt(6);
                 a.duration = rs.getInt(7);
                 a.has_audio = rs.getBoolean(8);
+
+                if(includeTags)
+                {
+                    a.tags = TableHashTag.getTags(a.hash_id, c);
+                }
                 
                 items.add(a);
             }
@@ -105,7 +110,7 @@ public class TableFile
 
 
 
-    public static HashInfo getFile(byte[] hash)
+    public static HashInfo getFile(byte[] hash, boolean includeTags)
     {
         final String SQL = "SELECT tbl_hash.hash_id, hash, mime, tbl_file.size, width, height, duration, has_audio FROM tbl_file JOIN tbl_hash ON tbl_file.hash_id = tbl_hash.hash_id WHERE tbl_hash.hash = ?";
 
@@ -128,6 +133,11 @@ public class TableFile
                 a.height = rs.getInt(6);
                 a.duration = rs.getInt(7);
                 a.has_audio = rs.getBoolean(8);
+
+                if(includeTags)
+                {
+                    a.tags = TableHashTag.getTags(a.hash_id, c);
+                }
 
                 return a;
             }

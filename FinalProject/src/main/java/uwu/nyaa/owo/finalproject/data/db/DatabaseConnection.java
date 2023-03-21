@@ -123,6 +123,8 @@ public class DatabaseConnection
                 // NOTE: order matters!
                 // TableHash is a primary key for a bunch of foreign keys
                 // you must delete all foreign keys first before you can delete it
+                statement.execute(TableHashTag.DELETION_QUERY);
+
                 statement.execute(TableFile.DELETION_QUERY);
                 statement.execute(TableLocalHash.DELETION_QUERY);
                 statement.execute(TableHash.DELETION_QUERY);
@@ -143,6 +145,7 @@ public class DatabaseConnection
             statement.execute(TableSubtag.CREATION_QUERY);
             statement.execute(TableNamespace.CREATION_QUERY);
             statement.execute(TableTag.CREATION_QUERY);
+            statement.execute(TableHashTag.CREATION_QUERY);
         }
         catch (SQLException e)
         {
@@ -159,16 +162,24 @@ public class DatabaseConnection
         
         String test = "C:/bin/1.png";
         createDatabase();
-        createTables();
+        createTables(true);
         
         ImageMagickHelper.checkImageMagick();
 
-
-//        System.out.println( TableNamespace.insertOrSelectByNamespace("hello"));
+        TableFile.addFakeFiles(3);
         System.out.println( TableTag.insertTag("hello:world"));
         System.out.println( TableTag.insertTag("hello:dog"));
         System.out.println( TableTag.insertTag("hello:cat"));
         System.out.println( TableTag.insertTag("hello:person"));
+
+        TableHashTag.insertAssociation(1, 2);
+        TableHashTag.insertAssociation(1, 3);
+        TableHashTag.insertAssociation(1, 4);
+
+        TableHashTag.getTags(1).forEach(x ->
+        {
+            System.out.println(x);
+        });
     }
 }
 
