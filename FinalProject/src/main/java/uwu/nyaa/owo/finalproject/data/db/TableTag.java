@@ -1,5 +1,6 @@
 package uwu.nyaa.owo.finalproject.data.db;
 
+import uwu.nyaa.owo.finalproject.data.StringHelper;
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 import uwu.nyaa.owo.finalproject.data.models.FullTag;
 import uwu.nyaa.owo.finalproject.data.models.HashInfo;
@@ -25,31 +26,44 @@ public class TableTag
             + ");";
 
 
-    public static int insertTag(String fullTag)
+    /**
+     * Inserts the given tag and returns it's new id, returns -1 if error / exists
+     * @param fullTag The tag to insert
+     * @return The new tag id or -1
+     * @throws NullPointerException if fulltag or db connection is null
+     */
+    public static int insertTag(String fullTag) throws NullPointerException
     {
-        String[] split = fullTag.split(":", 2);
-        String namespace;
-        String subtag;
+        try (Connection c = DatabaseConnection.getConnection())
+        {
+            return insertTag(fullTag, c);
+        }
+        catch (SQLException e)
+        {
+            WrappedLogger.warning(String.format("Error inserting tag with value %s", fullTag), e);
+        }
 
-        if(split.length == 1)
-        {
-            namespace = "";
-            subtag = split[0].strip().toLowerCase();
-        }
-        else
-        {
-            namespace = split[0].strip().toLowerCase();
-            subtag = split[1].strip().toLowerCase();
-        }
+        return -1;
+    }
+
+    /**
+     * Inserts the given tag and returns it's new id, returns -1 if error / exists
+     * @param fullTag The tag to insert
+     * @param c The database connection
+     * @return The new tag id or -1
+     * @throws NullPointerException if fulltag or db connection is null
+     */
+    public static int insertTag(String fullTag, Connection c) throws SQLException, NullPointerException
+    {
+        String[] tag = StringHelper.partitionTag(fullTag);
+
+        int namespace_id = TableNamespace.insertOrSelectByNamespace(tag[0], c);
+        int subtag_id = TableSubtag.insertOrSelectBySubtag(tag[1], c);
 
         final String SQL = "INSERT INTO tbl_tag(namespace_id, subtag_id) VALUES (?, ?) RETURNING tag_id";
 
-        try (Connection c = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = c.prepareStatement(SQL))
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
         {
-            int namespace_id = TableNamespace.insertOrSelectByNamespace(namespace, c);
-            int subtag_id = TableSubtag.insertOrSelectBySubtag(subtag, c);
-
             pstmt.setInt(1, namespace_id);
             pstmt.setInt(2, subtag_id);
 
@@ -60,16 +74,75 @@ public class TableTag
                 return rs.getInt(1);
             }
         }
+
+        return -1;
+    }
+
+
+    /**
+     * gets the id for the given tag or -1
+     * @param fulltag The tag to search
+     * @return The tag id or -1
+     * @throws NullPointerException if the tag is null
+     */
+    public static int getTagID(String fulltag) throws NullPointerException
+    {
+        try (Connection c = DatabaseConnection.getConnection())
+        {
+            return getTagID(fulltag, c);
+        }
         catch (SQLException e)
         {
-            WrappedLogger.warning(String.format("Error inserting tag with value %s", fullTag), e);
+            WrappedLogger.warning(String.format("SQL Exception getting tag id for %s", fulltag), e);
+        }
+
+        return -1;
+    }
+
+    /**
+     * Gets the tag id of the given tag or -1
+     * @param fulltag The tag to search
+     * @param c The database connection
+     * @return The tag id or -1
+     * @throws SQLException
+     * @throws NullPointerException If the tag or db connection is null
+     */
+    public static int getTagID(String fulltag, Connection c) throws SQLException, NullPointerException
+    {
+        // TODO: make this use 1 query instead of 3
+
+        String[] tag = StringHelper.partitionTag(fulltag);
+
+        int namespaceID = TableNamespace.getNamespaceID(tag[0], c);
+        int subtagID = TableSubtag.getSubtagID(tag[1], c);
+
+        if(namespaceID == -1 || subtagID == -1)
+            return -1;
+
+        final String SQL = "SELECT tag_id FROM tbl_tag WHERE namespace_id = ? AND subtag_id = ?";
+
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+            pstmt.setInt(1, namespaceID);
+            pstmt.setInt(2, subtagID);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next())
+            {
+                return rs.getInt(1);
+            }
         }
 
         return -1;
     }
 
 
-
+    /**
+     * Gets as many tags as the limit allows
+     * @param limit The number of tags to get
+     * @return A list of tags or en empty list
+     */
     public static List<FullTag> getTags(int limit)
     {
         LinkedList<FullTag> items = new LinkedList<>();
@@ -108,6 +181,4 @@ public class TableTag
 
         return items;
     }
-
-
 }

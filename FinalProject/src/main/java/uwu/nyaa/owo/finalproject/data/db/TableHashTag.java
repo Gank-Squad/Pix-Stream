@@ -2,6 +2,7 @@ package uwu.nyaa.owo.finalproject.data.db;
 
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 import uwu.nyaa.owo.finalproject.data.models.FullTag;
+import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -62,6 +63,60 @@ public class TableHashTag
 
         return items;
     }
+
+
+    public static List<HashInfo> getFiles(int tag_id, int limit, boolean includeTags)
+    {
+        try(Connection c = DatabaseConnection.getConnection())
+        {
+            return getFiles(tag_id, limit, includeTags, c);
+        }
+        catch (SQLException e)
+        {
+            WrappedLogger.warning("Exception while getting tags", e);
+        }
+        return new LinkedList<>();
+    }
+
+    public static List<HashInfo> getFiles(int tag_id, int limit, boolean includeTags, Connection c) throws SQLException
+    {
+        final String SQL = "SELECT tbl_hash.hash_id, tbl_hash.hash, tbl_file.mime, tbl_file.size, tbl_file.width, tbl_file.height, tbl_file.duration, tbl_file.has_audio FROM tbl_hash_tag JOIN tbl_file ON tbl_hash_tag.hash_id = tbl_file.hash_id JOIN tbl_hash ON tbl_hash_tag.hash_id = tbl_hash.hash_id WHERE tbl_hash_tag.tag_id = ? LIMIT ?";
+
+        LinkedList<HashInfo> items = new LinkedList<>();
+
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+            pstmt.setInt(1, tag_id);
+            pstmt.setInt(2, limit);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while(rs.next())
+            {
+                HashInfo a = new HashInfo();
+
+                a.hash_id = rs.getInt(1);
+                a.hash = rs.getBytes(2);
+                a.mime = rs.getInt(3);
+                a.fileSize = rs.getLong(4);
+                a.width = rs.getInt(5);
+                a.height = rs.getInt(6);
+                a.duration = rs.getInt(7);
+                a.has_audio = rs.getBoolean(8);
+
+                if(includeTags)
+                {
+                    a.tags = TableHashTag.getTags(a.hash_id, c);
+                }
+
+                items.add(a);
+            }
+        }
+
+        return items;
+    }
+
+
     public static void insertAssociation(int hash_id, int tag_id)
     {
         final String SQL = "INSERT INTO tbl_hash_tag(hash_id, tag_id) VALUES (?, ?)";

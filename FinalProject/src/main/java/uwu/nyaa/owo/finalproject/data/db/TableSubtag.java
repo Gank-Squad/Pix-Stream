@@ -34,10 +34,63 @@ public class TableSubtag
 
     public static int insertOrSelectBySubtag(String subtag, Connection c) throws SQLException
     {
-        final String SQL1 = "SELECT subtag_id FROM tbl_subtag WHERE subtag = ?";
-        final String SQL2 = "INSERT INTO tbl_subtag(subtag) VALUES (?) RETURNING subtag_id";
+        int subtagId = getSubtagID(subtag, c);
 
-        try (PreparedStatement pstmt = c.prepareStatement(SQL1))
+        if(subtagId != -1)
+            return subtagId;
+
+        final String SQL = "INSERT INTO tbl_subtag(subtag) VALUES (?) RETURNING subtag_id";
+
+        try(PreparedStatement pstmt2 = c.prepareStatement(SQL))
+        {
+            pstmt2.setString(1, subtag.strip().toLowerCase());
+
+            ResultSet rs = pstmt2.executeQuery();
+
+            if(rs.next())
+            {
+                return rs.getInt(1);
+            }
+        }
+
+        return 1;
+    }
+
+
+
+    /**
+     * Gets the id for the given subtag or -1
+     * @param subtag The subtag to get the id
+     * @return The id of the subtag or -1 if errors
+     * @throws NullPointerException If the subtag or connection are null
+     */
+    public static int getSubtagID(String subtag) throws NullPointerException
+    {
+        try (Connection c = DatabaseConnection.getConnection())
+        {
+            return getSubtagID(subtag, c);
+        }
+        catch (SQLException e)
+        {
+            WrappedLogger.warning(String.format("SQL Exception searching for subtag: %s", subtag), e);
+        }
+
+        return -1;
+    }
+
+    /**
+     * Gets the id for the given subtag or -1
+     * @param subtag The subtag to search
+     * @param c The database connection
+     * @return The subtag id or -1 for error / not found
+     * @throws SQLException
+     * @throws NullPointerException If the subtag or connection are null
+     */
+    public static int getSubtagID(String subtag, Connection c) throws SQLException, NullPointerException
+    {
+        final String SQL = "SELECT subtag_id FROM tbl_subtag WHERE tbl_subtag.subtag = ?";
+
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
         {
             pstmt.setString(1, subtag.strip().toLowerCase());
 
@@ -47,20 +100,8 @@ public class TableSubtag
             {
                 return rs.getInt(1);
             }
-
-            try(PreparedStatement pstmt2 = c.prepareStatement(SQL2))
-            {
-                pstmt2.setString(1, subtag.strip().toLowerCase());
-
-                rs = pstmt2.executeQuery();
-
-                if(rs.next())
-                {
-                    return rs.getInt(1);
-                }
-            }
         }
 
-        return 1;
+        return -1;
     }
 }
