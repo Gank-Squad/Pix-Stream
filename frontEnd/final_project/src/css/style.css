@@ -1,0 +1,257 @@
+/* ---------------------------------------------body and html stying--------------------------------------------- */
+html, body{
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    box-sizing:border-box;
+    background-image: url('../wallPaper3.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow-y: auto;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgb(78, 20, 14);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(35, 8, 5);
+}
+
+
+/* ---------------------------------------------CSS for navbar--------------------------------------------- */
+#navbar-background {
+    position: fixed;
+    top: 0;
+    left: -350px;
+    width: 350px;
+    height: 100vh;
+    background-color: rgba(37, 132, 127, 0.167);
+    backdrop-filter: blur(15px);
+    transition: left ease;
+    overflow-y: auto;
+}
+#navbar-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+.navbar-spacer{
+    width: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+/* ---------------------------------------------tag box--------------------------------------------- */
+.tagbox-container{
+    display: flex;
+    flex-grow: 0;
+    flex-direction: column;
+    justify-content: start;
+    height: 280px;
+    width: 100%;
+    background-color: rgb(0, 0, 0);
+    opacity: 0.9;
+    /* border: black 3px solid; */
+    overflow-y: auto;
+    overflow-x: auto;
+}
+.tagbox-header {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    flex-grow: 0;
+    height: 30px;
+    border-bottom: rgb(135, 135, 135) 1px solid;
+    background-color: rgb(0, 0, 0);
+    top: 0px;
+    left: 0px;
+    position: sticky;
+    margin-bottom: 5px;
+}
+header > label {
+    font-size: medium;;
+    font-weight: 900;
+    text-transform: uppercase;
+    width: 100px;
+    font-weight:800;
+    color: rgb(160, 160, 160);
+    flex-grow: 1;
+    padding: 15px;
+}
+#search-btn{
+    height: 100%;
+    background-color:rgb(135, 135, 135);
+    font-size: medium;
+}
+#search-btn:hover{
+    cursor: pointer;
+    background-color: rgb(55, 55, 55);
+}
+#clearbtn{
+    height: 100%;
+    background-color:rgb(135, 135, 135);
+    font-size: medium;
+}
+#clearbtn:hover{
+    cursor: pointer;
+    background-color: rgb(55, 55, 55);
+}
+
+.tag{
+    display: flex;
+    align-items: center;
+    height: 20px;
+    color: rgb(160, 160, 160);
+    font-weight:600;
+    font-size: small;
+    padding-left: 15px;
+    cursor: default;
+    margin-bottom: 5px;
+}
+.tag i {
+    font-size: medium;
+    color: rgb(112, 29, 20);
+    margin-right: 5px;
+}
+.tag button{
+    font-size: medium;
+    color: rgb(136, 136, 136);
+    background-color: rgb(14, 63, 63);
+    cursor: pointer;
+    margin-right: 10px;
+}
+.tag:hover{
+    background-color: rgba(36, 36, 36, 0.451);
+}
+/* .tag:hover i {
+    color: rgb(19, 19, 19);
+} */
+.tag:hover button{
+    background-color: rgb(19, 19, 19);
+}
+
+/* ---------------------------------------------Search Box--------------------------------------------- */
+#search-box{
+    display: flex;
+    flex-grow: 0;
+    width: 100%;
+    height: 25px;
+    /* border-left: 3px solid black;
+    border-right: 3px solid black; */
+}
+#tag-search{
+    padding: 0;
+    flex-grow: 1;
+    font-size: larger;
+    padding-left: 15px;
+}
+/* ---------------------------------------------css for toggle button--------------------------------------------- */
+#navbar-toggle {
+    position: absolute;
+    z-index: 800;
+    top: 8px;
+    left: 10px;
+    height: 35px;
+    width: 35px;
+    cursor: pointer;
+    opacity: 0;
+}
+#navbar-toggle:hover {
+    background-color : rgba(135, 135, 135, 0.508);
+    opacity: 0.35;
+}
+#toggle-burger {
+    position: absolute;
+    z-index: 799;
+    top: 11px;
+    left: 13px;
+    color: rgb(196, 196, 196);
+    transition: all ease;
+}
+#toggle-x {
+    position: absolute;
+    z-index: 799;
+    top: 10px;
+    left: 17px;
+    color: rgb(196, 196, 196);
+    opacity: 0;
+    transition: left 0.2s ease;
+}
+/* ---------------------------------------------CSS for about/homepage--------------------------------------------- */
+.link{
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    border: 1px solid black;
+    height: 30px;
+    column-gap: 15px;
+    font-weight: 900;
+    font-size: larger;
+    color: rgb(196, 196, 196);
+    margin-bottom:50px;
+    margin-top: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.link a{
+    text-decoration: none;
+    color: inherit;
+}
+.link a i{
+    margin-right: 10px;
+}
+.link:hover{
+    background-color: rgba(135, 135, 135, 0.508);
+    color: rgb(0, 0, 0);
+}
+
+/* ---------------------------------------------CSS for content--------------------------------------------- */
+#content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    min-height: 100vh;
+    overflow-y: auto;
+}
+#title-Box{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100px;
+    background-color: rgba(132, 64, 37, 0.296);
+    transition: all 0.2s ease;
+}
+#title-Box > h1{
+    margin: 0;
+    padding: 0;
+    padding-left: 10px;
+    font-weight: 500;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 3rem;
+    color: rgb(169, 169, 169);
+    flex-shrink: 0;
+}
