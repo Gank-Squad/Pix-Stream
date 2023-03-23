@@ -5,10 +5,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 
 import org.im4java.core.IM4JavaException;
 import org.im4java.process.ProcessStarter;
 
+import uwu.nyaa.owo.finalproject.data.ByteHelper;
+import uwu.nyaa.owo.finalproject.data.FileProcessor;
 import uwu.nyaa.owo.finalproject.data.ImageMagickHelper;
 import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 import uwu.nyaa.owo.finalproject.system.GlobalSettings;
@@ -120,11 +123,17 @@ public class DatabaseConnection
                 // NOTE: order matters!
                 // TableHash is a primary key for a bunch of foreign keys
                 // you must delete all foreign keys first before you can delete it
+                statement.execute(TableHashTag.DELETION_QUERY);
+
                 statement.execute(TableFile.DELETION_QUERY);
                 statement.execute(TableLocalHash.DELETION_QUERY);
                 statement.execute(TableHash.DELETION_QUERY);
                 
                 statement.execute(TableUsers.DELETION_QUERY);
+
+                statement.execute(TableTag.DELETION_QUERY);
+                statement.execute(TableSubtag.DELETION_QUERY);
+                statement.execute(TableNamespace.DELETION_QUERY);
             }
             
             statement.execute(TableHash.CREATION_QUERY);
@@ -133,6 +142,10 @@ public class DatabaseConnection
             
             statement.execute(TableUsers.CREATION_QUERY);
 
+            statement.execute(TableSubtag.CREATION_QUERY);
+            statement.execute(TableNamespace.CREATION_QUERY);
+            statement.execute(TableTag.CREATION_QUERY);
+            statement.execute(TableHashTag.CREATION_QUERY);
         }
         catch (SQLException e)
         {
@@ -147,15 +160,24 @@ public class DatabaseConnection
         GlobalSettings.updatePathsForLinux();
         ProcessStarter.setGlobalSearchPath(GlobalSettings.IMAGE_MAGICK_PATH);
         
-        String test = "/mnt/Data/0_IMAGE/SELF/AOL_35.png";
+        String test = "C:/bin/1.png";
         createDatabase();
-        createTables();
+        createTables(true);
         
         ImageMagickHelper.checkImageMagick();
-        
-        TableFile.addFakeFiles(10);
-        
-        TableFile.getFiles(10).forEach(x -> {
+
+        TableFile.addFakeFiles(3);
+        System.out.println( TableTag.insertTag("hello:world"));
+        System.out.println( TableTag.insertTag("hello:dog"));
+        System.out.println( TableTag.insertTag("hello:cat"));
+        System.out.println( TableTag.insertTag("hello:person"));
+
+        TableHashTag.insertAssociation(1, 2);
+        TableHashTag.insertAssociation(1, 3);
+        TableHashTag.insertAssociation(1, 4);
+
+        TableHashTag.getTags(1).forEach(x ->
+        {
             System.out.println(x);
         });
     }

@@ -8,9 +8,9 @@ public class GlobalSettings
 {
     public static boolean IS_DEBUG = true;
     
-    public static String IMAGE_MAGICK_PATH = "F:/Programs/ImageMagick"; //""C:/bin/imageMagick";
-    public static String FFMPEG_PATH = "F:/Programs/FFMPEG/ffmpeg-2023-03-05/bin/ffmpeg";//"C:/bin/ffmpeg/ffmpeg.exe";
-    public static String FFPROBE_PATH = "F:/Programs/FFMPEG/ffmpeg-2023-03-05/bin/ffprobe"; //"C:/bin/ffmpeg/ffprobe.exe";
+    public static String IMAGE_MAGICK_PATH = "C:/bin/imageMagick"; // "F:/Programs/ImageMagick";
+    public static String FFMPEG_PATH = "C:/bin/ffmpeg/ffmpeg.exe";//"F:/Programs/FFMPEG/ffmpeg-2023-03-05/bin/ffmpeg";
+    public static String FFPROBE_PATH = "C:/bin/ffmpeg/ffprobe.exe";//"F:/Programs/FFMPEG/ffmpeg-2023-03-05/bin/ffprobe";
     
     public static final Path LOG_FILE_DIRECTORY = Paths.get(".", "logs");
     

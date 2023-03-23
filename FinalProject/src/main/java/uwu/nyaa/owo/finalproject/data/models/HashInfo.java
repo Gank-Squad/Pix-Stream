@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import uwu.nyaa.owo.finalproject.data.ByteHelper;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
 
+import java.util.List;
 
 
 public class HashInfo
@@ -34,7 +35,8 @@ public class HashInfo
     
     @JsonProperty("has_audio")
     public boolean has_audio;
-    
+
+    public List<FullTag> tags;
     private String hash_string = null;
     
     @JsonGetter
