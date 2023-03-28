@@ -4,7 +4,7 @@ import React from "react";
 export default function VideoPlayer(props) 
 {
     const [search, setSearch] = React.useState([]);
-    const [tags, setTags] = React.useState(null);
+    const [tags, setTags] = React.useState({});
     const [tagDisplay, setTagDisplay] = React.useState(null);
 
     const TAGS_API = "http://192.168.1.148:8080/FinalProject-1.0-SNAPSHOT/api/tags";
@@ -47,11 +47,11 @@ export default function VideoPlayer(props)
         });
     }
 
-    function updateSearch(tag_id)
+    function updateSearch(tag_id, tag)
     {
         console.log("updating search with tag id: " + tag_id + " (not really this function does nothing you need to finish it)");
 
-        setSearch([...search, tag_id]);
+        setSearch(prevItems => [...prevItems, tag_id]);
 
         console.log(search);
     }
@@ -82,7 +82,9 @@ export default function VideoPlayer(props)
         }
         else {
             selectedTagBox.current.querySelector('tbody').appendChild(trContext);
-            updateSearch(tag_id);
+
+            // idk why this doesn't work all the time
+            updateSearch(tag_id, tags[tag_id]);
         }
     }
 
@@ -91,12 +93,16 @@ export default function VideoPlayer(props)
         fetch(TAGS_API, { 'method': 'get' })
             .then(response => response.json())
             .then(json => {
-                setTags(json);
+
+                let mappedTags = {};
 
                 console.log(json);
 
                 let tagDisp = [];
-                for (let tag of json) {
+                for (let tag of json) 
+                {
+                    mappedTags[tag.tag_id] = tag; 
+
                     tagDisp.push(
                         <tr key={tag.tag_id} data-key={tag.tag_id}>
                             <td>
@@ -112,6 +118,8 @@ export default function VideoPlayer(props)
                     );
                 }
 
+                setTags(mappedTags);
+
                 setTagDisplay(tagDisp);
             })
             .catch(e => console.log(e));
@@ -124,7 +132,7 @@ export default function VideoPlayer(props)
 
         <div id="navbar-background" >
 
-            {search.join(", ")}
+            {search}
 
             <div id="navbar-content">
 
