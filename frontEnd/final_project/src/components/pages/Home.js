@@ -1,5 +1,7 @@
 import React from 'react';
 
+import TagSidebar from '../elements/TagSidebar';
+
 export default function Default(props)
 {
     const { cookies } = props;
@@ -18,6 +20,8 @@ export default function Default(props)
         <div>
 
             Hello world, you are on home page {(page).toString()}
+
+            <TagSidebar></TagSidebar>
 
         </div>
     )
