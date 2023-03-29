@@ -7,8 +7,9 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.tinylog.Logger;
+
 import uwu.nyaa.owo.finalproject.data.FileProcessor.ImmutableMessageDigest;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 
 public class TableFile
@@ -56,7 +57,7 @@ public class TableFile
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning(String.format("Error inserting file information with ID %d", hashID), e);
+            Logger.warn(e, String.format("Error inserting file information with ID %d", hashID));
         }
         
         return false;
@@ -101,7 +102,7 @@ public class TableFile
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning("Error searching for files", e);
+            Logger.warn(e, "Error searching for files");
         }
         
         return items;
@@ -146,7 +147,7 @@ public class TableFile
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning("Error searching for files", e);
+            Logger.warn(e, "Error searching for files");
         }
 
         return null;

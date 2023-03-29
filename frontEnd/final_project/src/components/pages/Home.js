@@ -1,6 +1,7 @@
 import React from 'react';
 
 import TagSidebar from '../elements/TagSidebar';
+import ImageContainer from '../elements/Image';
 
 export default function Default(props)
 {
@@ -16,12 +17,27 @@ export default function Default(props)
         console.log(`Cookies from props: ${cookies}`);
     }, [cookies, page]);
 
+    function searchCallback(searchItems)
+    {
+        searchItems.forEach(element => 
+        {
+            console.log("from parent: " + JSON.stringify(element));
+        });
+    }
+
+
+    const tagSidebarProps = {
+        "searchCallback" : searchCallback
+    }
+
     return (
         <div>
 
             Hello world, you are on home page {(page).toString()}
 
-            <TagSidebar></TagSidebar>
+            <TagSidebar {...tagSidebarProps}></TagSidebar>
+
+            <ImageContainer imgError={e => console.log("image errr")}></ImageContainer>
 
         </div>
     )

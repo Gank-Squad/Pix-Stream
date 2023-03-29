@@ -1,15 +1,16 @@
 package uwu.nyaa.owo.finalproject.data.db;
 
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
-import uwu.nyaa.owo.finalproject.data.models.FullTag;
-import uwu.nyaa.owo.finalproject.data.models.HashInfo;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.tinylog.Logger;
+
+import uwu.nyaa.owo.finalproject.data.models.FullTag;
+import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 
 public class TableHashTag
 {
@@ -31,7 +32,7 @@ public class TableHashTag
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning("Exception while getting tags", e);
+            Logger.warn(e, "Exception while getting tags");
         }
         return new LinkedList<>();
     }
@@ -73,7 +74,7 @@ public class TableHashTag
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning("Exception while getting tags", e);
+            Logger.warn(e, "Exception while getting tags");
         }
         return new LinkedList<>();
     }
@@ -130,7 +131,7 @@ public class TableHashTag
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning("Error adding hash-tag association", e);
+            Logger.warn(e, "Error adding hash-tag association");
         }
     }
 }

@@ -1,17 +1,16 @@
 package uwu.nyaa.owo.finalproject.data.db;
 
-import uwu.nyaa.owo.finalproject.data.StringHelper;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
-import uwu.nyaa.owo.finalproject.data.models.FullTag;
-import uwu.nyaa.owo.finalproject.data.models.HashInfo;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.tinylog.Logger;
+
+import uwu.nyaa.owo.finalproject.data.StringHelper;
+import uwu.nyaa.owo.finalproject.data.models.FullTag;
 
 public class TableTag
 {
@@ -40,7 +39,7 @@ public class TableTag
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning(String.format("Error inserting tag with value %s", fullTag), e);
+            Logger.warn(e, String.format("Error inserting tag with value %s", fullTag));
         }
 
         return -1;
@@ -93,7 +92,7 @@ public class TableTag
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning(String.format("SQL Exception getting tag id for %s", fulltag), e);
+            Logger.warn(e, String.format("SQL Exception getting tag id for %s", fulltag));
         }
 
         return -1;
@@ -176,7 +175,7 @@ public class TableTag
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning("Error searching for files", e);
+            Logger.warn(e, "Error searching for files");
         }
 
         return items;

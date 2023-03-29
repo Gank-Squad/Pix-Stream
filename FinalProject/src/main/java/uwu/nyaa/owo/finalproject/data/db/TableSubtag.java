@@ -1,12 +1,11 @@
 package uwu.nyaa.owo.finalproject.data.db;
 
-import uwu.nyaa.owo.finalproject.data.ByteHelper;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.tinylog.Logger;
 
 public class TableSubtag
 {
@@ -26,7 +25,7 @@ public class TableSubtag
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning(String.format("Could not insertOrSelectBySubtag for value %s", subtag), e);
+            Logger.warn(e,String.format("Could not insertOrSelectBySubtag for value %s", subtag));
         }
 
         return -1;
@@ -72,7 +71,7 @@ public class TableSubtag
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning(String.format("SQL Exception searching for subtag: %s", subtag), e);
+            Logger.warn(e,String.format("SQL Exception searching for subtag: %s", subtag));
         }
 
         return -1;

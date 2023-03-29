@@ -1,11 +1,11 @@
 package uwu.nyaa.owo.finalproject.data.db;
 
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.tinylog.Logger;
 
 public class TableNamespace
 {
@@ -31,7 +31,7 @@ public class TableNamespace
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning(String.format("Could not insertOrSelectBySubtag for value %s", namespace), e);
+            Logger.warn(e, String.format("Could not insertOrSelectBySubtag for value %s", namespace));
         }
 
         return -1;
@@ -84,7 +84,7 @@ public class TableNamespace
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning(String.format("SQL Exception searching for namespace: %s", namespace), e);
+            Logger.warn(e,String.format("SQL Exception searching for namespace: %s", namespace));
         }
 
         return -1;

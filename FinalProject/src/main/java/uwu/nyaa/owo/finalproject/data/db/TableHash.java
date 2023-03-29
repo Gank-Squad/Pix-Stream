@@ -6,8 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.tinylog.Logger;
+
 import uwu.nyaa.owo.finalproject.data.ByteHelper;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
 public class TableHash
 {
@@ -42,7 +43,7 @@ public class TableHash
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning(String.format("Error inserting hash %s", ByteHelper.bytesToHex(sha256Hash)), e);    
+            Logger.warn(e, String.format("Error inserting hash %s", ByteHelper.bytesToHex(sha256Hash)));    
         }
         
         return -1;
@@ -73,7 +74,7 @@ public class TableHash
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning(String.format("Error while searching for %s", ByteHelper.bytesToHex(sha256Hash)), e);
+            Logger.warn(e, String.format("Error while searching for %s", ByteHelper.bytesToHex(sha256Hash)));
         }
         
         return -1;

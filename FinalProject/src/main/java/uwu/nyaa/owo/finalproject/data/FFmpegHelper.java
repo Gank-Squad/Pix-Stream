@@ -1,9 +1,9 @@
 package uwu.nyaa.owo.finalproject.data;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
+
+import org.tinylog.Logger;
 
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
@@ -12,7 +12,6 @@ import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
 import net.bramp.ffmpeg.progress.Progress;
 import net.bramp.ffmpeg.progress.ProgressListener;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 
 public class FFmpegHelper
@@ -68,7 +67,7 @@ public class FFmpegHelper
             double percentage = progress.out_time_ns / duration_ns;
 
             // Print out interesting information about the progress
-            WrappedLogger.log(Level.INFO,
+            Logger.info(
                     String.format("[%.0f%%] status:%s frame:%d time:%s ms fps:%.0f speed:%.2fx", percentage * 100,
                             progress.status, progress.frame,
                             FFmpegUtils.toTimecode(progress.out_time_ns, TimeUnit.NANOSECONDS),

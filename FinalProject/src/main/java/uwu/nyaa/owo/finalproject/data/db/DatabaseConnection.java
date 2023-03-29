@@ -5,15 +5,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
 
 import org.im4java.core.IM4JavaException;
 import org.im4java.process.ProcessStarter;
+import org.tinylog.Logger;
 
-import uwu.nyaa.owo.finalproject.data.ByteHelper;
-import uwu.nyaa.owo.finalproject.data.FileProcessor;
 import uwu.nyaa.owo.finalproject.data.ImageMagickHelper;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 
 public class DatabaseConnection
@@ -76,7 +73,7 @@ public class DatabaseConnection
                 return;
             }
 
-            WrappedLogger.warning("Error while creating a new database", e);
+            Logger.warn(e, "Error while creating a new database");
         }
     }
     
@@ -98,7 +95,7 @@ public class DatabaseConnection
                 return;
             }
 
-            WrappedLogger.warning("Error while creating a new database", e);
+            Logger.warn(e, "Error while creating a new database");
         }
     }
     
@@ -149,7 +146,7 @@ public class DatabaseConnection
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning("Error while creating database tables", e);
+            Logger.warn(e, "Error while creating database tables");
         }
     }
     

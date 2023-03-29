@@ -3,6 +3,8 @@ package uwu.nyaa.owo.finalproject.api.endpoints;
 import java.io.File;
 import java.util.List;
 
+import org.tinylog.Logger;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -16,7 +18,6 @@ import jakarta.ws.rs.core.Response;
 import uwu.nyaa.owo.finalproject.data.ByteHelper;
 import uwu.nyaa.owo.finalproject.data.PathHelper;
 import uwu.nyaa.owo.finalproject.data.db.TableFile;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 
 @Path("/files")
@@ -33,7 +34,7 @@ public class APIFiles
             limit = 200;
         }
         
-        WrappedLogger.info(Integer.toString(limit));
+        Logger.info(Integer.toString(limit));
         
         List<HashInfo> items = TableFile.getFiles(limit, true);
         
@@ -53,12 +54,12 @@ public class APIFiles
             return Response.status(400, "Bad request, must be SHA256").build();
         }
 
-        WrappedLogger.info(String.format("Request for file with hash: %s", filehash));
+        Logger.info("Request for file with hash: {}", filehash);
 
         String mediaPath = PathHelper.getMediaPath(filehash);
         File f = new File(mediaPath);
 
-        WrappedLogger.info(String.format("Found media path: %s", f.getAbsolutePath()));
+        Logger.info("Found media path: {}", f.getAbsolutePath());
 
         if (f.isFile())
         {
@@ -97,12 +98,12 @@ public class APIFiles
             return Response.status(400, "Bad request, video fragment should be in the form 0000.ts").build();
         }
 
-        WrappedLogger.info(String.format("Request for file with hash: %s", filehash));
+        Logger.info("Request for file with hash: {}", filehash);
 
         String mediaPath = PathHelper.getMediaPath(filehash);
         File f = new File(mediaPath, video);
 
-        WrappedLogger.info(String.format("Found media path: %s", f.getAbsolutePath()));
+        Logger.info("Found media path: {}", f.getAbsolutePath());
 
         if (!f.isFile())
         {
@@ -122,12 +123,12 @@ public class APIFiles
             return Response.status(400, "Bad request, must be SHA256").build();
         }
 
-        WrappedLogger.info(String.format("Request for file with hash: %s", filehash));
+        Logger.info("Request for file with hash: {}", filehash);
 
         String mediaPath = PathHelper.getThmbnailPath(filehash);
         File f = new File(mediaPath);
 
-        WrappedLogger.info(String.format("Found media path: %s", f.getAbsolutePath()));
+        Logger.info("Found media path: {}", f.getAbsolutePath());
 
         if (!f.isFile())
         {

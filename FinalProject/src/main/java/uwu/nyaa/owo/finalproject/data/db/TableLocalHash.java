@@ -4,8 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import uwu.nyaa.owo.finalproject.data.ByteHelper;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
+import org.tinylog.Logger;
 
 public class TableLocalHash
 {
@@ -43,7 +42,7 @@ public class TableLocalHash
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning(String.format("Error inserting hashes with ID %d", hashID), e);
+            Logger.warn(e, String.format("Error inserting hashes with ID %d", hashID));
         }
         
         return false;

@@ -6,16 +6,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import org.tinylog.Logger;
 
 import jakarta.servlet.http.HttpServletRequest;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
 public class MultiPartFormDataParser
 {
@@ -119,7 +118,7 @@ public class MultiPartFormDataParser
         
         if (bytes.length != 0) 
         {
-            WrappedLogger.warning(String.format("Multipart form-data message should start with boundary, but begins with bytes: %s", ByteHelper.bytesToHex(bytes)));
+            Logger.warn(String.format("Multipart form-data message should start with boundary, but begins with bytes: %s", ByteHelper.bytesToHex(bytes)));
         }
         return partInputStream;
     }

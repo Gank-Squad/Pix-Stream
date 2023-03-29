@@ -1,7 +1,11 @@
 
 import React from "react";
 
-export default function TagSidebar(props) {
+export default function TagSidebar(props) 
+{
+    const { searchCallback } = props;
+
+
     // basically global variables / instance variables 
     const [search, setSearch] = React.useState([]);
     const [tags, setTags] = React.useState(null);
@@ -65,46 +69,63 @@ export default function TagSidebar(props) {
         });
     }
 
-    function updateSearch(tag) {
-        console.log("updating search with tag id: " + JSON.stringify(tag) + " (not really this function does nothing you need to finish it)");
+    function updateSearch() 
+    {
+        const contextTags = selectedTagBox.current.querySelectorAll('tr');
 
-        setSearch(prevItems => [...prevItems, tag]);
+        let s = [];
+        contextTags.forEach(element => 
+        {
+            const i = element.getAttribute("index");
+
+            if(i)
+            {
+                s.push(tags[i]);
+            }
+        });
+
+        setSearch(prevItems => s);
+
+        if(searchCallback)
+        {
+            searchCallback(s);
+        }
     }
 
     function searchValueKeyDown(e) {
         filterTags(tagSearch.current.value);
     }
 
-    function clearButtonPressed(e) {
-        clearSelected();
-    }
-
     function searchButtonPressed(e) {
         filterTags(tagSearch.current.value);
+    }
+
+    function clearButtonPressed(e) {
+        clearSelected();
+        updateSearch();
     }
 
     function tagButtonPressed(e, tag) {
         if (!e || !e.target)
             return;
 
-        const trSelected = selectedTagBox.current.querySelector(`tr[data-key="${tag.tag_id}"]`);
-        const trContext = contextTagBox.current.querySelector(`tr[data-key="${tag.tag_id}"]`);
+        const trSelected = selectedTagBox.current.querySelector(`tr[tag-id="${tag.tag_id}"]`);
+        const trContext = contextTagBox.current.querySelector(`tr[tag-id="${tag.tag_id}"]`);
 
         if (trSelected) {
             contextTagBox.current.querySelector('tbody').appendChild(trSelected);
         }
         else {
             selectedTagBox.current.querySelector('tbody').appendChild(trContext);
-            updateSearch(tag);
         }
+
+        updateSearch();
     }
 
 
     return (
 
         <div id="navbar-background" >
-
-            {search.map((x) => JSON.stringify(x))}
 
             <div id="navbar-content">
 
@@ -142,12 +163,13 @@ export default function TagSidebar(props) {
                         <tbody>
 
 
-                            {tags.map(tag => {
-                                return <tr key={tag.tag_id} data-key={tag.tag_id}>
+                            {
+                            tags.map((tag, index) => {
+                                return <tr key={index} index={index} tag-id={tag.tag_id}>
                                     <td>
                                         <div className="tag">
                                             <i className="fa fa-tag"></i>
-                                            <button data-key={tag.tag_id} onClick={(e) => tagButtonPressed(e, tag)} className="fa fa-plus">+</button>
+                                            <button onClick={(e) => tagButtonPressed(e, tag)} className="fa fa-plus">+</button>
                                             <label >
                                                 {tag.namespace + ":" + tag.subtag}
                                             </label>
