@@ -30,7 +30,7 @@ public class APITags
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTags(@QueryParam("limit") int limit) throws JsonProcessingException
+    public Response getTags(@QueryParam("limit") int limit) 
     {
         if (limit <= 0 || limit > 200)
         {
@@ -41,15 +41,44 @@ public class APITags
 
         List<FullTag> items = TableTag.getTags(limit);
 
-        return Response.status(200).entity(this.jsonMapper.writeValueAsString(items)).build();
+        try {
+            return Response.status(200).entity(this.jsonMapper.writeValueAsString(items)).build();    
+        }
+        catch (JsonProcessingException e) 
+        {
+            Logger.error(e, "Error in getTags while processing json");
+            return Response.status(500).build();
+        }
+    }
+    
+    
+    @GET
+    @Path("/ass")
+    public Response associate(@QueryParam("limit") int limit) 
+    {
+        if (limit <= 0 || limit > 200)
+        {
+            limit = 200;
+        }
+
+        TableHashTag.insertRandomAccociations(limit);
+        
+        return Response.status(200).build();    
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/files")
-    public Response getFilesWithTags(String json)
+    public Response getFilesWithTags(String json, @QueryParam("limit") int limit, @QueryParam("tags") boolean withTags)
     {
+        if (limit <= 0 || limit > 200)
+        {
+            limit = 200;
+        }
+
+        Logger.debug("got request for files with tags: {}\n limit: {}, with tags: {}", json, limit, withTags);
+
         List<FullTag> tags;
         try
         {
@@ -72,40 +101,18 @@ public class APITags
             return Response.status(400).build();
         }
         
-        tags.forEach(x -> {
-            Logger.info(x);
-        });
-
-        return Response.status(200).build();
-    }
-
-    // TODO: make this a post request or something because paths for something as
-    // variable as tags is a bad idea
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{namespace}/{subtag}/files")
-    public Response getTaggedFiles(@PathParam("namespace") String namespace, @PathParam("subtag") String subtag,
-            @QueryParam("limit") int limit) throws JsonProcessingException
-    {
-        if (namespace == null || subtag == null)
+        int[] tag_ids = tags.stream().mapToInt(FullTag::getTagId).toArray();
+        
+        List<HashInfo> items = TableHashTag.getFilesContaining(tag_ids, limit, withTags);
+        
+        try 
         {
-            return Response.status(400).build();
+            return Response.status(200).entity(this.jsonMapper.writeValueAsString(items)).build();    
         }
-        if (limit <= 0 || limit > 200)
+        catch (JsonProcessingException e) 
         {
-            limit = 200;
+            Logger.error(e, "Error in getFilesWithTags while processing json");
+            return Response.status(500).build();
         }
-
-        Logger.info(Integer.toString(limit) + " " + namespace + " " + subtag);
-
-        String tag = namespace + ":" + subtag;
-        int tagId = TableTag.getTagID(tag);
-
-        if (tagId == -1)
-            return Response.status(404).build();
-
-        List<HashInfo> items = TableHashTag.getFiles(tagId, limit, true);
-
-        return Response.status(200).entity(this.jsonMapper.writeValueAsString(items)).build();
     }
 }

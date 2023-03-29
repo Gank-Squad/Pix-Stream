@@ -32,7 +32,7 @@ public class APIApplication extends Application
         
         PathHelper.createMediaDirectory();
         DatabaseConnection.createDatabase();
-        DatabaseConnection.createTables();
+        DatabaseConnection.createTables(true);
 
         ProcessStarter.setGlobalSearchPath(GlobalSettings.IMAGE_MAGICK_PATH);
         ImageMagickHelper.checkImageMagick();
@@ -40,23 +40,9 @@ public class APIApplication extends Application
         
         if(GlobalSettings.IS_DEBUG)
         {
-            TableFile.addFakeFiles(10);
-
-            System.out.println( TableTag.insertTag("hello:world"));
-            System.out.println( TableTag.insertTag("hello:dog"));
-            System.out.println( TableTag.insertTag("hello:cat"));
-            System.out.println( TableTag.insertTag("hello:person"));
-            System.out.println( TableTag.insertTag("hello:nyah"));
-            System.out.println( TableTag.insertTag("hello:tag"));
-            System.out.println( TableTag.insertTag("hello:stuff"));
-            System.out.println( TableTag.insertTag("hello:person"));
-
-            TableHashTag.insertAssociation(1, 2);
-            TableHashTag.insertAssociation(1, 3);
-            TableHashTag.insertAssociation(1, 5);
-            TableHashTag.insertAssociation(2, 4);
-            TableHashTag.insertAssociation(2, 4);
-            TableHashTag.insertAssociation(1, 6);
+//            TableFile.addFakeFiles(20);
+            TableTag.addPredefinedTags(30);
+//            TableHashTag.insertRandomAccociations(300);
         }
     }
 

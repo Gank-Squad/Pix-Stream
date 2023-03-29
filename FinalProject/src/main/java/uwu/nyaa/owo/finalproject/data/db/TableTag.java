@@ -180,4 +180,247 @@ public class TableTag
 
         return items;
     }
+    
+    
+    
+    
+    
+    
+    public static void addPredefinedTags(int amount)
+    {
+        String[] tags = {
+                "dark",    "him", "outside", "square"
+                ,"accident",    "day", "hint",    "own", "stairway"
+                ,"acid",    "decide",  "his", "oxygen",  "stand"
+                ,"across",  "decided", "history", "page",    "stars"
+                ,"act", "decimal", "hold",    "paint",   "start"
+                ,"add", "deep",    "hole",    "pair",    "state"
+                ,"admission",   "delivery",    "home",    "pants",   "statement"
+                ,"Africa",  "dentist", "hope",    "paper",   "stay"
+                ,"after",   "deposit", "horse",   "paragraph",   "step"
+                ,"again",   "describe",    "hospital",    "parents", "stick"
+                ,"against", "desert",  "hot", "park",    "still"
+                ,"age", "design",  "hotel",   "part",    "stone"
+                ,"ago", "desk",    "hours",   "party",   "stood"
+                ,"agree",   "destination", "house",   "passed",  "stop"
+                ,"aide",    "developed",   "how", "passengers",  "store"
+                ,"air", "diary",   "however", "password",    "storm"
+                ,"alarm",   "dictionary",  "huge",    "past",    "story"
+                ,"all", "did", "human",   "pattern", "stove"
+                ,"almost",  "didn",  "hundred" 
+                ,"alone",   "died",    "husband", "payment", "strange"
+                ,"already", "difference",  "pedestrians", "street"
+                ,"also",    "different" 
+                ,"although",    "digital", "ice", "pencil",  "students"
+                ,"always",  "diner",   "idea",    "people",  "study"
+                ,"am",  "dinner",  "if",  "per", "subject"
+                ,"ambulance",   "direct",  "important",   "period",  "subtract"
+                ,"America", "direction",   "in",  "perishable",  "subway"
+                ,"amount",  "directions",  "inches",  "person",  "such"
+                ,"an",  "discount",    "include", "pet", "suddenly"
+                ,"and", "discovered",  "increase",    "phone",   "sum"
+                ,"angle",   "distance",    "India",   "pick",    "summer"
+                ,"angry",   "divide",  "information", "picture", "sun"
+                ,"animal",  "do",  "inside",  "piece",   "supermarket"
+                ,"another", "doctor",  "instead", "pipe",    "supper"
+                ,"answer",  "does",    "instruments", "place",   "supplies"
+                ,"any", "dog", "interested",  "plains",  "suppose"
+                ,"anything",    "doll",    "internet",    "plan",    "sure"
+                ,"apartment",   
+                "appear",  "done",    "into",    "planet",  "surprise"
+                ,"are", "door",    "iron",    "plant",   "switch"
+                ,"area",    "down",    "is",  "plate",   "symbols"
+                ,"arms",    "download",    "island",  "play",    "system"
+                ,"around",  "draw",    "it",  "please",  "table"
+                ,"art", "drawing", "it"
+                ,"as",  "dress",   "its", "point",   "take"
+                ,"Asia",    "drive",   "job", "poison",  "talk"
+                ,"ask", "driver",  "join",    "police",  "tall"
+                ,"at",  "drop",    "jumped",  "poor",    "taste"
+                ,"ATM", "drugs",   "just",    "pose",    "tax"
+                ,"aunt",    "dry", "keep",    "possible",    "teach"
+                ,"Australia",   "dryer",   "kept",    "pounds",  "teacher"
+                ,"away",    "due", "key", "power",   "team"
+                ,"baby",    "during",  "keyboard",    "practice",    "television"
+                ,"back",    "each",    "killed",  "present", "tell"
+                ,"bad", "early",   "king",    "president",   "temperature"
+                ,"bakery",  "ears",    "know",    "press",   "ten"
+                ,"ball",    "earth",   "ladies",  "price",   "test"
+                ,"bank",    "east",    "lady",    "private", "text"
+                ,"base",    "easy",    "lake",    "probably",    "than"
+                ,"be",  "eat", "land",    "problem", "that"
+                ,"bear",    "edge",    "language",    "produce", "the"
+                ,"beat",    "effect",  "laptop",  "product", "their"
+                ,"beautiful",   "eggs",    "large",   "promise", "them"
+                ,"beauty",  "eight",   "last",    "proof",   "themselves"
+                ,"became",  "either",  "later",   "prove",   "then"
+                ,"because", "electric",    "laugh",   "pull",    "there"
+                ,"become",  "elevator",    "laundry", "push",    "these"
+                ,"bed", "else",    "law", "put", "they"
+                ,"been",    "email",   "lay", "question",    "thing"
+                ,"before",  "emergency",   "learn",   "quickly", "think"
+                ,"begin",   "employer",    "lease",   "quiet",   "third"
+                ,"behind",  "empty",   "least",   "quite",   "this"
+                ,"being",   "end", "leave",   "rabbit",  "those"
+                ,"believe", "energy",  "left",    "race",    "though"
+                ,"below",   "engine",  "legs",    "radio",   "thought"
+                ,"beside",  "England", "length",  "railroad",    "thousand"
+                ,"best",    "English", "less",    "rain",    "three"
+                ,"better",  "enough",  "let", "raise",   "through"
+                ,"between", "enter" 
+                ,"bicycle", "entrance",    "letter",  "reached", "time"
+                ,"big", "equal",   "life",    "read",    "tiny"
+                ,"bill",    "equation",    "light",   "ready",   "to"
+                ,"bird",    "Europe",  "like",    "real",    "today"
+                ,"bit", "even",    "line",    "really",  "together"
+                ,"black",   "ever",    "link",    "reason",  "toll"
+                ,"blue",    "every",   "list",    "receipt", "too"
+                ,"boat",    "everyone",    "listen",  "received",    "took"
+                ,"body",    "everything",  "little",  "receptionist",    "top"
+                ,"book",    "exactly", "live",    "record",  "total"
+                ,"both",    "example", "local",   "red", "touch"
+                ,"bottom",  "exercise",    "long",    "refund",  "tow"
+                ,"bowl",    "exists",  "look",    "region",  "toward"
+                ,"box", "experiment",  "lost",    "remain",  "town"
+                ,"boy", "explain", "lot", "remember",    "train"
+                ,"break",   "explosives",  "love",    "rent",    "training"
+                ,"breakfast",   "express", "low", "report",  "travel"
+                ,"bright",  "eye", "lunch",   "represent",   "tree"
+                ,"bring",   "face",    "machine", "reservation", "trip"
+                ,"broken",  "fact",    "mad", "reservations",    "trouble"
+                ,"brother", "fall",    "made",    "reserved",    "truck"
+                ,"brought", "family",  "main",    "rest",    "true"
+                ,"brown",   "far", "make",    "restaurant",  "try"
+                ,"browse",  "farm",    "male",    "result",  "turn"
+                ,"build",   "farmer",  "man", "return",  "two"
+                ,"building",    "fast",    "manager", "ride",    "type"
+                ,"built",   "father",  "many",    "right",   "uncle"
+                ,"burning", "feel",    "map", "rinse",   "under"
+                ,"bus", "feeling", "mark",    "rise",    "understand"
+                ,"business",    "feet",    "married", "river",   "until"
+                ,"busy",    "felt",    "material",    "road",    "up"
+                ,"but", "female",  "math",    "rock",    "upset"
+                ,"buy", "few", "may", "roll",    "us"
+                ,"by",  "field",   "maybe",   "room",    "use"
+                ,"cab", "fight",   "me",  "roots",   "usually"
+                ,"cabinet", "figure",  "mean",    "round",   "valley"
+                ,"cable",   "file",    "measure", "rule",    "very"
+                ,"cafeteria",   "filled",  "mechanic",    "run", "video"
+                ,"call",    "finally", "medicine",    "said",    "village"
+                ,"came",    "find",    "meet",    "sail",    "virus"
+                ,"can", "fine",    "meeting", "sale",    "visit"
+                ,"can","t",   "fingers", "member",  "same"    
+                ,"cancel",  "finished",    "men", "save",    "vote"
+                ,"cannot",  "fire",    "message", "say", "wait"
+                ,"captain", "firefighter", "metal",   "scale",   "walk"
+                ,"car", "first",   "method",  "scared",  "wall"
+                ,"care",    "fish",    "middle",  "schedule",    "want"
+                ,"careful", "five",    "might",   "school",  "war"
+                ,"carry",   "flammable",   "mile",    "science", "warm"
+                ,"case",    "floor",   "milk",    "scientist",   "warning"
+                ,"cash",    "flowers", "million", "sea", "was"
+                ,"cashier", "fly", "mind",    "search",  "wash"
+                ,"cat", "follow",  "minutes", "second",  "watch"
+                ,"catch",   "food",    "miss",    "secret",  "water"
+                ,"caught",  "foot",    "mobile",  "section", "way"
+                ,"cause",   "for", "moment",  "see", "we"
+                ,"caution", "force",   "money",   "seeds",   "wear"
+                ,"cell",    "forest",  "monitor", "seem",    "weather"
+                ,"cells",   "forget",  "month",   "self",    "web"
+                ,"center",  "fork",    "moon",    "sent",    "website"
+                ,"cents",   "form",    "more",    "sentence",    "week"
+                ,"century", "found",   "morning", "separate",    "weekday"
+                ,"certain", "four",    "most",    "serve",   "weekend"
+                ,"chair",   "fraction",    "mother",  "set", "weigh"
+                ,"change",  "fragile", "mountain",    "seven",   "well"
+                ,"charge",  "free",    "mouse",   "several", "went"
+                ,"chat",    "French",  "mouth",   "shape",   "were"
+                ,"check",   "friend",  "move",    "she", "west"
+                ,"chest",   "from"    
+                ,"child",   "front"   
+                ,"children",    "fuel"   
+                ,"China",   "full",    "much",    "short",   "when"
+                ,"choose",  "game",    "multiply",    "should",  "where"
+                ,"church",  "garage",  "music",   "shouted", "whether"
+                ,"cigarettes",  "garden",  "must",    "show",    "which"
+                ,"circle",  "gas", "my",  "sick",    "while"
+                ,"city",    "gave",    "name",    "side",    "white"
+                ,"class",   "gentlemen",   "nation",  "sign",    "who"
+                ,"clean",   "get", "natural", "simple",  "whole"
+                ,"cleaners",    "girl",    "near",    "since",   "whose"
+                ,"clear",   "give",    "need",    "sing",    "why"
+                ,"climbed", "glass",   "network", "single",  "wide"
+                ,"close",   "go",  "never",   "sister",  "wife"
+                ,"closed",  "God", "new", "sit", "wild"
+                ,"closet",  "gold",    "newspapers",  "site",    "will"
+                ,"clothes", "gone",    "next",    "six", "wind"
+                ,"cloud",   "good",    "night",   "size",    "window"
+                ,"coast",   "got", "nine",    "skateboard",  "winter"
+                ,"cold",    "government",  "no",  "skills",  "wire"
+                ,"collect", "grandparents",    "none",    "skin",    "wireless"
+                ,"college", "grass",   "north",   "sky", "wish"
+                ,"color",   "great",   "northbound",  "sleep",   "with"
+                ,"combustible", "green",   "not", "slowly",  "withdrawal"
+                ,"come",    "ground",  "notebook",    "small",   "within"
+                ,"common",  "group",   "notes",   "smile",   "without"
+                ,"complete",    "grow",    "nothing", "snow",    "woman"
+                ,"computer",    "had", "notice",  "so",  "wonder"
+                ,"confidential",    "hair",    "now", "sofa",    "wood"
+                ,"contains",    "half",    "number",  "soft",    "word"
+                ,"continued",   "hand",    "nurse",   "soil",    "work"
+                ,"control", "happened",    "object",  "soldier", "worker"
+                ,"controls",    "happy",   "ocean",   "solve",   "world"
+                ,"cool",    "hard",    "of",  "some",    "worse"
+                ,"copy",    "hardware",    "off", "someone", "worst"
+                ,"correct", "has", "office",  "something",   "would"
+                ,"cost",    "hat", "often",   "sometimes",   "write"
+                ,"could",   "have",    "oh",  "son", "writer"
+                ,"couldn",    "he",  "old", "song"   
+                ,"count",   "head",    "on",  "soon",    "yard"
+                ,"country", "hear",    "once",    "sound",   "year"
+                ,"couple",  "heart",   "one", "south",   "yell"
+                ,"coupon",  "heat",    "online",  "southbound",  "yes"
+                ,"course",  "heavy",   "only",    "space",   "yet"
+                ,"covered", "height",  "open",    "speak",   "you"
+                ,"cross",   "held",    "opinion", "special", "you"
+                ,"cry", "help",    "or",  "speed",   "young"
+                ,"cup", "her", "order",   "spell",   "your"
+                ,"cut", "here",    "other",   "spoon",   "yourself"
+        };
+        
+        for(int i = 0; i < amount; i++)
+        {
+            long shittyRandom1 = ((long)System.currentTimeMillis()/(1 + i) % 200) + (int)(System.nanoTime() * (1+i) * (1+i)) / 3;
+            long shittyRandom2 = ((long)System.nanoTime()/(1 + i) % 200) + (int)(System.currentTimeMillis() * (1+i) * (1+i)) / 3;
+            
+            if(shittyRandom1 < 0)
+                shittyRandom1 = - shittyRandom1;
+            
+            if(shittyRandom2 < 0)
+                shittyRandom2 = - shittyRandom2;
+     
+            int namespaceIndex = (int)shittyRandom1 % (tags.length/3);
+            int subtagIndex = (int)shittyRandom2 %tags.length;
+            
+            
+            
+            String tag;
+            if(namespaceIndex > tags.length)
+            {
+                tag = tags[subtagIndex];
+                
+                insertTag(tag);
+            }
+            else 
+            {
+                tag = tags[namespaceIndex] + ":" + tags[subtagIndex];
+                
+                insertTag(tag);
+            }
+            
+        }
+        
+        
+        
+    }
 }
