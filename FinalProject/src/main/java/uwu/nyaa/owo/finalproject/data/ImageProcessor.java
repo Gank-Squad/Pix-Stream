@@ -13,10 +13,10 @@ import javax.imageio.ImageIO;
 
 import org.im4java.core.IM4JavaException;
 import org.imgscalr.Scalr;
+import org.tinylog.Logger;
 
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
 public class ImageProcessor
 {
@@ -112,7 +112,7 @@ public class ImageProcessor
         }
         catch (IOException | InterruptedException | IM4JavaException e)
         {
-            WrappedLogger.warning(String.format("Failed to save %s with image magick", path), e);
+            Logger.warn(e, "Failed to save {} with image magick", path);
         }
         
         try 
@@ -122,7 +122,7 @@ public class ImageProcessor
         }
         catch (IOException e) 
         {
-            WrappedLogger.warning(String.format("Failed to save image %s with ImageIO.write:\nMessage: %s", path, e.getMessage()), e);
+            Logger.warn(e, "Failed to save image {} with ImageIO.write", path);
         }
         
         return false;
@@ -144,7 +144,7 @@ public class ImageProcessor
         }
         catch (IOException | IM4JavaException | InterruptedException e)
         {
-            WrappedLogger.warning(String.format("Failed to load %s with ImageMagick", path), e);
+            Logger.warn(e, "Failed to load {} with ImageMagick", path);
         }
 
         try
@@ -160,7 +160,7 @@ public class ImageProcessor
         }
         catch (IOException e)
         {
-            WrappedLogger.warning(String.format("Failed to load %s", path), e);
+            Logger.warn(e,"Failed to load {}", path);
         }
         return null;
     }
@@ -194,7 +194,7 @@ public class ImageProcessor
         }
         catch (IOException e)
         {
-            WrappedLogger.warning(String.format("Failed to probe image %s, trying to load image instead", filename), e);
+            Logger.warn(e, "Failed to probe image {}, trying to load image instead", filename);
         }
 
         BufferedImage buff = ImageProcessor.loadImage(filename);

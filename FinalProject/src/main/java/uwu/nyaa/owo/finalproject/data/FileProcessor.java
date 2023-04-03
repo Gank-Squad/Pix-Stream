@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.tinylog.Logger;
+
 import uwu.nyaa.owo.finalproject.data.ImageProcessor.ImageInfo;
 import uwu.nyaa.owo.finalproject.data.VideoProcessor.VideoInfo;
 import uwu.nyaa.owo.finalproject.data.db.TableFile;
@@ -15,7 +17,6 @@ import uwu.nyaa.owo.finalproject.data.db.TableHash;
 import uwu.nyaa.owo.finalproject.data.db.TableLocalHash;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
 public class FileProcessor
 {
@@ -276,7 +277,7 @@ public class FileProcessor
     {
         if(!f.isFile()) 
         {
-            WrappedLogger.info(String.format("Could not add file: %s, because it does not exist or is not a file", f));
+            Logger.info("Could not add file: {}, because it does not exist or is not a file", f);
             return false;
         }
             
@@ -285,7 +286,7 @@ public class FileProcessor
         
         if(b == null || b.SHA256.length == 0)
         {
-            WrappedLogger.info(String.format("Could not add file: %s, because the SHA256 hash was empty", f));
+            Logger.info("Could not add file: {}, because the SHA256 hash was empty", f);
             return false;
         }
         
@@ -298,7 +299,7 @@ public class FileProcessor
         
         if(mediaFile.exists())
         {
-            WrappedLogger.warning(String.format("Ignoring adding file %s because it media file already exist; Assuming it's in the db", f));
+            Logger.warn("Ignoring adding file {} because it media file already exist; Assuming it's in the db", f);
             return false;
         }
         
@@ -319,7 +320,7 @@ public class FileProcessor
 
             if(!i.is_valid)
             {
-                WrappedLogger.warning(String.format("Failed to add file %s, because the image was invalid", f));
+                Logger.warn("Failed to add file {}, because the image was invalid", f);
                 return false;
             }
             
@@ -350,7 +351,7 @@ public class FileProcessor
             
             if(!i.is_valid)
             {
-                WrappedLogger.warning(String.format("Failed to add file %s, because the video was invalid", f));
+                Logger.warn("Failed to add file {}, because the video was invalid", f);
                 return false;
             }
             
@@ -361,7 +362,7 @@ public class FileProcessor
             }
             catch (IOException e)
             {
-                WrappedLogger.warning(String.format("Failed to encode video file %s", f), e);
+                Logger.warn(e, "Failed to encode video file {}", f);
                 return false;
             }
             
@@ -378,18 +379,18 @@ public class FileProcessor
         
         if(hash_id == -1)
         {
-            WrappedLogger.warning(String.format("Unable to insert file with hash %s", fileHash));
+            Logger.warn("Unable to insert file with hash {}", fileHash);
             return false;
         }
         
         if(!TableLocalHash.insertHashes(hash_id, b.SHA1, b.MD5, b.PHASH))
         {
-            WrappedLogger.warning(String.format("Unable to insert local hashes for file %s", fileHash));
+            Logger.warn("Unable to insert local hashes for file {}", fileHash);
         }
         
         if(!TableFile.insertFile(hash_id, fileSize, mimeType, width, height, duration, has_audio))
         {
-            WrappedLogger.warning(String.format("Unable to insert file information for %s", fileHash));
+            Logger.warn("Unable to insert file information for {}", fileHash);
         }
         
         return true;

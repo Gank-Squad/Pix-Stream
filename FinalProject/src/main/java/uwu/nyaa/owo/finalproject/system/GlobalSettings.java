@@ -1,5 +1,7 @@
 package uwu.nyaa.owo.finalproject.system;
 
+import org.tinylog.Logger;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
@@ -12,7 +14,7 @@ public class GlobalSettings
     public static String FFMPEG_PATH = "C:/bin/ffmpeg/ffmpeg.exe";//"F:/Programs/FFMPEG/ffmpeg-2023-03-05/bin/ffmpeg";
     public static String FFPROBE_PATH = "C:/bin/ffmpeg/ffprobe.exe";//"F:/Programs/FFMPEG/ffmpeg-2023-03-05/bin/ffprobe";
     
-    public static final Path LOG_FILE_DIRECTORY = Paths.get(".", "logs");
+    public static final Path LOGS_DIR_PATH = Paths.get(".", "logs");
     
     public static Level LOG_LEVEL = Level.ALL;
     
@@ -36,6 +38,7 @@ public class GlobalSettings
     {
         if(System.getProperty("os.name").toLowerCase().equals("linux"))
         {
+            Logger.info("Updating paths for linux");
             GlobalSettings.IMAGE_MAGICK_PATH = "/bin/";
             GlobalSettings.FFMPEG_PATH = "/bin/ffmpeg";
             GlobalSettings.FFPROBE_PATH = "/bin/ffprobe";

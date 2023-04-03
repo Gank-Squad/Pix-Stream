@@ -9,9 +9,9 @@
       name="description"
       content="Web site created using create-react-app"
     />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.11/typed.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
-    <link rel="stylesheet" href="../src/css/style.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.11/typed.min.css"> -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"> -->
+    <!-- <link rel="stylesheet" href="../src/css/style.css"> -->
 	  <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.11/typed.min.js"></script>
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
@@ -45,86 +45,5 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
 
-    <!-- toggle button elements -->
-    <button id="navbar-toggle">.</button>
-    <i id="toggle-burger" class="fas fa-bars fa-2x"></i>
-    <i id="toggle-x" class="fas fa-times fa-2x"></i>
-
-    <div id="navbar-background">
-        <!-- navbar content goes here -->
-		<div id="navbar-content">
-
-			<div class="navbar-spacer" style="flex-grow: 0; flex-shrink: 0; height: 100px;"></div>
-			<div class="tagbox-container">
-				<header class="tagbox-header">
-					<label>Selected Tags</label>
-					<button id="search-btn"><i class="fa fa-search" aria-hidden="true"></i>Search</button>
-					<button id="clearbtn">Clear</button>
-				</header>
-				<table id="selected-tagbox" class="tagbox">
-					<tbody>
-
-					</tbody>
-				</table>
-			</div>
-			<div id="search-box">
-				<input id="tag-search" type="text" placeholder="Tag Search...">
-			</div>
-			<div class="tagbox-container">
-				<header class="tagbox-header">
-					<label>Context Tags</label>
-				</header>
-				<table id="context-tagbox" class="tagbox">
-					<tbody>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>a</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>ab</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>abc</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>d</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>e</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>f</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>g</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>gh</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>iii</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>jkl</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>k</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>l</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>mnopqrst</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>n</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>o</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>pp</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>qrqr</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>ssttuu</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>t</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>u</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>vwx</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>w</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>x</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>yz</label></div>    </td></tr>
-						<tr><td>   <div class="tag"><i class="fa fa-tag"></i><button class="fa fa-plus"></button><label>z</label></div>    </td></tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="navbar-spacer"></div>
-			<div class="link"><a href="about.html"><i class="fa fa-info-circle"></i>About</a></div>
-
-
-		</div>
-
-    </div>
-
-    <div id="content">
-        <!-- page content goes here -->
-		<div id="title-Box">
-			<!-- <div id="titleSpacer" style="height: 100%; width: 600px; transition: all 0.2s ease; flex-shrink: 0;"></div> -->
-			<div style="flex-shrink: 0;"><img src="../src/logo.png" style="height: 103px; width: auto;"></div>
-			<h1>PixStream</h1>
-			<!-- <h1 style="flex-shrink: 1; flex-grow: 0; overflow-x: hidden;"><span id="typed-animation" style="color: rgb(81, 147, 147);"></span></h1> -->
-		</div>
-
-	</div>
-    
-    <script src="../src/main.js"></script>    
-
-    
   </body>
 </html>

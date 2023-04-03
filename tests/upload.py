@@ -23,5 +23,18 @@ def upload():
     print(a.status_code)
     print(a.text)
 
+def post_tags():
 
-upload()
+    payload = [{
+        "tag_id": 12
+    }]
+    a = requests.post("http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/tags/files/?tags=true&limit=0",
+    json=payload)
+
+    print(a)
+    print(a.status_code)
+
+    if(a.status_code == 200):
+        print(a.json())
+
+post_tags()

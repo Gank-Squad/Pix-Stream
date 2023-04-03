@@ -5,9 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.tinylog.Logger;
+
 import uwu.nyaa.owo.finalproject.data.ByteHelper;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector.FileHeader;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
 public class VideoDetector
 {
@@ -52,12 +53,12 @@ public class VideoDetector
         }
         catch (FileNotFoundException e)
         {
-            WrappedLogger.warning(String.format("Cannot get file mime because %s does not exist", file));
+            Logger.warn(e,String.format("Cannot get file mime because %s does not exist", file));
             return FileFormat.UNKNOWN;
         }
         catch (IOException e)
         {
-            WrappedLogger.warning(String.format("IOException while trying to get file mime of %s", file), e);
+            Logger.warn(e,String.format("IOException while trying to get file mime of %s", file));
             return FileFormat.UNKNOWN;
         }
 

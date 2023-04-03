@@ -4,12 +4,16 @@ import org.im4java.process.ProcessStarter;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
+import org.tinylog.Logger;
 import uwu.nyaa.owo.finalproject.data.FFmpegHelper;
 import uwu.nyaa.owo.finalproject.data.ImageMagickHelper;
 import uwu.nyaa.owo.finalproject.data.PathHelper;
 import uwu.nyaa.owo.finalproject.data.db.DatabaseConnection;
 import uwu.nyaa.owo.finalproject.data.db.TableFile;
+import uwu.nyaa.owo.finalproject.data.db.TableHashTag;
+import uwu.nyaa.owo.finalproject.data.db.TableTag;
 import uwu.nyaa.owo.finalproject.system.GlobalSettings;
+import uwu.nyaa.owo.finalproject.system.ResourceLoader;
 
 
 @ApplicationPath("/api")
@@ -18,13 +22,17 @@ public class APIApplication extends Application
     // this is my makeshift main method
     public APIApplication()
     {
+        ResourceLoader.loadTinyLogConfig();
+        Logger.info("Starting...");
+
         GlobalSettings.IS_DEBUG = true;
-        
+        Logger.info("Running as debug: {}", GlobalSettings.IS_DEBUG);
+
         GlobalSettings.updatePathsForLinux();
         
         PathHelper.createMediaDirectory();
         DatabaseConnection.createDatabase();
-        DatabaseConnection.createTables();
+        DatabaseConnection.createTables(true);
 
         ProcessStarter.setGlobalSearchPath(GlobalSettings.IMAGE_MAGICK_PATH);
         ImageMagickHelper.checkImageMagick();
@@ -32,7 +40,9 @@ public class APIApplication extends Application
         
         if(GlobalSettings.IS_DEBUG)
         {
-            TableFile.addFakeFiles(50);
+//            TableFile.addFakeFiles(20);
+            TableTag.addPredefinedTags(30);
+//            TableHashTag.insertRandomAccociations(300);
         }
     }
 

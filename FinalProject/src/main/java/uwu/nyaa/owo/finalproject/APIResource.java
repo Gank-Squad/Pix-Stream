@@ -1,11 +1,17 @@
 package uwu.nyaa.owo.finalproject;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.net.URLEncoder;
-import java.net.URLDecoder;
+
+import org.tinylog.Logger;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,12 +25,11 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import uwu.nyaa.owo.finalproject.data.PartInputStream;
 import uwu.nyaa.owo.finalproject.data.FileProcessor;
 import uwu.nyaa.owo.finalproject.data.MultiPartFormDataParser;
+import uwu.nyaa.owo.finalproject.data.PartInputStream;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
 @Path("/media")
 public class APIResource
@@ -38,8 +43,8 @@ public class APIResource
     @Produces
     public Response upload(@FormParam("file") File file)
     {
-        WrappedLogger.info(file.toString());
-        WrappedLogger.info(file.getAbsolutePath());
+        Logger.info(file.toString());
+        Logger.info(file.getAbsolutePath());
 
         FileProcessor.addFile(file);
 
@@ -55,7 +60,7 @@ public class APIResource
         final String BOUNDARY = MultiPartFormDataParser.getBoundary(request);
         final InputStream FORM_STREAM = MultiPartFormDataParser.getResetableInputStream(request.getInputStream());
 
-        WrappedLogger.info(BOUNDARY);
+        Logger.info(BOUNDARY);
 
         if(BOUNDARY == null)
         {

@@ -1,9 +1,7 @@
 package uwu.nyaa.owo.finalproject.data;
 
 import java.io.File;
-import java.util.logging.Level;
 
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 
 public class PathHelper

@@ -1,26 +1,18 @@
 package uwu.nyaa.owo.finalproject.data;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
 
 import org.im4java.core.ConvertCmd;
 import org.im4java.core.IM4JavaException;
 import org.im4java.core.IMOperation;
 import org.im4java.core.ImageCommand;
-import org.im4java.core.Info;
-import org.im4java.core.InfoException;
 import org.im4java.core.Operation;
 import org.im4java.core.Stream2BufferedImage;
 import org.im4java.process.ProcessStarter;
+import org.tinylog.Logger;
 
 import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
-
-import javax.imageio.ImageIO;
 
 public class ImageMagickHelper
 {
@@ -30,15 +22,14 @@ public class ImageMagickHelper
     {
         if (ProcessStarter.getGlobalSearchPath() == null)
         {
-            WrappedLogger.log(Level.INFO, "could not find environmental variable IM4JAVA_TOOLPATH, using PATH instead");
+            Logger.info("could not find environmental variable IM4JAVA_TOOLPATH, using PATH instead");
 
             ProcessStarter.setGlobalSearchPath(System.getenv("PATH"));
 
         }
         else
         {
-            WrappedLogger.log(Level.INFO,
-                    "global magick search path set [" + ProcessStarter.getGlobalSearchPath() + "]");
+            Logger.info("global magick search path set [{}]", ProcessStarter.getGlobalSearchPath());
         }
     }
 
@@ -57,7 +48,7 @@ public class ImageMagickHelper
         }
         catch (IOException | InterruptedException | IM4JavaException e)
         {
-            WrappedLogger.warning("Could not run 'magick --version' something is wrong", e);
+            Logger.warn(e, "Could not run 'magick --version' something is wrong");
             throw new RuntimeException("Could not run 'magick --version' something is wrong", e);
         }
     }
@@ -67,7 +58,7 @@ public class ImageMagickHelper
     {
         IMOperation op = new IMOperation();
 
-        WrappedLogger.info(path);
+        Logger.info(path);
         // input image path, take only first image in the file
         op.addImage(path + "[0]");
 

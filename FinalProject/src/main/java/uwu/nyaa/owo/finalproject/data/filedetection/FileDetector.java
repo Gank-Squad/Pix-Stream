@@ -1,10 +1,14 @@
 package uwu.nyaa.owo.finalproject.data.filedetection;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.tinylog.Logger;
 
 import uwu.nyaa.owo.finalproject.data.ByteHelper;
-import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector.FileHeader;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 
 public class FileDetector
 {
@@ -118,7 +122,7 @@ public class FileDetector
         }
         catch (FileNotFoundException e)
         {
-            WrappedLogger.warning(String.format("Cannot get file mime because %s does not exist", file));
+            Logger.warn(e, String.format("Cannot get file mime because %s does not exist", file));
             return FileFormat.UNKNOWN;
         }
         catch (IOException e)

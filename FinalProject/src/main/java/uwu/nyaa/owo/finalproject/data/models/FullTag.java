@@ -1,6 +1,7 @@
 package uwu.nyaa.owo.finalproject.data.models;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class FullTag
 {
@@ -13,5 +14,11 @@ public class FullTag
     public String toString()
     {
         return String.format("<Tag: %d %s:%s>", tag_id, namespace, subtag);
+    }
+    
+    @JsonIgnore
+    public int getTagId()
+    {
+        return this.tag_id;
     }
 }

@@ -1,14 +1,17 @@
 package uwu.nyaa.owo.finalproject.data.db;
 
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
-import uwu.nyaa.owo.finalproject.data.models.FullTag;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.StringJoiner;
+
+import org.tinylog.Logger;
+
+import uwu.nyaa.owo.finalproject.data.models.FullTag;
+import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 
 public class TableHashTag
 {
@@ -30,7 +33,7 @@ public class TableHashTag
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning("Exception while getting tags", e);
+            Logger.warn(e, "Exception while getting tags");
         }
         return new LinkedList<>();
     }
@@ -62,6 +65,157 @@ public class TableHashTag
 
         return items;
     }
+
+
+    public static List<HashInfo> getFiles(int tag_id, int limit, boolean includeTags)
+    {
+        try(Connection c = DatabaseConnection.getConnection())
+        {
+            return getFiles(tag_id, limit, includeTags, c);
+        }
+        catch (SQLException e)
+        {
+            Logger.warn(e, "Exception while getting tags");
+        }
+        return new LinkedList<>();
+    }
+
+    public static List<HashInfo> getFiles(int tag_id, int limit, boolean includeTags, Connection c) throws SQLException
+    {
+        final String SQL = "SELECT tbl_hash.hash_id, tbl_hash.hash, tbl_file.mime, tbl_file.size, tbl_file.width, tbl_file.height, tbl_file.duration, tbl_file.has_audio FROM tbl_hash_tag JOIN tbl_file ON tbl_hash_tag.hash_id = tbl_file.hash_id JOIN tbl_hash ON tbl_hash_tag.hash_id = tbl_hash.hash_id WHERE tbl_hash_tag.tag_id = ? LIMIT ?";
+
+        LinkedList<HashInfo> items = new LinkedList<>();
+
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+            pstmt.setInt(1, tag_id);
+            pstmt.setInt(2, limit);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while(rs.next())
+            {
+                HashInfo a = new HashInfo();
+
+                a.hash_id = rs.getInt(1);
+                a.hash = rs.getBytes(2);
+                a.mime = rs.getInt(3);
+                a.fileSize = rs.getLong(4);
+                a.width = rs.getInt(5);
+                a.height = rs.getInt(6);
+                a.duration = rs.getInt(7);
+                a.has_audio = rs.getBoolean(8);
+
+                if(includeTags)
+                {
+                    a.tags = TableHashTag.getTags(a.hash_id, c);
+                }
+
+                items.add(a);
+            }
+        }
+
+        return items;
+    }
+
+
+    public static List<HashInfo> getFilesContaining(int[] tag_id, int limit, boolean includeTags) throws IllegalArgumentException
+    {
+        try(Connection c = DatabaseConnection.getConnection())
+        {
+            return getFilesContaining(tag_id, limit, includeTags, c);
+        }
+        catch (SQLException e)
+        {
+            Logger.warn(e, "Exception while files with tags");
+        }
+        return new LinkedList<>();
+    }
+    
+    public static List<HashInfo> getFilesContaining(int[] tag_id, int limit, boolean includeTags, Connection c) throws SQLException
+    {
+        if(tag_id.length == 0)
+        {
+            throw new IllegalArgumentException("Cannot take empty tag array");
+        }
+        
+        
+        // you have nothing to say about this, unless you wanna rewrite it, don't complain
+        StringBuilder queryBuilder = new StringBuilder();
+        
+        queryBuilder.append("SELECT tbl_hash.hash_id, tbl_hash.hash, tbl_file.mime, tbl_file.size, tbl_file.width, tbl_file.height, tbl_file.duration, tbl_file.has_audio FROM tbl_hash_tag JOIN tbl_file ON tbl_hash_tag.hash_id = tbl_file.hash_id JOIN tbl_hash ON tbl_hash_tag.hash_id = tbl_hash.hash_id");
+        queryBuilder.append(" WHERE tag_id ");
+        
+        if(tag_id.length == 1)
+        {
+            queryBuilder.append("=?");    
+        }
+        else 
+        {
+            queryBuilder.append(" IN (");
+            StringJoiner sj = new StringJoiner(",");
+            for(int i = 0; i < tag_id.length; i++)
+            {
+                sj.add("?");
+                
+            }
+            
+            queryBuilder.append(sj.toString() + ")");
+        }
+        
+        queryBuilder.append(" LIMIT ?");
+        
+        final String SQL = queryBuilder.toString();
+        
+        Logger.debug(SQL);
+
+        LinkedList<HashInfo> items = new LinkedList<>();
+
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+            if(tag_id.length == 1)
+            {
+                pstmt.setInt(1, tag_id[0]);
+                pstmt.setInt(2, limit);
+            }
+            else 
+            {
+                for(int i = 0; i < tag_id.length; i++)
+                {
+                    pstmt.setInt(1 + i, tag_id[i]);
+                }
+                
+                pstmt.setInt(tag_id.length + 1, limit);
+            }
+            
+            ResultSet rs = pstmt.executeQuery();
+
+            while(rs.next())
+            {
+                HashInfo a = new HashInfo();
+
+                a.hash_id = rs.getInt(1);
+                a.hash = rs.getBytes(2);
+                a.mime = rs.getInt(3);
+                a.fileSize = rs.getLong(4);
+                a.width = rs.getInt(5);
+                a.height = rs.getInt(6);
+                a.duration = rs.getInt(7);
+                a.has_audio = rs.getBoolean(8);
+
+                if(includeTags)
+                {
+                    a.tags = TableHashTag.getTags(a.hash_id, c);
+                }
+
+                items.add(a);
+            }
+        }
+
+        return items;
+    }
+    
+    
     public static void insertAssociation(int hash_id, int tag_id)
     {
         final String SQL = "INSERT INTO tbl_hash_tag(hash_id, tag_id) VALUES (?, ?)";
@@ -75,7 +229,34 @@ public class TableHashTag
         }
         catch (SQLException e)
         {
-            WrappedLogger.warning("Error adding hash-tag association", e);
+            Logger.warn(e, "Error adding hash-tag association");
         }
+    }
+    
+    
+    public static void insertRandomAccociations(int ammount)
+    {
+        List<HashInfo> infos = TableFile.getFiles(500, false);
+        List<FullTag> tags = TableTag.getTags(500);
+        
+        for(int i = 0; i < ammount; i++)
+        {
+            long shittyRandom1 = ((long)System.currentTimeMillis()/(1 + i) % 200) + (int)(System.nanoTime() * (1+i) * (1+i)) / 3;
+            long shittyRandom2 = ((long)System.nanoTime()/(1 + i) % 200) + (int)(System.currentTimeMillis() * (1+i) * (1+i)) / 3;
+            
+            if(shittyRandom1 < 0)
+                shittyRandom1 = - shittyRandom1;
+            
+            if(shittyRandom2 < 0)
+                shittyRandom2 = - shittyRandom2;
+     
+            int tagId = tags.get((int)(shittyRandom2 % tags.size())).tag_id;
+            int hashId = infos.get((int)(shittyRandom1 % infos.size())).hash_id;
+            
+            insertAssociation(hashId, tagId);  
+        }
+    }
+    {
+        
     }
 }

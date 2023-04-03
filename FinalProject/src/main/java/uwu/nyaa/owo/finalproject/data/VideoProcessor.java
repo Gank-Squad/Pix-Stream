@@ -1,17 +1,15 @@
 package uwu.nyaa.owo.finalproject.data;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
+
+import org.tinylog.Logger;
 
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
 import net.bramp.ffmpeg.job.FFmpegJob;
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
-import uwu.nyaa.owo.finalproject.data.logging.WrappedLogger;
 import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 
 /**
@@ -246,7 +244,7 @@ public class VideoProcessor
         }
         catch (IOException e)
         {
-            WrappedLogger.warning(String.format("Failed to create thumbnail with ffmpeg for %s", src), e);
+            Logger.warn(e, "Failed to create thumbnail with ffmpeg for {}", src);
         }
     }
 
@@ -292,7 +290,7 @@ public class VideoProcessor
         catch (IOException e)
         {
             info.is_valid = false;
-            WrappedLogger.warning(String.format("Error while probing %s for information", f), e);
+            Logger.warn(e, "Error while probing {} for information", f);
         }
 
         return info;
