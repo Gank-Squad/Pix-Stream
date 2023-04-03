@@ -167,7 +167,7 @@ public class DatabaseConnection
         
         PathHelper.createMediaDirectory();
         DatabaseConnection.createDatabase();
-        DatabaseConnection.createTables();
+        DatabaseConnection.createTables(true);
 
         ProcessStarter.setGlobalSearchPath(GlobalSettings.IMAGE_MAGICK_PATH);
         ImageMagickHelper.checkImageMagick();
@@ -177,17 +177,37 @@ public class DatabaseConnection
 //        createDatabase();
 //        createTables(true);
         
-        ImageMagickHelper.checkImageMagick();
-
+        TableFile.addFakeFiles(10);
+        
+        int tag1 = TableTag.insertTag("hello:world");
+        int tag2 = TableTag.insertTag("hello:world1");
+        int tag3 = TableTag.insertTag("hello:world2");
+        int tag4 = TableTag.insertTag("hello:world3");
+        TableTag.addPredefinedTags(10);
 //        TableFile.addFakeFiles(50);
 //        TableTag.addPredefinedTags(200);
-//        TableHashTag.insertRandomAccociations(100);
+//        TableHashTag.insertRandomAccociations(20);
+        TableHashTag.insertAssociation(1, tag4);
+        TableHashTag.insertAssociation(1, tag3);
+        TableHashTag.insertAssociation(1, tag2);
+        TableHashTag.insertAssociation(1, tag1);
         
-        TableHashTag.getFilesContaining(new int[] { 60}, 100, false).forEach(x ->
-        {
+        TableHashTag.insertAssociation(2, tag2);
+        TableHashTag.insertAssociation(2, tag1);
+        
+        TableHashTag.insertAssociation(3, tag2);
+        TableHashTag.insertAssociation(3, tag1);
+        
+        TableHashTag.insertAssociation(4, tag3);
+        TableHashTag.insertAssociation(4, tag4);
+        TableHashTag.insertAssociation(4, tag2);
+        
+        TableHashTag.insertAssociation(5, tag3);
+        TableHashTag.insertAssociation(5, tag4);
+        
+        TableHashTag.getFilesContaining(new int[] { 1, 2}, 100, false).forEach(x -> {
             System.out.println(x);
         });
-        
         /*
          
           SELECT tbl_tag.tag_id, tbl_namespace.namespace, tbl_subtag.subtag 

@@ -95,7 +95,6 @@ export default function Default(props)
             return <ImageContainer key={index} {...imgProp} imgError={e => console.log("image errr")}></ImageContainer>;
         })}
 
-
         </div>
     )
 }

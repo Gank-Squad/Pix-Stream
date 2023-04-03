@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -139,32 +140,29 @@ public class TableHashTag
             throw new IllegalArgumentException("Cannot take empty tag array");
         }
         
-        
-        // you have nothing to say about this, unless you wanna rewrite it, don't complain
+        /*
+            SELECT tbl_hash.hash_id, hash, mime, tbl_file.size, width, height, duration, has_audio
+            FROM (
+              SELECT hash_id, COUNT(DISTINCT tag_id) AS tag_count
+              FROM tbl_hash_tag
+              WHERE tag_id IN (1)
+              GROUP BY hash_id
+            ) t
+            JOIN tbl_hash ON t.hash_id = tbl_hash.hash_id
+            JOIN tbl_file ON t.hash_id = tbl_file.hash_id
+            WHERE tag_count = 1
+            LIMIT 5
+        */
+
         StringBuilder queryBuilder = new StringBuilder();
-        
-        queryBuilder.append("SELECT tbl_hash.hash_id, tbl_hash.hash, tbl_file.mime, tbl_file.size, tbl_file.width, tbl_file.height, tbl_file.duration, tbl_file.has_audio FROM tbl_hash_tag JOIN tbl_file ON tbl_hash_tag.hash_id = tbl_file.hash_id JOIN tbl_hash ON tbl_hash_tag.hash_id = tbl_hash.hash_id");
-        queryBuilder.append(" WHERE tag_id ");
-        
-        if(tag_id.length == 1)
-        {
-            queryBuilder.append("=?");    
-        }
-        else 
-        {
-            queryBuilder.append(" IN (");
-            StringJoiner sj = new StringJoiner(",");
-            for(int i = 0; i < tag_id.length; i++)
-            {
-                sj.add("?");
-                
-            }
-            
-            queryBuilder.append(sj.toString() + ")");
-        }
-        
-        queryBuilder.append(" LIMIT ?");
-        
+        queryBuilder.append("SELECT tbl_hash.hash_id, hash, mime, tbl_file.size, width, height, duration, has_audio ");
+        queryBuilder.append("FROM ( SELECT hash_id, COUNT(DISTINCT tag_id) AS tag_count FROM tbl_hash_tag WHERE tag_id IN ( ");
+        queryBuilder.append(String.join(",", Collections.nCopies(tag_id.length, "?")));
+        queryBuilder.append(" ) GROUP BY hash_id ) t ");
+        queryBuilder.append("JOIN tbl_hash ON t.hash_id = tbl_hash.hash_id ");
+        queryBuilder.append("JOIN tbl_file ON t.hash_id = tbl_file.hash_id ");
+        queryBuilder.append("WHERE tag_count = ? LIMIT ?");
+ 
         final String SQL = queryBuilder.toString();
         
         Logger.debug(SQL);
@@ -173,20 +171,13 @@ public class TableHashTag
 
         try (PreparedStatement pstmt = c.prepareStatement(SQL))
         {
-            if(tag_id.length == 1)
+
+            for(int i = 0; i < tag_id.length; i++)
             {
-                pstmt.setInt(1, tag_id[0]);
-                pstmt.setInt(2, limit);
+                pstmt.setInt(1 + i, tag_id[i]);
             }
-            else 
-            {
-                for(int i = 0; i < tag_id.length; i++)
-                {
-                    pstmt.setInt(1 + i, tag_id[i]);
-                }
-                
-                pstmt.setInt(tag_id.length + 1, limit);
-            }
+            pstmt.setInt(tag_id.length + 1, tag_id.length);
+            pstmt.setInt(tag_id.length + 2, limit);
             
             ResultSet rs = pstmt.executeQuery();
 
