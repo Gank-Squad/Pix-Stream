@@ -296,7 +296,17 @@ public class FileProcessor
         File mediaFile = new File(mediaPath);
         File thumbFile = new File(thumbPath);
         File tmpMediaFile = new File(mediaFile.getAbsoluteFile() + ".tmp");
-        
+
+        if(mediaFile.getParentFile() != null)
+        {
+            mediaFile.getParentFile().mkdirs();
+        }
+
+        if(thumbFile.getParentFile() != null)
+        {
+            thumbFile.getParentFile().mkdirs();
+        }
+
         if(mediaFile.exists())
         {
             Logger.warn("Ignoring adding file {} because it media file already exist; Assuming it's in the db", f);
@@ -337,7 +347,7 @@ public class FileProcessor
                     return false;
                 }
             }
-            
+            Logger.debug("About to create thumbnail from {} into {}", mediaFile, thumbPath);
             ImageProcessor.createThumbnail(mediaFile, thumbFile);
         }
         else if(FileFormat.isVideoType(mimeType))

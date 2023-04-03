@@ -126,10 +126,13 @@ export default function Default(props)
 
            
 
+<<<<<<< HEAD
 
                 <p>Hello world, you are on home page {(page).toString()}</p>
 
             </main>
+=======
+>>>>>>> 06b5d661bc41a8dfb34361c3cd7a6f1fc23f66a2
         </div>
     )
 }
