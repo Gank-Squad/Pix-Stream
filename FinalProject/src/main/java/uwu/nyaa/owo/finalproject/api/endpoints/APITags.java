@@ -22,6 +22,7 @@ import uwu.nyaa.owo.finalproject.data.db.TableHashTag;
 import uwu.nyaa.owo.finalproject.data.db.TableTag;
 import uwu.nyaa.owo.finalproject.data.models.FullTag;
 import uwu.nyaa.owo.finalproject.data.models.HashInfo;
+import uwu.nyaa.owo.finalproject.data.models.TagFileCount;
 
 @Path("tags")
 public class APITags
@@ -47,6 +48,29 @@ public class APITags
         catch (JsonProcessingException e) 
         {
             Logger.error(e, "Error in getTags while processing json");
+            return Response.status(500).build();
+        }
+    }
+    
+    
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response get_file_count(@QueryParam("tid") List<Integer> tag_id)
+    {
+        if(tag_id == null || tag_id.size() == 0)
+        {
+            return Response.status(400,"no tag ids given, use tid=<tag_id>").build();
+        }
+
+        List<TagFileCount> items = TableTag.getFileCount(tag_id);
+
+        try
+        {
+            return Response.status(200).entity(this.jsonMapper.writeValueAsString(items)).build();
+        } catch (JsonProcessingException e)
+        {
+            Logger.error(e, "Error in get_file_count while processing json");
             return Response.status(500).build();
         }
     }

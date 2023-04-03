@@ -11,6 +11,7 @@ import org.tinylog.Logger;
 
 import uwu.nyaa.owo.finalproject.data.StringHelper;
 import uwu.nyaa.owo.finalproject.data.models.FullTag;
+import uwu.nyaa.owo.finalproject.data.models.TagFileCount;
 
 public class TableTag
 {
@@ -182,8 +183,86 @@ public class TableTag
     }
     
     
+    /**
+     * gets the number of files with the given tag
+     * @param tag_id The tag_id to search
+     * @return the number of files with that tag or -1 if there is an error
+     */
+    public static int getFileCount(int tag_id)
+    {
+        try (Connection c = DatabaseConnection.getConnection())
+        {
+            return getFileCount(tag_id, c);
+        }
+        catch (SQLException e)
+        {
+            Logger.warn(e, "Error searching counting tag {}", tag_id);
+        }
+
+        return -1;
+    }
     
     
+    /**
+     * gets the number of files with the given tag
+     * @param tag_id The tag_id to search
+     * @return the number of files with that tag or -1 if there is an error
+     */
+    public static int getFileCount(int tag_id, Connection c)
+    {
+        final String SQL = "SELECT COUNT(hash_id) FROM tbl_hash_tag WHERE tag_id = ?";
+        
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
+           {
+               pstmt.setInt(1, tag_id);
+               
+               ResultSet rs = pstmt.executeQuery();
+
+               if(rs.next())
+               {
+                   return rs.getInt(1);
+               }
+           }
+           catch (SQLException e)
+           {
+               Logger.warn(e, "Error searching counting tag {}", tag_id);
+           }
+        
+        return -1;
+    }
+    
+    public static List<TagFileCount> getFileCount(List<Integer> tag_id)
+    {
+        LinkedList<TagFileCount> items = new LinkedList<>();
+        
+        try(Connection c = DatabaseConnection.getConnection())
+        {
+            for(int i : tag_id)
+            {
+                TagFileCount tfc = new TagFileCount();
+                tfc.count =getFileCount(i, c);
+                tfc.tag_id = i;
+                items.add(tfc);
+            }
+        }
+        catch (SQLException e) 
+        {
+            Logger.warn(e, "Error searching counting tags {}", tag_id);
+        }
+        
+        return items;
+    }
+    public static List<Integer> getFileCount(int[] tag_id, Connection c)
+    {
+        LinkedList<Integer> items = new LinkedList<>();
+        
+        for(int i = 0; i < tag_id.length; i++)
+        {
+            items.add(getFileCount(tag_id[i], c));
+        }
+        
+        return items;
+    }
     
     
     public static void addPredefinedTags(int amount)

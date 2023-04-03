@@ -18,8 +18,8 @@ export const ROUTES = {
 }
 
 
-// export const SERVER_HOST = "http://192.168.1.148:8080/FinalProject-1.0-SNAPSHOT/api/"
-export const SERVER_HOST = "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/"
+export const SERVER_HOST = "http://192.168.1.148:8080/FinalProject-1.0-SNAPSHOT/api/"
+// export const SERVER_HOST = "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/"
 
 export const API_ENDPOINTS = {
     media: {
