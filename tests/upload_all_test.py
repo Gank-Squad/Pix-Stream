@@ -27,6 +27,5 @@ for path in os.listdir(dir):
     if path.endswith("png") or path.endswith("jpg"):
 
         upload(os.path.join(dir, path))
-        break
 
 print(requests.get("http://192.168.1.148:8080/FinalProject-1.0-SNAPSHOT/api/tags/ass/?limit=20"))

@@ -1,6 +1,6 @@
 
 import React from "react";
-
+import { API_ENDPOINTS } from "../../constants";
 export default function TagSidebar(props) 
 {
     const { searchCallback } = props;
@@ -10,7 +10,7 @@ export default function TagSidebar(props)
     const [search, setSearch] = React.useState([]);
     const [tags, setTags] = React.useState(null);
 
-    const TAGS_API = "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/tags";
+    const TAGS_API = API_ENDPOINTS.media.get_tags;
 
     // html elements that we will be using 
     const tagSearch = React.useRef("");

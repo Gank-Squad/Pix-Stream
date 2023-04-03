@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { API_ENDPOINTS } from '../../constants';
 import TagSidebar from '../elements/TagSidebar';
 import ImageContainer from '../elements/Image';
 
@@ -7,7 +8,8 @@ export default function Default(props)
 {
     const { cookies } = props;
 
-    const API = "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/tags/files/?tags=true"
+    const API = API_ENDPOINTS.search.get_files_with_tags;
+
     const params = new URLSearchParams(window.location.search);
     const page = parseInt(params.get('page')) || 1;
 
@@ -98,10 +100,21 @@ export default function Default(props)
             >
                 <TagSidebar {...tagSidebarProps}></TagSidebar>
 
+                
+
+            </nav>
+
+            <main class="flex-1 overflow-y-scroll px-80 py-12">
+            {/* PUT ALL DISPLAY STUFF IN HERE, ANYTHING OUTSIDE MAY NOT BE FORMATED CORRECTLY */}
+
+           
+
+
+                <p>Hello world, you are on home page {(page).toString()}</p>
                 {images.map((json, index) => 
                 {
                     const imgProp = {
-                        "image" : `http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/files/${json.sha256}`,
+                        "image" : API_ENDPOINTS.media.get_file + json.sha256,
                         "caption": json.mime,
                         "style" : {
                             width : "200px",
@@ -118,17 +131,6 @@ export default function Default(props)
                     }
                     return <ImageContainer key={index} {...imgProp} imgError={e => console.log("image errr")}></ImageContainer>;
                 })}
-
-            </nav>
-
-            <main class="flex-1 overflow-y-scroll px-80 py-12">
-            {/* PUT ALL DISPLAY STUFF IN HERE, ANYTHING OUTSIDE MAY NOT BE FORMATED CORRECTLY */}
-
-           
-
-
-                <p>Hello world, you are on home page {(page).toString()}</p>
-
             </main>
         </div>
     )
