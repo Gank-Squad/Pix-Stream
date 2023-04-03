@@ -23,7 +23,7 @@ export default function Invalid(props)
         <div>
             <center>
                 <h1 class="pt-6 pb-6 text-xl font-bold">404 unknown page</h1>
-                <button class="box-border h-16 w-48 p-4 border-2 hover:box-content" onClick={redirect}>Return Home</button>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={redirect}>Return Home</button>
             </center>
         </div>
     )

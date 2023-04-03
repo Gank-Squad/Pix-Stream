@@ -5,7 +5,7 @@ import {BrowserRouter as Router,Routes,Route} from "react-router-dom";
 // import './App.css';
 
 // import './css/main.css';
-// import './css/output.css';
+import './css/output.css';
 // import './css/tailwind.css';
 
 import Default from './components/pages/Default';

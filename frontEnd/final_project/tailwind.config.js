@@ -1,6 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/*.{html,js}', './src/components/pages/PageNotFound.js'],
+  content: [
+    './src/*.{html,js}', 
+    // './src/components/pages/Home.js',
+    './src/components/pages/*.js',
+    './src/components/elements/*.js',
+  
+  ],
+    
   presets: [],
   darkMode: 'media', // or 'class'
   theme: {
@@ -8,6 +15,15 @@ module.exports = {
       ...theme('colors'),
       auto: 'auto',
     }),
+    extend: {
+      colors: {
+        'custom-white': '#e4f0ff',
+        'custom-pink': '#C51F5D',
+        'custom-blue': '#243447',
+        'custom-dark-blue': '#141D26',
+        'button-depressed': '#2f455a',
+      }
+    },
     animation: {
       none: 'none',
       spin: 'spin 1s linear infinite',

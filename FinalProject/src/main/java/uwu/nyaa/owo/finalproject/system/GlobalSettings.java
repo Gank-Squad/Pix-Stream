@@ -10,10 +10,18 @@ public class GlobalSettings
 {
     public static boolean IS_DEBUG = true;
     
-    public static String IMAGE_MAGICK_PATH = "C:/bin/imageMagick"; // "F:/Programs/ImageMagick";
-    public static String FFMPEG_PATH = "C:/bin/ffmpeg/ffmpeg.exe";//"F:/Programs/FFMPEG/ffmpeg-2023-03-05/bin/ffmpeg";
-    public static String FFPROBE_PATH = "C:/bin/ffmpeg/ffprobe.exe";//"F:/Programs/FFMPEG/ffmpeg-2023-03-05/bin/ffprobe";
-    
+//    public static String IMAGE_MAGICK_PATH = "C:/bin/imageMagick"; // "F:/Programs/ImageMagick";
+    public static String IMAGE_MAGICK_PATH = "F:/Programs/ImageMagick";
+
+
+//    public static String FFMPEG_PATH = "C:/bin/ffmpeg/ffmpeg.exe";//"F:/Programs/FFMPEG/ffmpeg-2023-03-05/bin/ffmpeg";
+    public static String FFMPEG_PATH = "F:/Programs/FFMPEG/ffmpeg-2023-03-05/bin/ffmpeg";
+
+
+//    public static String FFPROBE_PATH = "C:/bin/ffmpeg/ffprobe.exe";//"F:/Programs/FFMPEG/ffmpeg-2023-03-05/bin/ffprobe";
+    public static String FFPROBE_PATH = "F:/Programs/FFMPEG/ffmpeg-2023-03-05/bin/ffprobe"; // "C:/bin/ffmpeg/ffprobe.exe"
+
+
     public static final Path LOGS_DIR_PATH = Paths.get(".", "logs");
     
     public static Level LOG_LEVEL = Level.ALL;
