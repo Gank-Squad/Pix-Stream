@@ -84,11 +84,11 @@ public class TableTag
      * @return The tag id or -1
      * @throws NullPointerException if the tag is null
      */
-    public static int getTagID(String fulltag) throws NullPointerException
+    public static int getTagId(String fulltag) throws NullPointerException
     {
         try (Connection c = DatabaseConnection.getConnection())
         {
-            return getTagID(fulltag, c);
+            return getTagId(fulltag, c);
         }
         catch (SQLException e)
         {
@@ -106,7 +106,7 @@ public class TableTag
      * @throws SQLException
      * @throws NullPointerException If the tag or db connection is null
      */
-    public static int getTagID(String fulltag, Connection c) throws SQLException, NullPointerException
+    public static int getTagId(String fulltag, Connection c) throws SQLException, NullPointerException
     {
         // TODO: make this use 1 query instead of 3
 

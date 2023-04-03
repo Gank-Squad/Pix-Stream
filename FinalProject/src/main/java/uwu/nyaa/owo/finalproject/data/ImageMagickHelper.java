@@ -86,15 +86,19 @@ public class ImageMagickHelper
             return;
 
         IMOperation op = new IMOperation();
-        op.addImage(); // input
-        op.addImage(path); // output
-
+        
         if(imgformat != FileFormat.UNKNOWN && FileFormat.isImageType(imgformat))
         {
+            Logger.debug("Setting ImageMagick save format to {}", FileFormat.getFileExtension(imgformat));
             op.format(FileFormat.getFileExtension(imgformat));
         }
         
+        op.addImage(); // input
+        op.addImage(path); // output
+
+
         ConvertCmd convert = new ConvertCmd();
+        
 
         convert.run(op, buf);
     }

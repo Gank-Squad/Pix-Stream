@@ -229,12 +229,23 @@ public class TableHashTag
     {
         List<HashInfo> infos = TableFile.getFiles(500, false);
         List<FullTag> tags = TableTag.getTags(500);
-        
+
+        if(tags.size() == 0)
+            throw new RuntimeException("cannot insert random accosiations because tags return 0");
+
+        if(infos.size() == 0)
+            throw  new RuntimeException("cannot insert random associastions because files return 0");
+
         for(int i = 0; i < ammount; i++)
         {
             long shittyRandom1 = ((long)System.currentTimeMillis()/(1 + i) % 200) + (int)(System.nanoTime() * (1+i) * (1+i)) / 3;
             long shittyRandom2 = ((long)System.nanoTime()/(1 + i) % 200) + (int)(System.currentTimeMillis() * (1+i) * (1+i)) / 3;
-            
+
+            if(shittyRandom2 == 0 || shittyRandom1 == 0){
+                i --;
+                continue;
+
+            }
             if(shittyRandom1 < 0)
                 shittyRandom1 = - shittyRandom1;
             

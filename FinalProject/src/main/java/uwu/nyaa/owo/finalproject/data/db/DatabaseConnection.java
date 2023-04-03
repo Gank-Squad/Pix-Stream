@@ -1,5 +1,7 @@
 package uwu.nyaa.owo.finalproject.data.db;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,11 +10,15 @@ import java.sql.Statement;
 
 import org.im4java.core.IM4JavaException;
 import org.im4java.process.ProcessStarter;
+import org.postgresql.xml.NullErrorHandler;
 import org.tinylog.Logger;
 
 import uwu.nyaa.owo.finalproject.data.FFmpegHelper;
+import uwu.nyaa.owo.finalproject.data.FileProcessor;
 import uwu.nyaa.owo.finalproject.data.ImageMagickHelper;
+import uwu.nyaa.owo.finalproject.data.ImageProcessor;
 import uwu.nyaa.owo.finalproject.data.PathHelper;
+import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
 import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 import uwu.nyaa.owo.finalproject.system.ResourceLoader;
 
@@ -173,7 +179,7 @@ public class DatabaseConnection
         ImageMagickHelper.checkImageMagick();
         FFmpegHelper.checkFFmpeg();
         
-        String test = "C:/bin/1.png";
+        String test = "/home/minno/Pictures/6c6b02a2c269f2013587de08c2bad122bb343ab8ec18a61518cb3c7f9b443d8e";
 //        createDatabase();
 //        createTables(true);
         
@@ -208,6 +214,25 @@ public class DatabaseConnection
         TableHashTag.getFilesContaining(new int[] { 1, 2}, 100, false).forEach(x -> {
             System.out.println(x);
         });
+        
+        File f = new File (test);
+        Logger.info(f.exists());
+        BufferedImage buff = ImageProcessor.loadImage(f);
+        
+        if(buff == null)
+            throw new NullPointerException();
+        
+        String output = "/home/minno/Sync/MSI-Portable-2Way/2023Winter/SoftwareSystems/Assignments/w23-csci2020u-project-team16/FinalProject/client_files/t81/81a9d81dd03f2bf3726b288255f300115efe91fafa3a3b42366053689a4d9c0d";
+        File c = new File(output);
+        
+        if(c.getParentFile() != null)
+            c.getParentFile().mkdirs();
+        
+        ImageMagickHelper.saveImageWithMagick(buff, test, FileFormat.Image.JPG);
+        
+//        FileProcessor.addFile(new  File(test));
+        
+        
         /*
          
           SELECT tbl_tag.tag_id, tbl_namespace.namespace, tbl_subtag.subtag 

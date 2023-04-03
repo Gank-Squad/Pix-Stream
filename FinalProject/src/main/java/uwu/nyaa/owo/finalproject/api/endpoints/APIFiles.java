@@ -185,7 +185,7 @@ public class APIFiles
     @POST
     @Path("/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response getFiles() throws IOException, ServletException
+    public Response upload_files() throws IOException, ServletException
     {
         final String BOUNDARY = MultiPartFormDataParser.getBoundary(request);
         final InputStream FORM_STREAM = MultiPartFormDataParser.getResetableInputStream(request.getInputStream());
@@ -228,6 +228,8 @@ public class APIFiles
             fout.write(header);
             p.partInputStream.transferTo(fout);
         }
+
+        Logger.info("Saved upload to {}, exists {}", file, file.exists());
         
         FileProcessor.addFile(file);
 
