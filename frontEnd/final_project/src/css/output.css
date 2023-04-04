@@ -680,6 +680,10 @@ p
   width: 15rem;
 }
 
+.w-80 {
+  width: 20rem;
+}
+
 .flex-1 {
   flex: 1 1 0%;
 }
@@ -937,6 +941,11 @@ p
   padding-right: 3rem;
 }
 
+.py-\[-4px\] {
+  padding-top: -4px;
+  padding-bottom: -4px;
+}
+
 .pb-6 {
   padding-bottom: 1.5rem;
 }
@@ -947,6 +956,10 @@ p
 
 .pt-1 {
   padding-top: 0.25rem;
+}
+
+.pb-4 {
+  padding-bottom: 1rem;
 }
 
 .text-left {

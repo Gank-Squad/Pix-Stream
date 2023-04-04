@@ -120,8 +120,9 @@ export default function Default(props)
                 </ul>
             </nav>
 
-            <header class="w-full p-4 h-20 bg-custom-dark-blue text-left">
-                <div>
+            <header class="w-full p-4 h-20 bg-custom-dark-blue">
+                <table>
+                <td><div class="text-left inline-block">
                     {/* The following is the code for the hamburger menu
                     but I'm not really sure how to make it show up inline with everything else */}
                     <button
@@ -146,12 +147,13 @@ export default function Default(props)
                     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l" onClick={redirect_home}>Home</button>
                     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 border border-blue-700 px-4" disabled onClick={redirect_tags}>Tags</button>
                     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-r" onClick={redirect_upload}>Upload</button>
-                </div>
+                </div></td>
+
+                <td class="center"><div class="text-center inline"><p class="text-xl font-bold">PixStream</p></div></td>
+                </table>
             </header>
 
-            
-
-            <main class="overflow-y-scroll py-12 px-72" ref={main}>
+            <main class="overflow-y-auto py-12 px-72" ref={main}>
             {/* PUT ALL DISPLAY STUFF IN HERE, ANYTHING OUTSIDE MAY NOT BE FORMATED CORRECTLY */}
 
                 <p>You are on the tags page eeeeeeeeeeeeeeeeeeeeee</p>

@@ -141,13 +141,13 @@ export default function Default(props)
                             </svg>
                         </span>
                     </button>
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l" onClick={redirect_home}>Home</button>
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 border border-blue-700 px-4" disabled onClick={redirect_tags}>Tags</button>
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l" disabled onClick={redirect_home}>Home</button>
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 border border-blue-700 px-4" onClick={redirect_tags}>Tags</button>
                     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-r" onClick={redirect_upload}>Upload</button>
                 </div>
             </header>
 
-            <main class="flex-1 overflow-y-scroll px-80 py-12" ref={main}>
+            <main class="flex-1 overflow-y-auto px-80 py-12" ref={main}>
             {/* PUT ALL DISPLAY STUFF IN HERE, ANYTHING OUTSIDE MAY NOT BE FORMATED CORRECTLY */}
 
                 <p>Hello world, you are on home page {(page).toString()}</p>
