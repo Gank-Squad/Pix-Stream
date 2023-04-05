@@ -35,7 +35,7 @@ export default function TagSidebar(props)
 
 
     if (tags == null) {
-        return <div>Loading...</div>;
+        return <p>Loading...</p>;
     }
 
     // standard functions 
