@@ -29,12 +29,12 @@ public class APIApplication extends Application
         Logger.info("Running as debug: {}", GlobalSettings.IS_DEBUG);
 
         GlobalSettings.updatePathsForLinux();
-        
+        GlobalSettings.updatePathsFromEnv();
+
         PathHelper.createMediaDirectory();
         DatabaseConnection.createDatabase();
         DatabaseConnection.createTables(true);
 
-        ProcessStarter.setGlobalSearchPath(GlobalSettings.IMAGE_MAGICK_PATH);
         ImageMagickHelper.checkImageMagick();
         FFmpegHelper.checkFFmpeg();
         

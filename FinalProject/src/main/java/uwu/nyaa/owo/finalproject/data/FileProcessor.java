@@ -350,7 +350,7 @@ public class FileProcessor
             Logger.debug("About to create thumbnail from {} into {}", mediaFile, thumbPath);
             ImageProcessor.createThumbnail(mediaFile, thumbFile);
         }
-        else if(FileFormat.isVideoType(mimeType))
+        else if(FileFormat.isVideoType(mimeType) || FileFormat.isAudioType(mimeType))
         {
             VideoInfo i = VideoProcessor.getVideoInfo(f);
             
@@ -375,16 +375,15 @@ public class FileProcessor
                 Logger.warn(e, "Failed to encode video file {}", f);
                 return false;
             }
-            
-            VideoProcessor.createThumbnail(tmpMediaFile, thumbFile);
-            
+
+            if(!FileFormat.isAudioType(mimeType))
+            {
+                VideoProcessor.createThumbnail(tmpMediaFile, thumbFile);
+            }
+
             tmpMediaFile.delete();
         }
-        else if(FileFormat.isAudioType(mimeType))
-        {
-            has_audio = true;
-        }
-   
+
         int hash_id = TableHash.insertHash(b.SHA256);
         
         if(hash_id == -1)
