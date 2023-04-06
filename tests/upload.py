@@ -28,6 +28,35 @@ def upload():
     print(a.status_code)
     print(a.json())
 
+def uploadpost():
+
+    file = DATA + "/img/2.jpg"
+    # file = DATA + "/bad/conjure.exe"
+    # file = DATA + "/vid/1.mp4"
+    # file = DATA + "/vid/2.mkv"
+    # file = DATA + "/img/4.jpg"
+    # file = DATA + "4.mp4"
+    # file = DATA + "6.png"
+    # file = DATA +  "/vid/1.mp4"
+    # file = DATA + "2.jpg"
+    # file = DATA + "vid.flac"
+
+
+    payload = {
+        "data": open(file, "rb"),
+        "title" : "Hello world, this is a title",
+        "description": "nyh nyahn yhan hyna la "
+    }
+
+    a = requests.post(f"http://{host}:8080/FinalProject-1.0-SNAPSHOT/api/files/uploadpost/", files=payload)
+
+    if(a.status_code == 200):
+        print(a.status_code)
+        print(a.json())
+    else:
+        print(a.status_code)
+        print(a.reason)
+
 def post_tags():
 
     payload = [{
@@ -52,5 +81,5 @@ def add_tags(tag_ids : list[int], file_hash: str):
 
 
 # post_tags()
-# upload()
-add_tags([1, 2, 3, 4, 5, 6], "1073d143a1848e66c9a093eeca19ba6c76608c150a056b7208fc8c369ee1a386")
+uploadpost()
+# add_tags([1, 2, 3, 4, 5, 6], "1073d143a1848e66c9a093eeca19ba6c76608c150a056b7208fc8c369ee1a386")

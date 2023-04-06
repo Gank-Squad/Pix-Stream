@@ -20,7 +20,7 @@ export default function Default(props)
     const [searchItems , setSearchItems] = React.useState([]);
     const [files       , setFiles  ] = React.useState([]);
     const [filePreviews, setPreview] = React.useState([]);
-    const [messageBox  , setMessage] = React.useState([]);
+    const [displayProgress  , setProgress] = React.useState("");
 
     const [images, setImageData] = React.useState([]);
 
@@ -141,27 +141,37 @@ export default function Default(props)
 
             data.append("data", f);
 
-            fetch(API_ENDPOINTS.media.upload_file, {
-                method: "post",
-                body: data
-            }).then(response => response.json().then(json => 
-                {
-                    console.log(json);
+            const totalSize = f.size;
+            const uploadFile = f.name;
+            
+            function progress(event)
+            {
+                const loaded = event.loaded >= totalSize ? totalSize : event.loaded;
+                setProgress(`${uploadFile}: uploaded ${loaded} / ${totalSize} bytes`);
+            }
 
-                    if(!json.upload_accepted || json.hash === "" || json.hash === undefined)
-                        return;
+            await postData(API_ENDPOINTS.media.upload_file, data, {}, progress)
+            .then(response => JSON.parse(response.response))
+            .then(json => 
+            {
+                console.log(json);
 
-                    const url = formatStringB(API_TEMPLATES.add_tag_to_file.url, json.hash);
-                    console.log(url);
-                    fetch(url, {
-                        method: "post",
-                        "headers" : {
-                            "Content-Type" : "application/json"
-                        },
-                        body:  JSON.stringify(searchItems)
-                    })
-            }))
-            .catch(err => console.log(err));
+                if(!json.upload_accepted || json.hash === "" || json.hash === undefined)
+                    return;
+    
+                const url = formatStringB(API_TEMPLATES.add_tag_to_file.url, json.hash);
+                console.log(url);
+                fetch(url, {
+                    method: "post",
+                    "headers" : {
+                        "Content-Type" : "application/json"
+                    },
+                    body:  JSON.stringify(searchItems)
+                }).then(response => {
+                    console.log(response.status);
+                })
+                })
+                .catch(err => console.log(err));
         }
     }
 
@@ -207,7 +217,7 @@ export default function Default(props)
                 <tr><td><textarea placeholder="Description" className="w-[512px] h-32 text-lg"/></td></tr>
                 
                 <tr><td><p className="text-xl font-bold pt-4">Upload Media</p></td></tr>
-                <tr><td><input className="text-custom-white" type="file" accept="image/*,video/*" ref={mediaFile} onChange={generatePreview}/></td></tr>
+                <tr><td><input className="text-custom-white" type="file" multiple="multiple" accept="image/*,video/*" ref={mediaFile} onChange={generatePreview}/></td></tr>
 
                 <tr><td><p className="text-xl font-bold pt-4">Upload Subtitle Track</p></td></tr>
                 <tr><td><input className="text-custom-white pb-4" type="file" accept=".srt" ref={subFile}/></td></tr>
@@ -241,13 +251,24 @@ export default function Default(props)
                         else
                         {
                             props = {
-                                m3u8: API_ENDPOINTS.media.get_file + "C38028E6C58EF639317C357F71976EDD66FF6524A63D590CF213D3562873FE21",
-                                domain: API_ENDPOINTS.media.get_file + "C38028E6C58EF639317C357F71976EDD66FF6524A63D590CF213D3562873FE21/"
+                                hlsUrl: API_ENDPOINTS.media.get_file + "C38028E6C58EF639317C357F71976EDD66FF6524A63D590CF213D3562873FE21/",
                             }
 
                             return <VideoPlayer {...props}></VideoPlayer>;
                         }
                     })
+                   }
+
+
+                   {
+                    function(){
+
+                        if(displayProgress === "" || !displayProgress)
+                        {
+                            return ;
+                        }
+                        return <p>{displayProgress}</p>;
+                    }()
                    }
                 </div>
                 

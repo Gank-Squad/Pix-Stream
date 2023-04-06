@@ -1,4 +1,4 @@
-function postData(url, data, headers = {}, progress = null) 
+function postData(url, data, headers = {}, progress = null, onload = null) 
 {
     // blessed promise so you can await this qt
     return new Promise(function (resolve, reject) 
@@ -16,20 +16,27 @@ function postData(url, data, headers = {}, progress = null)
         // set update handler 
         xhr.upload.onprogress = progress;
 
-        // handle resolve and reject
-        xhr.onload = function () 
+        if(onload)
         {
-            const status = xhr.status;
-            
-            if (status === 200) 
+            xhr.onload = onload;
+        }
+        else 
+        {
+            // handle resolve and reject
+            xhr.onload = function () 
             {
-                resolve(xhr);
-            } 
-            else 
-            {
-                reject(xhr);
-            }
-        };
+                const status = xhr.status;
+                
+                if (status === 200) 
+                {
+                    resolve(xhr);
+                } 
+                else 
+                {
+                    reject(xhr);
+                }
+            };
+        }
 
         xhr.send(data);
     });
@@ -61,8 +68,18 @@ export function formatStringB(formatString, ...values)
 
         return value;
     });
-    
+
     return formattedString;
+}
+
+export function addQueryParams(url, queryParams) 
+{
+    const searchParams = new URLSearchParams(queryParams);
+    const queryString = searchParams.toString();
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}${queryString}`;
   }
+
+
 
 export default postData;

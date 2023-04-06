@@ -7,11 +7,17 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.logging.Level;
 
 public class GlobalSettings
 {
     public static boolean IS_DEBUG = false;
+    
+
+    public static final ZonedDateTime ZONED_DATE_TIME = ZonedDateTime.now(ZoneOffset.UTC);
+    
     
 //    public static String IMAGE_MAGICK_PATH = "C:/bin/imageMagick"; // "F:/Programs/ImageMagick";
     public static String IMAGE_MAGICK_PATH = "F:/Programs/ImageMagick";

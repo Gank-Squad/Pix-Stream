@@ -97,15 +97,12 @@ export default function VideoPlayer(props)
     }, []);
 
 
-
     return (
-        <div>
-         
             <video className="video" 
                     controls 
                     ref={playerRef} 
-                    autoPlay={props.autoPlay}></video>
-        </div>
+                    autoPlay={props.autoPlay}
+                    style={props.style}></video>
     );
 }
 

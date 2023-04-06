@@ -2,16 +2,19 @@ package uwu.nyaa.owo.finalproject.data;
 
 import java.io.File;
 
+import org.tinylog.Logger;
 import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 
 public class PathHelper
 {
     public static final File MEDIA_DIR_BASE;
-    
+
+    static  {
+        MEDIA_DIR_BASE = new File(GlobalSettings.MEDIA_PATH);
+        MEDIA_DIR_BASE.mkdirs();
+    }
     public static void initPaths()
     {
-        MEDIA_DIR_BASE = new File(GlobalSettings.MEDIA_PATH);
-        
         MEDIA_DIR_BASE.mkdirs();
         
         if(!MEDIA_DIR_BASE.isDirectory())
@@ -53,7 +56,7 @@ public class PathHelper
 
             if(GlobalSettings.IS_DEBUG)
             {
-               WrappedLogger.log(Level.INFO, "Creating: " + subDir.getAbsolutePath());
+               Logger.debug("Creating: {}", subDir.getAbsolutePath());
             }
             
             File subDir2 = new File(MEDIA_DIR_BASE, GlobalSettings.THUMB_PATH_PREFIX + hex);
@@ -61,7 +64,7 @@ public class PathHelper
 
             if(GlobalSettings.IS_DEBUG)
             {
-               WrappedLogger.log(Level.INFO, "Creating: " +subDir2.getAbsolutePath());
+                Logger.debug("Creating: {}", subDir2.getAbsolutePath());
             }
         }
     }

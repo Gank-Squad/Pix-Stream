@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { API_ENDPOINTS, API_TEMPLATES } from '../../constants';
-import { formatStringB } from '../../requests';
+import { formatStringB, addQueryParams } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
 import ImageContainer from '../elements/Image';
 import VideoPlayer from '../elements/Video';
@@ -13,30 +13,43 @@ export default function Default(props)
     const params = new URLSearchParams(window.location.search);
     const page = parseInt(params.get('page')) || 1;
 
-    const [images, setImageData] = React.useState([]);
+    const [search, setSearch] = React.useState([]);
+    const [mediaData, setMediaData] = React.useState([]);
 
 
     React.useEffect(() => 
     {
-        console.log(`Page ${page} was loaded!`);
-        console.log(`Cookies from props: ${cookies}`);
-        console.log("images changed");
+        console.log("Updating media with new search " + JSON.stringify(search));
         loadMedia();
-    }, [cookies, page, images]);
+    }, [search]);
 
-
-    // load media
-    
 
     function loadMedia()
     {
-        console.log("loading media from api")
-        fetch(API_ENDPOINTS.media.get_file + "?limit=10", {
-            method: "get",
-        }).then(resp => {
+        let url = addQueryParams(API_ENDPOINTS.media.get_file, {limit : 10});
+
+        const fetchData = {
+            method : "GET"
+        }
+
+        if(search.length !== 0)
+        {
+            const ids = search.map(element => ({ tag_id : element.tag_id }));
+
+            url = addQueryParams(API_TEMPLATES.get_files_with_tags.url, {
+                tags : true
+            });
+            fetchData.method = "POST";
+            fetchData.headers = { "Content-Type": "application/json" };
+            fetchData.body = JSON.stringify(ids);
+        }
+
+
+        console.log("loading media from api " + url + " " + JSON.stringify(fetchData));
+
+        fetch(url, fetchData).then(resp => {
             if (resp.status === 200)
             {
-                console.log("got files from api")
                 return resp.json();    
             }
             else
@@ -45,7 +58,7 @@ export default function Default(props)
                 return Promise.reject("server");
             }
         }).then(dataJson => {
-            setImageData(dataJson);
+            setMediaData(dataJson);
         }).catch(err => {
             if (err === "server") return
             console.log(err)
@@ -55,43 +68,7 @@ export default function Default(props)
 
     function searchCallback(searchItems)
     {
-        // if(searchItems.length === 0)
-        // {
-        //     setImageData([]);
-        //     return;
-        // }
-
-        let ids = []
-        searchItems.forEach(element => 
-        {
-            ids.push({
-                tag_id: element.tag_id
-            })
-        });
-
-        console.log("sending " + JSON.stringify(ids));
-
-        fetch(API_TEMPLATES.get_files_with_tags.url, {
-            method: "post",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(ids)
-        })
-            .then(resp => {
-                if (resp.status === 200) {
-                    return resp.json()
-                } else {
-                    console.log("Status: " + resp.status)
-                    return Promise.reject("server")
-                }
-            })
-            .then(dataJson => {
-
-                setImageData(dataJson);
-            })
-            .catch(err => {
-                if (err === "server") return
-                console.log(err)
-            })
+        setSearch(searchItems);
     }
 
     function redirect_tags()
@@ -182,15 +159,20 @@ export default function Default(props)
             {/* PUT ALL DISPLAY STUFF IN HERE, ANYTHING OUTSIDE MAY NOT BE FORMATED CORRECTLY */}
 
                 <p>Hello world, you are on home page {(page).toString()}</p>
-                {images.map((json, index) => 
+                {mediaData.map((json, index) => 
                 {
-                    const imgProp = {
+                    const props = {
                         "image" : formatStringB(API_TEMPLATES.get_file.url, json.sha256),
+                        "hlsUrl": formatStringB(API_TEMPLATES.get_file.url, json.sha256),
                         "caption": json.mime,
                         "style" : {
-                            width : "200px",
-                            border : "1px solid white",
-                            // "verticalAlign" : "middle",
+                            display: 'inline-block',
+                            width: '200px',
+                            'margin': '20px',
+                            border: '1px solid white',
+                            // width : "200px",
+                            // border : "1px solid white",
+                            "verticalAlign" : "bottom",
 
                             // "display": "flex",
                             // width: "195px",
@@ -203,13 +185,10 @@ export default function Default(props)
 
                     if(json.mime_int >= 20)
                     {
-                        const videoProps = {
-                                hlsUrl: imgProp.image,
-                        };
-                        return <VideoPlayer  key={index} {...videoProps}></VideoPlayer>;
+                        return <VideoPlayer key={index} {...props}></VideoPlayer>;
                     }
                     
-                    return <ImageContainer key={index} {...imgProp} imgError={e => console.log("image errr")}></ImageContainer>;
+                    return <ImageContainer key={index} {...props} imgError={e => console.log("image errr")}></ImageContainer>;
                 })}
             </main>
         </div>
