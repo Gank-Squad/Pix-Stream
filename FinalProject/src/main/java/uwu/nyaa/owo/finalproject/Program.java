@@ -40,7 +40,7 @@ public class Program
     
     public static void main(String[] args)
     {
-        GlobalSettings.IS_DEBUG = true;
+//        GlobalSettings.IS_DEBUG = true;
         GlobalSettings.updatePathsForLinux();
         FFmpegHelper.checkFFmpeg();
         String[] tests = new String[] {

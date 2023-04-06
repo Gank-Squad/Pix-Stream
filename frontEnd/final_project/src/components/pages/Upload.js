@@ -87,7 +87,8 @@ export default function Default(props)
     }
 
     const tagSidebarProps = {
-        "searchCallback" : searchCallback
+        "searchCallback" : searchCallback,
+        "hideSearchButton" : true,
     }
 
     const mediaFile = React.useRef("");

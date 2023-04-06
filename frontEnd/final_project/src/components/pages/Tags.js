@@ -83,7 +83,7 @@ export default function Default(props)
 
     const tagSidebarProps = {
         "searchCallback" : searchCallback,
-        "hideSearchButton" : true,
+        "hideSearchButton" : false,
     }
 
     const sidebar = React.useRef("");
