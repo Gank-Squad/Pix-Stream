@@ -3,20 +3,11 @@ package uwu.nyaa.owo.finalproject.data.models;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import uwu.nyaa.owo.finalproject.data.ByteHelper;
 
-public class BareHashInfo
+public class HashInfoBase
 {
-    public BareHashInfo()
-    {
-        hash_id = -1;
-    }
-    public BareHashInfo(FileUpload fa)
-    {
-        hash_id = fa.hash_id;
-        hash = fa.hashes.SHA256;
-    }
-
     @JsonProperty("hash_id")
     public int hash_id;
 
@@ -25,14 +16,25 @@ public class BareHashInfo
 
     private String hash_string = null;
 
+    public HashInfoBase()
+    {
+        hash_id = -1;
+    }
+
+    public HashInfoBase(FileUpload fa)
+    {
+        hash_id = fa.hash_id;
+        hash = fa.hashes.SHA256;
+    }
+
     @JsonGetter
-    @JsonProperty("sha256")
+    @JsonProperty("hash")
     public String getStringHash()
     {
-        if(this.hash == null)
+        if (this.hash == null)
             throw new NullPointerException("Cannot get the string hash because the byte[] hash is null");
 
-        if(this.hash_string == null)
+        if (this.hash_string == null)
             this.hash_string = ByteHelper.bytesToHex(this.hash);
 
         return this.hash_string;

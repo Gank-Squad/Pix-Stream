@@ -162,8 +162,8 @@ export default function Default(props)
                 {mediaData.map((json, index) => 
                 {
                     const props = {
-                        "image" : formatStringB(API_TEMPLATES.get_file.url, json.sha256),
-                        "hlsUrl": formatStringB(API_TEMPLATES.get_file.url, json.sha256),
+                        "image" : formatStringB(API_TEMPLATES.get_file.url, json.hash),
+                        "hlsUrl": formatStringB(API_TEMPLATES.get_file.url, json.hash),
                         "caption": json.mime,
                         "style" : {
                             display: 'inline-block',

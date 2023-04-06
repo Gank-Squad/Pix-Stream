@@ -1,12 +1,13 @@
 package uwu.nyaa.owo.finalproject.data.models;
 
+import java.io.File;
+
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import uwu.nyaa.owo.finalproject.data.ByteHelper;
 import uwu.nyaa.owo.finalproject.data.FileProcessor;
-
-import java.io.File;
 
 public class FileUpload
 {
@@ -26,7 +27,7 @@ public class FileUpload
     @JsonGetter
     public String getHash()
     {
-        if(this.hashes != null)
+        if (this.hashes != null)
         {
             return ByteHelper.bytesToHex(this.hashes.SHA256);
         }

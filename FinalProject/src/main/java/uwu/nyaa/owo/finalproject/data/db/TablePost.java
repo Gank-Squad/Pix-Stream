@@ -6,10 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 
 import org.tinylog.Logger;
+
+import uwu.nyaa.owo.finalproject.data.models.Post;
 
 public class TablePost
 {
@@ -87,5 +90,36 @@ public class TablePost
         }
         
         return post_id;
+    }
+    
+    
+    
+    public static List<Post> getPosts(int limit)
+    {
+        try (Connection c = DatabaseConnection.getConnection())
+        {
+            return  getPosts(limit, c);
+        }
+        catch (SQLException e) 
+        {
+            Logger.warn(e, "Error while getting posts with limit {}", limit);
+        }
+        
+        return new LinkedList<>();
+    }
+    
+    public static List<Post> getPosts(int limit, Connection c) throws SQLException
+    {
+        List<Post> posts = new LinkedList<>();
+        
+        final String SQL = "";
+        
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+            
+        }
+        
+        
+        return posts;
     }
 }
