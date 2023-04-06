@@ -5,6 +5,8 @@ import { API_ENDPOINTS } from '../../constants';
 import ImageContainer from '../elements/Image';
 import VideoPlayer from '../elements/Video';
 
+import postData from '../../requests';
+
 export default function Default(props)
 {
     const { cookies } = props;
@@ -86,6 +88,7 @@ export default function Default(props)
 
     const mediaFile = React.useRef("");
     const subFile = React.useRef("");
+    const title = React.useRef("");
 
 
     function generatePreview()
@@ -137,24 +140,40 @@ export default function Default(props)
             else
             {
                 props = {
-                    m3u8: API_ENDPOINTS.media.get_file + "D2765EC844F9C92DF35152A5725E0ED381221F202B9BDC190DF599942DEFE930",
-                    domain: API_ENDPOINTS.media.get_file + "D2765EC844F9C92DF35152A5725E0ED381221F202B9BDC190DF599942DEFE930/"
+                    m3u8: API_ENDPOINTS.media.get_file + "C38028E6C58EF639317C357F71976EDD66FF6524A63D590CF213D3562873FE21",
+                    domain: API_ENDPOINTS.media.get_file + "C38028E6C58EF639317C357F71976EDD66FF6524A63D590CF213D3562873FE21/"
                 }
 
                 r.push(<VideoPlayer {...props}></VideoPlayer>);
             }
             
-            // alert(files[i].type + (files[i].type == "image/png"))
-            // alert(typeof(files[i].type))
-            
-            
-            
         }
         return r;
     }
 
-    function beginUpload()
+    async function beginUpload(e)
     {
+        e.preventDefault();
+
+        if (!files || files.length < 1)
+        {
+            alert("You gotta add a file >:(")
+            return;
+        }
+
+        for (let f of files)
+        {
+            const data = new FormData();
+
+            data.append("data", f);
+
+            fetch(API_ENDPOINTS.media.upload_file, {
+            method: "post",
+
+            body: data
+            })
+        }
+        
 
     }
 
@@ -191,7 +210,7 @@ export default function Default(props)
 
                 <table class="py-8 static inline-block">
                 <tr><p class="text-xl font-bold">Title</p></tr>
-                <tr><input type="text" placeholder="Title" class="w-[512px] h-8 text-xl"/></tr>
+                <tr><input type="text" placeholder="Title" class="w-[512px] h-8 text-xl" ref={title}/></tr>
                 
                 <tr><p class="text-xl font-bold pt-4">Description (optional)</p></tr>
                 <tr><textarea placeholder="Description" class="w-[512px] h-32 text-lg"/></tr>

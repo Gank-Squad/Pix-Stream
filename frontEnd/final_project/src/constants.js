@@ -24,7 +24,8 @@ export const SERVER_HOST = "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/
 export const API_ENDPOINTS = {
     media: {
         get_file : `${SERVER_HOST}files/`,
-        get_tags : `${SERVER_HOST}tags/`
+        get_tags : `${SERVER_HOST}tags/`,
+        upload_file : `${SERVER_HOST}files/upload/`
     },
     search : {
         get_files_with_tags : `${SERVER_HOST}tags/files/?tags=true`,
