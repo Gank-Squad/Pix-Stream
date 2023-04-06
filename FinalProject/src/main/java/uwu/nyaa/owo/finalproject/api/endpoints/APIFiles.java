@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.tinylog.Logger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,9 +33,12 @@ import uwu.nyaa.owo.finalproject.data.MultiPartFormDataParser;
 import uwu.nyaa.owo.finalproject.data.PartInputStream;
 import uwu.nyaa.owo.finalproject.data.PathHelper;
 import uwu.nyaa.owo.finalproject.data.db.TableFile;
+import uwu.nyaa.owo.finalproject.data.db.TableHash;
+import uwu.nyaa.owo.finalproject.data.db.TableHashTag;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
 import uwu.nyaa.owo.finalproject.data.models.FileUpload;
+import uwu.nyaa.owo.finalproject.data.models.FullTag;
 import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 
 @Path("/files")
@@ -180,7 +185,63 @@ public class APIFiles
                 .entity(this.jsonMapper.writeValueAsString(items))
                 .build();
     }
-    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{filehash}/tag")
+    public Response addTagsToFile(String json, @PathParam("filehash") String fileHash)
+    {
+        if (fileHash.length() != 64 || !fileHash.matches("^[a-fA-F0-9]+$"))
+        {
+            return Response.status(400, "Bad request, must be SHA256").build();
+        }
+
+        byte[] sha256 = ByteHelper.bytesFromHex(fileHash);
+        int hash_id = TableHash.getHashID(sha256);
+
+        if(hash_id == -1)
+        {
+            return Response.status(404, "The file does not exist").build();
+        }
+
+        List<FullTag> tags;
+        try
+        {
+            TypeFactory typeFactory = jsonMapper.getTypeFactory();
+            tags = jsonMapper.readValue(json, typeFactory.constructCollectionType(List.class, FullTag.class));
+        }
+        catch (RuntimeException e)
+        {
+            Logger.error(e);
+            return Response.status(500).build();
+        }
+        catch (JsonMappingException e)
+        {
+            Logger.warn(e, "Failed to map json in getFilesWithTags, ignoring");
+            return Response.status(400).build();
+        }
+        catch (JsonProcessingException e)
+        {
+            Logger.warn(e, "Failed to process json in getFilesWithTags, ignoring");
+            return Response.status(400).build();
+        }
+
+        if(tags == null)
+        {
+            Logger.error("Tags was null after no error while reading json??");
+            return Response.status(500).build();
+        }
+
+        for(FullTag t : tags)
+        {
+            if(t.tag_id == -1)
+            {
+                continue;
+            }
+            TableHashTag.insertAssociation(hash_id, t.tag_id);
+        }
+
+        return Response.status(200).build();
+    }
     
     
     @POST
