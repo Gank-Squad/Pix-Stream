@@ -12,7 +12,7 @@ export default function ImageContainer(props)
     return (
         <div className="file-container" style={style} loading="lazy">
                 <img src={image} width={"100%"} onError={imgError} alt={"failed to load"} loading="lazy" />
-                <div className="caption">{caption}</div>
+                <div class="text-custom-white"className="caption">{caption}</div>
         </div>
     )
 }

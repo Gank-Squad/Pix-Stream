@@ -104,7 +104,7 @@ export default function Default(props)
 
     return (
 
-        <div class="flex flex-col h-screen overflow-hidden">
+        <div class="flex flex-col h-screen overflow-auto">
 
 
             <nav ref={sidebar}
@@ -118,7 +118,7 @@ export default function Default(props)
             </nav>
 
 
-            <header class="w-full p-4 h-20 bg-custom-dark-blue text-left">
+            <header class="w-full p-4 h-20 bg-custom-dark-blue text-left absolute">
                 <div>
                     {/* The following is the code for the hamburger menu
                     but I'm not really sure how to make it show up inline with everything else */}

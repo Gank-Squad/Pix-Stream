@@ -10,8 +10,8 @@ export default function Default(props)
     const page = parseInt(params.get('page')) || 1;
 
     const vprops = {
-        m3u8: API_ENDPOINTS.media.get_file + "ac1794db87d07033c6e398d1e7dcbfac5c3f0bff5b6fe0b7d6b51e1399278e25",
-        domain: API_ENDPOINTS.media.get_file + "ac1794db87d07033c6e398d1e7dcbfac5c3f0bff5b6fe0b7d6b51e1399278e25/"
+        m3u8: API_ENDPOINTS.media.get_file + "D2765EC844F9C92DF35152A5725E0ED381221F202B9BDC190DF599942DEFE930",
+        domain: API_ENDPOINTS.media.get_file + "D2765EC844F9C92DF35152A5725E0ED381221F202B9BDC190DF599942DEFE930/"
     };
 
     React.useEffect(() => 

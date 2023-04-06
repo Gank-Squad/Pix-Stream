@@ -107,7 +107,7 @@ export default function Default(props)
     }
 
     return (
-        <div class="flex flex-col h-screen overflow-hidden">
+        <div class="flex flex-col h-screen overflow-auto">
 
             {/* This is the sidebar/tag search */}
             <nav ref={sidebar}
@@ -120,7 +120,7 @@ export default function Default(props)
                 </ul>
             </nav>
 
-            <header class="w-full p-4 h-20 bg-custom-dark-blue">
+            <header class="w-full p-4 h-20 bg-custom-dark-blue absolute">
                 <table>
                 <td><div class="text-left inline-block">
                     {/* The following is the code for the hamburger menu

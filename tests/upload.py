@@ -12,7 +12,7 @@ def upload():
     # file = DATA + "/vid/2.mkv"
     # file = DATA + "/img/4.jpg"
     file = DATA + "4.mp4"
-    # file = DATA + "1.png"
+    file = DATA + "1.png"
 
     payload = {
         "data": open(file, "rb")
