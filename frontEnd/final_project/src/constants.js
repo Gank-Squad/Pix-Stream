@@ -33,3 +33,16 @@ export const API_ENDPOINTS = {
         get_files_with_tags : `${SERVER_HOST}tags/files/?tags=true`,
     }
 };
+
+
+export const API_TEMPLATES = {
+    get_file        : { url: `${SERVER_HOST}files/{hash}`    , method: "GET" },
+    get_thumbnail   : { url: `${SERVER_HOST}files/t/{hash}`    , method: "GET" },
+    get_ts_file     : { url: `${SERVER_HOST}files/{hash}/{ts_fragment}`, method: "GET" },
+    get_file_tags   : { url: `${SERVER_HOST}files/tags`      , method: "GET" },
+    add_tag_to_file : { url: `${SERVER_HOST}files/{hash}/tag`, method: "POST" },
+    upload_file     : { url: `${SERVER_HOST}files/upload/`   , method: "POST" },
+
+    get_files_without_tags : { url: `${SERVER_HOST}tags/files/?tags=false`, method: "POST" },
+    get_files_with_tags    : { url: `${SERVER_HOST}tags/files/?tags=true` , method: "POST" },
+}

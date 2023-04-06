@@ -1,7 +1,8 @@
 import React from 'react';
 
 import TagSidebar from '../elements/TagSidebar';
-import { API_ENDPOINTS } from '../../constants';
+import { API_ENDPOINTS, API_TEMPLATES } from '../../constants';
+import { formatStringB } from '../../requests';
 import ImageContainer from '../elements/Image';
 import VideoPlayer from '../elements/Video';
 
@@ -149,7 +150,7 @@ export default function Default(props)
                     if(!json.upload_accepted || json.hash === "" || json.hash === undefined)
                         return;
 
-                    const url = API_ENDPOINTS.media.add_tag_to_file + json.hash + "/tag";
+                    const url = formatStringB(API_TEMPLATES.add_tag_to_file.url, json.hash);
                     console.log(url);
                     fetch(url, {
                         method: "post",

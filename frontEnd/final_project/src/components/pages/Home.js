@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { API_ENDPOINTS } from '../../constants';
+import { API_ENDPOINTS, API_TEMPLATES } from '../../constants';
+import { formatStringB } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
 import ImageContainer from '../elements/Image';
 import VideoPlayer from '../elements/Video';
@@ -8,8 +9,6 @@ import VideoPlayer from '../elements/Video';
 export default function Default(props)
 {
     const { cookies } = props;
-
-    const API = API_ENDPOINTS.search.get_files_with_tags;
 
     const params = new URLSearchParams(window.location.search);
     const page = parseInt(params.get('page')) || 1;
@@ -42,7 +41,7 @@ export default function Default(props)
 
         console.log("sending " + JSON.stringify(ids));
 
-        fetch(API, {
+        fetch(API_TEMPLATES.get_files_with_tags.url, {
             method: "post",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(ids)
@@ -156,7 +155,7 @@ export default function Default(props)
                 {images.map((json, index) => 
                 {
                     const imgProp = {
-                        "image" : API_ENDPOINTS.media.get_file + json.sha256,
+                        "image" : formatStringB(API_TEMPLATES.get_file.url, json.sha256),
                         "caption": json.mime,
                         "style" : {
                             width : "200px",
@@ -171,12 +170,11 @@ export default function Default(props)
                             // "justify-content": "center"
                         }
                     }
+
                     if(json.mime_int >= 20)
                     {
-                        imgProp["image"] = API_ENDPOINTS.media.get_file + "t/" + json.sha256;
                         const videoProps = {
-                                m3u8: API_ENDPOINTS.media.get_file + json.sha256,
-                                domain: API_ENDPOINTS.media.get_file + json.sha256 + "/"
+                                hlsUrl: imgProp.image,
                         };
                         return <VideoPlayer  key={index} {...videoProps}></VideoPlayer>;
                     }

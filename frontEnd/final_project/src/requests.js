@@ -35,4 +35,34 @@ function postData(url, data, headers = {}, progress = null)
     });
 }
 
+
+export function formatStringA(formatString, ...values) 
+{
+    for (let i = 0; i < values.length; i++) 
+    {
+        formatString = formatString.replace(`{${i}}`, values[i]);
+    }
+  
+    return formatString;
+}
+
+
+export function formatStringB(formatString, ...values) 
+{
+    let index = 0;
+    const formattedString = formatString.replace(/\{([^\}]*)\}/g, (match, placeholder) => 
+    {
+        const value = values[index++];
+
+        if(!value)
+        {
+            return match;
+        }
+
+        return value;
+    });
+    
+    return formattedString;
+  }
+
 export default postData;

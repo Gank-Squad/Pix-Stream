@@ -6,6 +6,8 @@ import Hls from "hls.js";
 export default function VideoPlayer(props)
 {
     const playerRef = React.useRef(null);  
+        
+    const { hlsDomain, hlsUrl } = props;
 
     React.useEffect(() => 
     {
@@ -14,9 +16,7 @@ export default function VideoPlayer(props)
             alert("no player found. use a modern browser for video.");
             return;
         }
-            
-        const hlsUrl = props.m3u8;
-        const hlsDomain = props.domain;
+
         const video = playerRef.current;
 
         // If HLS is natively supported, let the browser do the work!
@@ -51,21 +51,24 @@ export default function VideoPlayer(props)
                 });
             }
 
-            hls.on(Hls.Events.FRAG_LOADING, function(event, data)
+            if(hlsDomain)
             {
-                const lastSlashIndex = data.frag.url.lastIndexOf("/");
-                const filename = data.frag.url.substring(lastSlashIndex + 1);
-
-                if(hlsDomain.endsWith("/"))
+                hls.on(Hls.Events.FRAG_LOADING, function(event, data)
                 {
-                    data.frag.url = hlsDomain + filename;
-                }
-                else 
-                {
-                    data.frag.url = hlsDomain + "/" + filename;
-                }
-            });
-
+                    const lastSlashIndex = data.frag.url.lastIndexOf("/");
+                    const filename = data.frag.url.substring(lastSlashIndex + 1);
+    
+                    if(hlsDomain.endsWith("/"))
+                    {
+                        data.frag.url = hlsDomain + filename;
+                    }
+                    else 
+                    {
+                        data.frag.url = hlsDomain + "/" + filename;
+                    }
+                });
+            }
+            
             hls.on(Hls.Events.ERROR, function (event, data) 
             {
                 if (data.fatal) 

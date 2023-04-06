@@ -8,15 +8,19 @@ public class PathHelper
 {
     public static final File MEDIA_DIR_BASE;
     
-    static {
+    public static void initPaths()
+    {
         MEDIA_DIR_BASE = new File(GlobalSettings.MEDIA_PATH);
         
         MEDIA_DIR_BASE.mkdirs();
         
         if(!MEDIA_DIR_BASE.isDirectory())
         {
+            Logger.error("Could not create media directory {}", MEDIA_DIR_BASE);
             throw new RuntimeException(String.format("Could not create media directory: %s", MEDIA_DIR_BASE));
         }
+
+        PathHelper.createMediaDirectory();
     }
     
     /**
@@ -46,11 +50,19 @@ public class PathHelper
             
             File subDir = new File(MEDIA_DIR_BASE, GlobalSettings.MEDIA_PATH_PREFIX + hex);
             subDir.mkdirs();
-//            WrappedLogger.log(Level.INFO, "Creating: " + subDir.getAbsolutePath());
+
+            if(GlobalSettings.IS_DEBUG)
+            {
+               WrappedLogger.log(Level.INFO, "Creating: " + subDir.getAbsolutePath());
+            }
             
             File subDir2 = new File(MEDIA_DIR_BASE, GlobalSettings.THUMB_PATH_PREFIX + hex);
             subDir2.mkdirs();
-//            WrappedLogger.log(Level.INFO, "Creating: " +subDir2.getAbsolutePath());
+
+            if(GlobalSettings.IS_DEBUG)
+            {
+               WrappedLogger.log(Level.INFO, "Creating: " +subDir2.getAbsolutePath());
+            }
         }
     }
     

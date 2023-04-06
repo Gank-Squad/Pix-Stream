@@ -31,7 +31,7 @@ public class APIApplication extends Application
         GlobalSettings.updatePathsForLinux();
         GlobalSettings.updatePathsFromEnv();
 
-        PathHelper.createMediaDirectory();
+        PathHelper.initPaths();
         DatabaseConnection.createDatabase();
         DatabaseConnection.createTables(true);
 
