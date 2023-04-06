@@ -18,12 +18,14 @@ export const ROUTES = {
 }
 
 
-// export const SERVER_HOST = "http://192.168.1.148:8080/FinalProject-1.0-SNAPSHOT/api/"
-export const SERVER_HOST = "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/"
+export const SERVER_HOST = "http://192.168.1.148:8080/FinalProject-1.0-SNAPSHOT/api/"
+// export const SERVER_HOST = "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/"
 
 export const API_ENDPOINTS = {
     media: {
         get_file : `${SERVER_HOST}files/`,
+        // should be POST, and send json, files/{filehash}/tag
+        add_tag_to_file : `${SERVER_HOST}files/`,
         get_tags : `${SERVER_HOST}tags/`,
         upload_file : `${SERVER_HOST}files/upload/`
     },

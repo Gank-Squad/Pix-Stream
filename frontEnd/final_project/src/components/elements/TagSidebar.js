@@ -3,7 +3,7 @@ import React from "react";
 import { API_ENDPOINTS } from "../../constants";
 export default function TagSidebar(props) 
 {
-    const { searchCallback } = props;
+    const { searchCallback, hideSearchButton } = props;
 
 
     // basically global variables / instance variables 
@@ -126,17 +126,21 @@ export default function TagSidebar(props)
     return (
 
 
-        <div class="px-4 ">
+        <div className="px-4 ">
 
             <div className="tagbox-container">
                 <header className="tagbox-header">
-                    <label class="text-custom-white font-bold">Selected Tags</label><br/>
+                    <label className="text-custom-white font-bold">Selected Tags</label><br/>
 {/* bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l */}
-                    <div class="inline-flex">
-                        <button ref={tagSearchButton} onClick={searchButtonPressed} class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-0 px-1 rounded-l">
+                    <div className="inline-flex">
+
+                        {
+                            hideSearchButton && <button ref={tagSearchButton} onClick={searchButtonPressed} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-0 px-1 rounded-l">
                             Search
                         </button>
-                        <button onClick={clearButtonPressed} ref={tagClearButton} class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-0 px-1 rounded-r">
+                        }
+                        
+                        <button onClick={clearButtonPressed} ref={tagClearButton} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-0 px-1 rounded-r">
                             Clear</button>
                     </div>
                     
@@ -157,7 +161,7 @@ export default function TagSidebar(props)
 
             <div className="tagbox-container">
                 <header className="tagbox-header">
-                    <label class="text-custom-white font-bold">Context Tags</label>
+                    <label className="text-custom-white font-bold">Context Tags</label>
                 </header>
 
                 <table ref={contextTagBox} className="tagbox">
@@ -171,7 +175,7 @@ export default function TagSidebar(props)
                                     <div className="tag">
                                         <i className="fa fa-tag"></i>
                                         <button onClick={(e) => tagButtonPressed(e, tag)} 
-                                        class="text-custom-white text-ellipsis hover:bg-button-depressed truncate rounded px-2 w-48 text-left">
+                                        className="text-custom-white text-ellipsis hover:bg-button-depressed truncate rounded px-2 w-48 text-left">
                                             <label>
                                                 {tag.namespace + ":" + tag.subtag}
                                             </label>
