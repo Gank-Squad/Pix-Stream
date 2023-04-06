@@ -1,7 +1,10 @@
 package uwu.nyaa.owo.finalproject.system;
 
+import org.im4java.process.ProcessStarter;
 import org.tinylog.Logger;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
@@ -40,7 +43,45 @@ public class GlobalSettings
      * the value starting each of the subdirectories for thumbnails
      */
     public static String THUMB_PATH_PREFIX = "t";
-    
+
+    public static Boolean isLinux = false;
+
+    public static void updatePathsFromEnv()
+    {
+        if (ProcessStarter.getGlobalSearchPath() == null)
+        {
+            Logger.info("could not find environmental variable IM4JAVA_TOOLPATH, using PATH instead");
+            ProcessStarter.setGlobalSearchPath(System.getenv("PATH"));
+        }
+        else
+        {
+            Logger.info("global magick search path set [{}]", ProcessStarter.getGlobalSearchPath());
+            GlobalSettings.IMAGE_MAGICK_PATH = ProcessStarter.getGlobalSearchPath();
+        }
+
+        if(System.getenv("FFMPEG") != null)
+        {
+            searchFFMPEG(System.getenv("FFMPEG"));
+        }
+
+        if(System.getenv("PATH") != null && File.pathSeparator != null)
+        {
+            for(String dir : System.getenv("PATH").split(File.pathSeparator))
+            {
+                searchFFMPEG(dir);
+            }
+        }
+
+        if(new File(FFMPEG_PATH).isFile())
+        {
+            Logger.info("FFMPEG found {}", FFMPEG_PATH);
+        }
+
+        if(new File(FFPROBE_PATH).isFile())
+        {
+            Logger.info("FFPROBE found {}", FFPROBE_PATH);
+        }
+    }
     
     public static void updatePathsForLinux()
     {
@@ -50,6 +91,26 @@ public class GlobalSettings
             GlobalSettings.IMAGE_MAGICK_PATH = "/bin/";
             GlobalSettings.FFMPEG_PATH = "/bin/ffmpeg";
             GlobalSettings.FFPROBE_PATH = "/bin/ffprobe";
+            isLinux = true;
+        }
+    }
+
+
+    public static void searchFFMPEG(String dir)
+    {
+        String ext = isLinux ? "" : ".exe";
+        File f = Path.of(dir, "ffmpeg" + ext).toFile();
+
+        if(f.isFile())
+        {
+            FFMPEG_PATH = f.getAbsolutePath();
+        }
+
+        f = Path.of(dir, "ffprobe" + ext).toFile();
+
+        if(f.isFile())
+        {
+            FFPROBE_PATH = f.getAbsolutePath();
         }
     }
 }

@@ -175,9 +175,10 @@ public class DatabaseConnection
         DatabaseConnection.createDatabase();
         DatabaseConnection.createTables();
 
-        ProcessStarter.setGlobalSearchPath(GlobalSettings.IMAGE_MAGICK_PATH);
-        ImageMagickHelper.checkImageMagick();
-        FFmpegHelper.checkFFmpeg();
+        GlobalSettings.updatePathsFromEnv();
+//        ProcessStarter.setGlobalSearchPath(GlobalSettings.IMAGE_MAGICK_PATH);
+//        ImageMagickHelper.checkImageMagick();
+//        FFmpegHelper.checkFFmpeg();
 //        
 //        String test = "/home/minno/Pictures/6c6b02a2c269f2013587de08c2bad122bb343ab8ec18a61518cb3c7f9b443d8e";
 ////        createDatabase();

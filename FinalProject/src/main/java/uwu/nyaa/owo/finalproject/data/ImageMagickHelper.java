@@ -13,25 +13,11 @@ import org.im4java.process.ProcessStarter;
 import org.tinylog.Logger;
 
 import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
+import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 
 public class ImageMagickHelper
 {
     public static final String IMAGE_DECODE_FORMAT = "bmp";
-
-    static
-    {
-        if (ProcessStarter.getGlobalSearchPath() == null)
-        {
-            Logger.info("could not find environmental variable IM4JAVA_TOOLPATH, using PATH instead");
-
-            ProcessStarter.setGlobalSearchPath(System.getenv("PATH"));
-
-        }
-        else
-        {
-            Logger.info("global magick search path set [{}]", ProcessStarter.getGlobalSearchPath());
-        }
-    }
 
     public static boolean checkImageMagick()
     {
