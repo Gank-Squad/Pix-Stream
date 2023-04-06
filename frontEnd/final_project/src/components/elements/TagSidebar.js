@@ -135,7 +135,7 @@ export default function TagSidebar(props)
                     <div className="inline-flex">
 
                         {
-                            hideSearchButton && <button ref={tagSearchButton} onClick={searchButtonPressed} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-0 px-1 rounded-l">
+                            !hideSearchButton && <button ref={tagSearchButton} onClick={searchButtonPressed} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-0 px-1 rounded-l">
                             Search
                         </button>
                         }
@@ -179,9 +179,7 @@ export default function TagSidebar(props)
                                             <label>
                                                 {tag.namespace + ":" + tag.subtag}
                                             </label>
-                                        </button>
-                                        {/* Honestly, I did not expect this to work at all, I have no idea what I'm doing */}
-                                        
+                                        </button>                                        
                                     </div>
                                 </td>
                             </tr>

@@ -11,7 +11,7 @@ import java.util.logging.Level;
 
 public class GlobalSettings
 {
-    public static boolean IS_DEBUG = true;
+    public static boolean IS_DEBUG = false;
     
 //    public static String IMAGE_MAGICK_PATH = "C:/bin/imageMagick"; // "F:/Programs/ImageMagick";
     public static String IMAGE_MAGICK_PATH = "F:/Programs/ImageMagick";

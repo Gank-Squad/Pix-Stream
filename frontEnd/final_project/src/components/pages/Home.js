@@ -22,15 +22,45 @@ export default function Default(props)
         console.log(`Page ${page} was loaded!`);
         console.log(`Cookies from props: ${cookies}`);
         console.log("images changed");
+        loadMedia();
     }, [cookies, page, images]);
+
+
+    // load media
+    
+
+    function loadMedia()
+    {
+        console.log("loading media from api")
+        fetch(API_ENDPOINTS.media.get_file + "?limit=10", {
+            method: "get",
+        }).then(resp => {
+            if (resp.status === 200)
+            {
+                console.log("got files from api")
+                return resp.json();    
+            }
+            else
+            {
+                console.log("Status: " + resp.status);
+                return Promise.reject("server");
+            }
+        }).then(dataJson => {
+            setImageData(dataJson);
+        }).catch(err => {
+            if (err === "server") return
+            console.log(err)
+        })
+    }
+
 
     function searchCallback(searchItems)
     {
-        if(searchItems.length === 0)
-        {
-            setImageData([]);
-            return;
-        }
+        // if(searchItems.length === 0)
+        // {
+        //     setImageData([]);
+        //     return;
+        // }
 
         let ids = []
         searchItems.forEach(element => 
@@ -42,27 +72,28 @@ export default function Default(props)
 
         console.log("sending " + JSON.stringify(ids));
 
-        fetch(API, {
-            method: "post",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(ids)
-        })
-            .then(resp => {
-                if (resp.status === 200) {
-                    return resp.json()
-                } else {
-                    console.log("Status: " + resp.status)
-                    return Promise.reject("server")
-                }
-            })
-            .then(dataJson => {
+        
+        // fetch(API, {
+        //     method: "post",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify(ids)
+        // })
+        //     .then(resp => {
+        //         if (resp.status === 200) {
+        //             return resp.json()
+        //         } else {
+        //             console.log("Status: " + resp.status)
+        //             return Promise.reject("server")
+        //         }
+        //     })
+        //     .then(dataJson => {
 
-                setImageData(dataJson);
-            })
-            .catch(err => {
-                if (err === "server") return
-                console.log(err)
-            })
+        //         setImageData(dataJson);
+        //     })
+        //     .catch(err => {
+        //         if (err === "server") return
+        //         console.log(err)
+        //     })
     }
 
     function redirect_tags()
@@ -80,7 +111,7 @@ export default function Default(props)
 
     const tagSidebarProps = {
         "searchCallback" : searchCallback,
-        "hideSearchButton" : false
+        "hideSearchButton" : false,
     }
 
     const sidebar = React.useRef("");
@@ -108,7 +139,7 @@ export default function Default(props)
 
         <div className="flex flex-col h-screen overflow-auto">
 
-
+            {/* This is the sidebar/tag search */}
             <nav ref={sidebar}
                 className="group fixed top-20 left-0 h-screen w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
                 data-te-sidenav-init
