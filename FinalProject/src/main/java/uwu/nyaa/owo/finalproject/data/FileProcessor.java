@@ -17,6 +17,7 @@ import uwu.nyaa.owo.finalproject.data.db.TableHash;
 import uwu.nyaa.owo.finalproject.data.db.TableLocalHash;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
+import uwu.nyaa.owo.finalproject.data.models.FileUpload;
 
 public class FileProcessor
 {
@@ -267,18 +268,23 @@ public class FileProcessor
         return hashFile(ImmutableMessageDigest.getMD5(), path);
     }
 
-    
-    public static boolean addFile(String path)
+
+
+
+    public static FileUpload addFile(String path)
     {
         return addFile(new File(path));
     }
     
-    public static boolean addFile(File f)
+    public static FileUpload addFile(File f)
     {
-        if(!f.isFile()) 
+        FileUpload fa = new FileUpload();
+        fa.hash_id = -1;
+
+        if(!f.isFile())
         {
             Logger.info("Could not add file: {}, because it does not exist or is not a file", f);
-            return false;
+            return fa;
         }
             
         
@@ -287,9 +293,10 @@ public class FileProcessor
         if(b == null || b.SHA256.length == 0)
         {
             Logger.info("Could not add file: {}, because the SHA256 hash was empty", f);
-            return false;
+            return fa;
         }
-        
+
+        fa.hashes = b;
         String fileHash = ByteHelper.bytesToHex(b.SHA256);
         String mediaPath = PathHelper.getMediaPath(fileHash);
         String thumbPath = PathHelper.getThmbnailPath(fileHash);
@@ -309,8 +316,9 @@ public class FileProcessor
 
         if(mediaFile.exists())
         {
+            fa.hash_id = TableHash.getHashID(b.SHA256);
             Logger.warn("Ignoring adding file {} because it media file already exist; Assuming it's in the db", f);
-            return false;
+            return fa;
         }
         
         long fileSize = f.length();
@@ -331,7 +339,7 @@ public class FileProcessor
             if(!i.is_valid)
             {
                 Logger.warn("Failed to add file {}, because the image was invalid", f);
-                return false;
+                return fa;
             }
             
             if(!f.renameTo(mediaFile))
@@ -344,7 +352,7 @@ public class FileProcessor
                 {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                    return false;
+                    return fa;
                 }
             }
             Logger.debug("About to create thumbnail from {} into {}", mediaFile, thumbPath);
@@ -362,7 +370,7 @@ public class FileProcessor
             if(!i.is_valid)
             {
                 Logger.warn("Failed to add file {}, because the video was invalid", f);
-                return false;
+                return fa;
             }
             
             try
@@ -373,7 +381,7 @@ public class FileProcessor
             catch (IOException e)
             {
                 Logger.warn(e, "Failed to encode video file {}", f);
-                return false;
+                return fa;
             }
 
             if(!FileFormat.isAudioType(mimeType))
@@ -385,11 +393,14 @@ public class FileProcessor
         }
 
         int hash_id = TableHash.insertHash(b.SHA256);
-        
+
+        fa.filePath = mediaFile;
+        fa.hash_id = hash_id;
+
         if(hash_id == -1)
         {
             Logger.warn("Unable to insert file with hash {}", fileHash);
-            return false;
+            return fa;
         }
         
         if(!TableLocalHash.insertHashes(hash_id, b.SHA1, b.MD5, b.PHASH))
@@ -401,7 +412,8 @@ public class FileProcessor
         {
             Logger.warn("Unable to insert file information for {}", fileHash);
         }
-        
-        return true;
+
+        fa.accepted = true;
+        return fa;
     }
 }

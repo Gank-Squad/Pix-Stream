@@ -33,6 +33,7 @@ import uwu.nyaa.owo.finalproject.data.PathHelper;
 import uwu.nyaa.owo.finalproject.data.db.TableFile;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
+import uwu.nyaa.owo.finalproject.data.models.FileUpload;
 import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 
 @Path("/files")
@@ -184,6 +185,7 @@ public class APIFiles
     
     @POST
     @Path("/upload")
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response upload_files() throws IOException, ServletException
     {
@@ -230,10 +232,15 @@ public class APIFiles
         }
 
         Logger.info("Saved upload to {}, exists {}", file, file.exists());
-        
-        FileProcessor.addFile(file);
 
-        return Response.status(200).build();
+        FileUpload fa = FileProcessor.addFile(file);
+
+        if(!fa.accepted)
+        {
+            return Response.status(500).entity(jsonMapper.writeValueAsString(fa)).build();
+        }
+
+        return Response.status(200).entity(jsonMapper.writeValueAsString(fa)).build();
     }
 
 }
