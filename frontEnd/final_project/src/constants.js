@@ -17,11 +17,11 @@ export const ROUTES = {
     user     : "/user",
 }
 
+// This seems to work but also causes errors in the console so, more testing is needed
+export const SERVER_HOST = ((!window.navigator.userAgent.indexOf("Linux" != -1)) ? 
+    "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/" : "http://192.168.1.148:8080/FinalProject-1.0-SNAPSHOT/api/");
 
-export const SERVER_HOST = "http://192.168.1.148:8080/FinalProject-1.0-SNAPSHOT/api/"
-// export const SERVER_HOST = "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/"
-
-export const API_ENDPOINTS = {
+    export const API_ENDPOINTS = {
     media: {
         get_file : `${SERVER_HOST}files/`,
         // should be POST, and send json, files/{filehash}/tag
