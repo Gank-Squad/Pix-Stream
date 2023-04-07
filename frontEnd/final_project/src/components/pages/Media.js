@@ -12,6 +12,7 @@ export default function Default(props)
 
     const params = new URLSearchParams(window.location.search);
     const page = parseInt(params.get('page')) || 1;
+    const hash = params.get("hash") || "";
 
     const [search, setSearch] = React.useState([]);
     const [mediaData, setMediaData] = React.useState([]);
@@ -26,6 +27,46 @@ export default function Default(props)
         console.log(`Page ${page} was loaded!`);
         console.log(`Cookies from props: ${cookies}`);
     }, [cookies, page]);
+
+    React.useEffect(() => 
+    {
+        loadMedia();
+    }, []);
+
+    function loadMedia()
+    {
+        if (hash === null || hash === "")
+        {
+            alert("invalid url - no media loaded");
+            return;
+        }
+        
+
+        // hardcoding the hash for testing purposes
+        hash = "218af290730ee6760f45f2b8c4e0caf00e92cf82932e933442b791d8f876fe02";
+
+        const url = API_ENDPOINTS.media.get_file + hash;
+
+        fetch(url, {method:"GET"}).then(resp =>
+            {
+                if (resp.status === 200)
+                {
+                    console.log("loading media page for hash: " + hash);
+                    return resp.json();
+                }
+                else
+                {
+                    console.log("Status: " + resp.status);
+                    return;
+                }
+            }
+        ).then(dataJson => {
+            setMediaData(dataJson);
+        }).catch(err => {
+            if (err === "server") return
+            console.log(err)
+        })
+    }
 
     function getData(url)
     {
@@ -150,7 +191,37 @@ export default function Default(props)
             {/* PUT ALL DISPLAY STUFF IN HERE, ANYTHING OUTSIDE MAY NOT BE FORMATED CORRECTLY */}
 
                 <p>Hello world, you are on the media page {(page).toString()}</p>
-                
+                {mediaData.map((json, index) => 
+                {
+                    const props = {
+                        "image" : formatStringB(API_TEMPLATES.get_file.url, json.hash),
+                        "hlsUrl": formatStringB(API_TEMPLATES.get_file.url, json.hash),
+                        "caption": json.mime,
+                        "style" : {
+                            display: 'inline-block',
+                            width: '200px',
+                            'margin': '20px',
+                            border: '1px solid white',
+                            // width : "200px",
+                            // border : "1px solid white",
+                            "verticalAlign" : "bottom",
+
+                            // "display": "flex",
+                            // width: "195px",
+                            // height: "185px",
+                            // "margin-top": "20px",
+                            // "align-items": "center",
+                            // "justify-content": "center"
+                        }
+                    }
+
+                    if(json.mime_int >= 20)
+                    {
+                        return <VideoPlayer key={index} {...props}></VideoPlayer>;
+                    }
+                    
+                    return <ImageContainer key={index} {...props} imgError={e => console.log("image errr")}></ImageContainer>;
+                })}
             </main>
         </div>
     )

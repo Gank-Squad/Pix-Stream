@@ -43,7 +43,7 @@ export default function Default(props)
         //     fetchData.headers = { "Content-Type": "application/json" };
         //     fetchData.body = JSON.stringify(ids);
         // }
-
+        
 
         console.log("loading media from api " + url + " " + JSON.stringify(fetchData));
 
