@@ -94,11 +94,11 @@ public class TablePost
     
     
     
-    public static List<Post> getPosts(int limit)
+    public static List<Post> getPosts(int limit, boolean includeTags)
     {
         try (Connection c = DatabaseConnection.getConnection())
         {
-            return  getPosts(limit, c);
+            return  getPosts(limit, includeTags, c);
         }
         catch (SQLException e) 
         {
@@ -108,15 +108,34 @@ public class TablePost
         return new LinkedList<>();
     }
     
-    public static List<Post> getPosts(int limit, Connection c) throws SQLException
+    public static List<Post> getPosts(int limit, boolean includeTags, Connection c) throws SQLException
     {
         List<Post> posts = new LinkedList<>();
         
-        final String SQL = "";
+        final String SQL = "SELECT post_id, time, title, description FROM tbl_post LIMIT ?";
         
         try (PreparedStatement pstmt = c.prepareStatement(SQL))
         {
-            
+            pstmt.setInt(1, limit);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) 
+            {
+                Post p = new Post();
+                p.post_id = rs.getInt(1);
+                p.posted  = rs.getTimestamp(2);
+                p.title = rs.getString(3);
+                p.description = rs.getString(4);
+
+                List<Integer> files = TablePostFiles.getAllFiles(p.post_id, c);
+                
+                Logger.debug("found {} files for post {}: {}", files.size(), p.post_id, files);
+                
+                TableFile.getFiles(files, includeTags, p.files, c);
+
+                posts.add(p);
+            }
         }
         
         

@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -29,7 +30,6 @@ import jakarta.ws.rs.core.Response;
 import uwu.nyaa.owo.finalproject.data.FileProcessor;
 import uwu.nyaa.owo.finalproject.data.MultiPartFormDataParser;
 import uwu.nyaa.owo.finalproject.data.PartInputStream;
-import uwu.nyaa.owo.finalproject.data.db.TableFile;
 import uwu.nyaa.owo.finalproject.data.db.TablePost;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
@@ -48,19 +48,21 @@ public class APIPosts
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBulkPostMetadata(@QueryParam("limit") int limit) throws JsonProcessingException
+    public Response getBulkPostMetadata(@QueryParam("limit") int limit, @QueryParam("tags") @DefaultValue("true") boolean withTags) throws JsonProcessingException
     {
         if(limit <= 0 || limit > 200)
         {
             limit = 200;
         }
         
-        Logger.info(Integer.toString(limit));
-        
-        List<Post> items = TablePost.getPosts(limit);
-        
+
+        List<Post> items = TablePost.getPosts(limit, withTags);
+
+        String json = this.jsonMapper.writeValueAsString(items);
+        Logger.debug("Found items, returning json {}", json);
+
         return Response.status(200)
-                .entity(this.jsonMapper.writeValueAsString(items))
+                .entity(json)
                 .build();
     }
     

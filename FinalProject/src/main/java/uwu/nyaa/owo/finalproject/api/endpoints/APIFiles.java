@@ -56,7 +56,7 @@ public class APIFiles
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBulkFileMetadata(@QueryParam("limit") int limit) throws JsonProcessingException
+    public Response getBulkFileMetadata(@QueryParam("limit") int limit, @QueryParam("tags") boolean withTags) throws JsonProcessingException
     {
         if(limit <= 0 || limit > 200)
         {
@@ -65,7 +65,7 @@ public class APIFiles
         
         Logger.info(Integer.toString(limit));
         
-        List<HashInfo> items = TableFile.getFiles(limit, true);
+        List<HashInfo> items = TableFile.getFiles(limit, withTags);
         
         return Response.status(200)
                 .entity(this.jsonMapper.writeValueAsString(items))

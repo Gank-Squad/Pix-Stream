@@ -182,7 +182,7 @@ public class DatabaseConnection
         
 //        PathHelper.createMediaDirectory();
         DatabaseConnection.createDatabase();
-        DatabaseConnection.createTables();
+        DatabaseConnection.createTables(true);
 
         GlobalSettings.updatePathsFromEnv();
 
@@ -190,9 +190,15 @@ public class DatabaseConnection
         String description = "nya nyan yanyn nyanyn ynynany ";
         
         int file  =TableHash.insertHash(new byte[] {});
+        int file2 =TableHash.insertHash(new byte[] {1});
         int id = TablePost.insertPost(title, description);
         TablePostFiles.insertAssociation(id, file);
+        TablePostFiles.insertAssociation(id, file2);
         Logger.info("post id {}", id);
+        
+        
+        TablePost.getPosts(3, true);
+        
     }
 }
 

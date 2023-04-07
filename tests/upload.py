@@ -48,7 +48,7 @@ def uploadpost():
         "description": "nyh nyahn yhan hyna la "
     }
 
-    a = requests.post(f"http://{host}:8080/FinalProject-1.0-SNAPSHOT/api/files/uploadpost/", files=payload)
+    a = requests.post(f"http://{host}:8080/FinalProject-1.0-SNAPSHOT/api/posts/upload/", files=payload)
 
     if(a.status_code == 200):
         print(a.status_code)

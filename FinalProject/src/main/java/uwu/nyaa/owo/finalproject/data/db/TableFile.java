@@ -1,16 +1,19 @@
 package uwu.nyaa.owo.finalproject.data.db;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.tinylog.Logger;
 
 import uwu.nyaa.owo.finalproject.data.FileProcessor.ImmutableMessageDigest;
 import uwu.nyaa.owo.finalproject.data.models.HashInfo;
+import uwu.nyaa.owo.finalproject.data.models.HashInfoBase;
 
 public class TableFile
 {
@@ -108,7 +111,49 @@ public class TableFile
         return items;
     }
 
+    public static List<HashInfoBase> getFiles(List<Integer> hash_ids, boolean includeTags, Connection c) throws SQLException
+    {
+        return getFiles(hash_ids, includeTags, new LinkedList<>(), c);
+    }
+        
+    public static List<HashInfoBase> getFiles(List<Integer> hash_ids, boolean includeTags, List<HashInfoBase> items, Connection c) throws SQLException
+    {
+        if (items == null)
+            items = new LinkedList<>();
+        
+        final String SQL = "SELECT tbl_hash.hash_id, hash, mime, tbl_file.size, width, height, duration, has_audio FROM tbl_file JOIN tbl_hash ON tbl_file.hash_id = tbl_hash.hash_id WHERE tbl_hash.hash_id = ANY(?)";
+        
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+            Array hashIdArrayParam = c.createArrayOf("INTEGER", hash_ids.toArray());
+            pstmt.setArray(1, hashIdArrayParam);
+            
+            ResultSet rs = pstmt.executeQuery();
+            
+            while(rs.next())
+            {
+                HashInfo a = new HashInfo();
+                
+                a.hash_id = rs.getInt(1);
+                a.hash = rs.getBytes(2);
+                a.mime = rs.getInt(3);
+                a.fileSize = rs.getLong(4);
+                a.width = rs.getInt(5);
+                a.height = rs.getInt(6);
+                a.duration = rs.getInt(7);
+                a.has_audio = rs.getBoolean(8);
 
+                if(includeTags)
+                {
+                    a.tags = TableHashTag.getTags(a.hash_id, c);
+                }
+                
+                items.add(a);
+            }
+        }
+ 
+        return items;
+    }
 
 
     public static HashInfo getFile(byte[] hash, boolean includeTags)

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -96,7 +97,7 @@ public class APITags
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/files")
-    public Response getFilesWithTags(String json, @QueryParam("limit") int limit, @QueryParam("tags") boolean withTags)
+    public Response getFilesWithTags(String json, @QueryParam("limit") int limit, @QueryParam("tags") @DefaultValue("true") boolean withTags)
     {
         if (limit <= 0 || limit > 200)
         {
