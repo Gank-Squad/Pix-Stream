@@ -89,12 +89,18 @@ export default function Default(props)
     const tagSidebarProps = {
         "searchCallback" : searchCallback,
         "hideSearchButton" : true,
+        "searchButtonPressed" : searchButtonPressed,
     }
 
     const mediaFile = React.useRef("");
     const subFile = React.useRef("");
     const title = React.useRef("");
 
+
+    function searchButtonPressed()
+    {
+        window.location.href = '/results?tags=';
+    }
 
     function generatePreview()
     {

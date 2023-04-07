@@ -3,7 +3,7 @@ import React from "react";
 import { API_ENDPOINTS } from "../../constants";
 export default function TagSidebar(props) 
 {
-    const { searchCallback, hideSearchButton } = props;
+    const { searchCallback, hideSearchButton, searchButtonPressed } = props;
 
 
     // basically global variables / instance variables 
@@ -96,9 +96,9 @@ export default function TagSidebar(props)
         filterTags(tagSearch.current.value);
     }
 
-    function searchButtonPressed(e) {
-        filterTags(tagSearch.current.value);
-    }
+    // function searchButtonPressed(e) {
+    //     filterTags(tagSearch.current.value);
+    // }
 
     function clearButtonPressed(e) {
         clearSelected();
@@ -135,7 +135,11 @@ export default function TagSidebar(props)
                     <div className="inline-flex">
 
                         {
-                            !hideSearchButton && <button ref={tagSearchButton} onClick={searchButtonPressed} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-0 px-1 rounded-l">
+                            !hideSearchButton && 
+                            <button 
+                                ref={tagSearchButton} 
+                                onClick={searchButtonPressed} 
+                                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-0 px-1 rounded-l">
                             Search
                         </button>
                         }

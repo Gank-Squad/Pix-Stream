@@ -1,13 +1,20 @@
 import React from 'react';
 
+import { API_ENDPOINTS, API_TEMPLATES } from '../../constants';
+import { formatStringB, addQueryParams } from '../../requests';
+import TagSidebar from '../elements/TagSidebar';
+import ImageContainer from '../elements/Image';
 import VideoPlayer from '../elements/Video';
-import { API_ENDPOINTS } from '../../constants';
+
 export default function Default(props)
 {
     const { cookies } = props;
 
     const params = new URLSearchParams(window.location.search);
     const page = parseInt(params.get('page')) || 1;
+
+    const [search, setSearch] = React.useState([]);
+    const [mediaData, setMediaData] = React.useState([]);
 
     const vprops = {
         m3u8: API_ENDPOINTS.media.get_file + "D2765EC844F9C92DF35152A5725E0ED381221F202B9BDC190DF599942DEFE930",
@@ -39,20 +46,112 @@ export default function Default(props)
                     .catch(e => console.log(e));
         })
     }
-    const URL = "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/files/ac1794db87d07033c6e398d1e7dcbfac5c3f0bff5b6fe0b7d6b51e1399278e25";
-    return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-300">
-            <center>
-                <h1 className="pt-6 text-xl">
-                    This will be the Media page. {getData(URL)}
-                </h1>
-                <img src="http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/files/ac1794db87d07033c6e398d1e7dcbfac5c3f0bff5b6fe0b7d6b51e1399278e25" width="250"></img>
-                <VideoPlayer {...vprops}></VideoPlayer>
 
-                <p>
-                    i.e. where you will be able to view video, images, or audio
-                </p>
-            </center>
+    function searchButtonPressed()
+    {
+        let url = '/results?tags=';
+        const ids = search.map(elements => ({tag_id : elements.tag_id}));
+
+        ids.forEach(id => (url += id.tag_id + ","));
+
+        window.location.href = url;
+    }
+
+    function searchCallback(searchItems)
+    {
+        setSearch(searchItems);
+    }
+
+    function redirect_tags()
+    {
+        window.location.href = '/tags';
+    }
+    function redirect_upload()
+    {
+        window.location.href = '/upload';
+    }
+    function redirect_home()
+    {
+        window.location.href = '/home';
+    }
+
+    const tagSidebarProps = {
+        "searchCallback" : searchCallback,
+        "hideSearchButton" : false,
+        "searchButtonPressed" : searchButtonPressed,
+    }
+
+    const sidebar = React.useRef("");
+    const hamburger = React.useRef("");
+    const main = React.useRef("");
+
+    function toggleSidebarVisibility()
+    {
+        // ik this is really bad code, and now there isn't a css animation, but I couldn't get it to work
+        if (sidebar.current.getAttribute("data-te-sidenav-hidden") == "false")
+        {
+            sidebar.current.setAttribute("data-te-sidenav-hidden", "true");
+            hamburger.current.setAttribute("class", "bg-blue-700 hover:bg-blue-500 text-white font-bold py-2 px-4 border border-blue-700 rounded-l");
+            main.current.setAttribute("class", "overflow-y-scroll py-12 px-12")
+        }
+        else
+        {
+            sidebar.current.setAttribute("data-te-sidenav-hidden", "false");
+            hamburger.current.setAttribute("class", "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l");
+            main.current.setAttribute("class", "overflow-y-scroll py-12 px-72")
+        }
+    }
+
+    return (
+        <div className="flex flex-col h-screen overflow-auto">
+
+            {/* This is the sidebar/tag search */}
+            <nav ref={sidebar}
+                className="group fixed top-20 left-0 h-screen w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
+                data-te-sidenav-init
+                data-te-sidenav-hidden="true"
+            >
+                <ul className="relative m-0 list-none px-[0.2rem]" data-te-sidenav-menu-ref>
+                    <TagSidebar {...tagSidebarProps} />
+                </ul>
+            </nav>
+
+
+            <header className="w-full p-4 h-20 bg-custom-dark-blue text-left absolute">
+                <div>
+                    {/* The following is the code for the hamburger menu
+                    but I'm not really sure how to make it show up inline with everything else */}
+                    <button
+                        className="bg-blue-700 hover:bg-blue-500 text-white font-bold py-2 px-4 border border-blue-700 rounded-l"
+                        data-te-sidenav-toggle-ref
+                        aria-haspopup="true"
+                        onClick={toggleSidebarVisibility}
+                        ref={hamburger}>
+                        <span className="block [&>svg]:h-5 [&>svg]:w-5 [&>svg]:text-white">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                className="h-5 w-5">
+                                    <path
+                                    fillRule="evenodd"
+                                    d="M3 6.75A.75.75 0 013.75 6h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 6.75zM3 12a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 12zm0 5.25a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75a.75.75 0 01-.75-.75z"
+                                    clipRule="evenodd" />
+                            </svg>
+                        </span>
+                    </button>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l" onClick={redirect_home}>Home</button>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 border border-blue-700 px-4" onClick={redirect_tags}>Tags</button>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-r" onClick={redirect_upload}>Upload</button>
+                </div>
+            </header>
+
+            <main className="flex-1 overflow-y-auto px-80 py-12" ref={main}>
+            {/* PUT ALL DISPLAY STUFF IN HERE, ANYTHING OUTSIDE MAY NOT BE FORMATED CORRECTLY */}
+
+                <p>Hello world, you are on the media page {(page).toString()}</p>
+                
+            </main>
         </div>
     )
 }

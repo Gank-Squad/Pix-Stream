@@ -21,7 +21,7 @@ export default function Default(props)
     {
         console.log("Updating media with new search " + JSON.stringify(search));
         loadMedia();
-    }, [search]);
+    }, [search]); // 
 
 
     function loadMedia()
@@ -32,17 +32,17 @@ export default function Default(props)
             method : "GET"
         }
 
-        if(search.length !== 0)
-        {
-            const ids = search.map(element => ({ tag_id : element.tag_id }));
+        // if(search.length !== 0)
+        // {
+        //     const ids = search.map(element => ({ tag_id : element.tag_id }));
 
-            url = addQueryParams(API_TEMPLATES.get_files_with_tags.url, {
-                tags : true
-            });
-            fetchData.method = "POST";
-            fetchData.headers = { "Content-Type": "application/json" };
-            fetchData.body = JSON.stringify(ids);
-        }
+        //     url = addQueryParams(API_TEMPLATES.get_files_with_tags.url, {
+        //         tags : true
+        //     });
+        //     fetchData.method = "POST";
+        //     fetchData.headers = { "Content-Type": "application/json" };
+        //     fetchData.body = JSON.stringify(ids);
+        // }
 
 
         console.log("loading media from api " + url + " " + JSON.stringify(fetchData));
@@ -66,6 +66,11 @@ export default function Default(props)
     }
 
 
+    function searchButtonPressed()
+    {
+        window.location.href = '/results?tags=';
+    }
+
     function searchCallback(searchItems)
     {
         setSearch(searchItems);
@@ -87,6 +92,7 @@ export default function Default(props)
     const tagSidebarProps = {
         "searchCallback" : searchCallback,
         "hideSearchButton" : false,
+        "searchButtonPressed" : searchButtonPressed,
     }
 
     const sidebar = React.useRef("");
@@ -149,7 +155,7 @@ export default function Default(props)
                             </svg>
                         </span>
                     </button>
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l" disabled onClick={redirect_home}>Home</button>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l" onClick={redirect_home}>Home</button>
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 border border-blue-700 px-4" onClick={redirect_tags}>Tags</button>
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-r" onClick={redirect_upload}>Upload</button>
                 </div>
