@@ -41,11 +41,7 @@ export default function Default(props)
             return;
         }
         
-
-        // hardcoding the hash for testing purposes
-        hash = "218af290730ee6760f45f2b8c4e0caf00e92cf82932e933442b791d8f876fe02";
-
-        const url = API_ENDPOINTS.media.get_file + hash;
+        const url = formatStringB(API_ENDPOINTS.media.get_file, hash);
 
         fetch(url, {method:"GET"}).then(resp =>
             {

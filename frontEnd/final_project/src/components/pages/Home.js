@@ -66,7 +66,7 @@ export default function Default(props)
     }
 
 
-    function searchButtonPressed()
+    function searchButtonPressed(e)
     {
         window.location.href = '/results?tags=';
     }

@@ -5,6 +5,7 @@ import { formatStringB, addQueryParams } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
 import ImageContainer from '../elements/Image';
 import VideoPlayer from '../elements/Video';
+import VideoContainer from '../elements/VideoContainer';
 
 export default function Default(props)
 {
@@ -191,6 +192,7 @@ export default function Default(props)
                 <p>Hello world, you are on home page {(page).toString()}</p>
                 {mediaData.map((json, index) => 
                 {
+                    console.log(json.hash);
                     const props = {
                         "image" : formatStringB(API_TEMPLATES.get_file.url, json.hash),
                         "hlsUrl": formatStringB(API_TEMPLATES.get_file.url, json.hash),
@@ -215,10 +217,10 @@ export default function Default(props)
                     
                     if(json.mime_int >= 20)
                     {
-                        return <button onClick={redirect_media.bind(json.hash)}><VideoPlayer key={index} {...props}></VideoPlayer></button>;
+                        return <button key={index} onClick={redirect_media.bind(this,json.hash)}><VideoContainer  {...props}></VideoContainer></button>;
                     }
                     
-                    return <button onClick={redirect_media.bind(json.hash)}><ImageContainer key={index} {...props} imgError={e => console.log("image errr")}></ImageContainer></button>;
+                    return <button key={index}  onClick={redirect_media.bind(this,json.hash)}><ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer></button>;
                 })}
             </main>
         </div>
