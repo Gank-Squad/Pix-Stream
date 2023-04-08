@@ -787,6 +787,10 @@ p
   padding: 1rem;
 }
 
+.p-80 {
+  padding: 20rem;
+}
+
 .px-1 {
   padding-left: 0.25rem;
   padding-right: 0.25rem;
