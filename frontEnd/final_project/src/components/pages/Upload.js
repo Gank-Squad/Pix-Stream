@@ -159,7 +159,7 @@ export default function Default(props)
                 setProgress(`${uploadFile}: uploaded ${loaded} / ${totalSize} bytes`);
             }
 
-            await postData(API_TEMPLATES.upload_post, data, {}, progress)
+            await postData(API_TEMPLATES.upload_post.url, data, {}, progress)
             .then(response => JSON.parse(response.response))
             .then(json => 
             {

@@ -188,6 +188,8 @@ export default function Default(props)
                             // "justify-content": "center"
                         }
                     }
+
+                    console.log(props);
                     
                     function redirect_media(hash)
                     {
