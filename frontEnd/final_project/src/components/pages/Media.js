@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { API_ENDPOINTS, API_TEMPLATES } from '../../constants';
+import { API_ENDPOINTS, API_TEMPLATES, ROUTES } from '../../constants';
 import { formatStringB, addQueryParams } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
 import ImageContainer from '../elements/Image';
@@ -13,10 +13,18 @@ export default function Default(props)
     const params = new URLSearchParams(window.location.search);
     const page = parseInt(params.get('page')) || 1;
     const post = params.get("post") || 0;
-    const hash = params.get("hash") || "";
+
+    const sidebar = React.useRef("");
+    const hamburger = React.useRef("");
+    const main = React.useRef("");
+
+    if(post <= 0)
+    {
+        window.location.href = ROUTES.home;
+    }
 
     const [search, setSearch] = React.useState([]);
-    const [mediaData, setMediaData] = React.useState([]);
+    const [mediaData, setMediaData] = React.useState({});
 
     const vprops = {
         m3u8: API_ENDPOINTS.media.get_file + "D2765EC844F9C92DF35152A5725E0ED381221F202B9BDC190DF599942DEFE930",
@@ -31,26 +39,24 @@ export default function Default(props)
 
     React.useEffect(() => 
     {
-        loadMedia();
-    }, []);
+        console.log(mediaData);
+    }, [mediaData]);
 
-    var med;
-
-    function loadMedia()
+    React.useEffect(() => 
     {
-        if (hash === null || hash === "")
+        if (post === null || post <= 0)
         {
             alert("invalid url - no media loaded");
             return;
         }
         
-        const url = formatStringB(API_ENDPOINTS.media.get_file, hash);
-
+        const url = formatStringB(API_TEMPLATES.get_post.url, post);
+        console.log(url);
         fetch(url, {method:"GET"}).then(resp =>
             {
                 if (resp.status === 200)
                 {
-                    console.log("loading media page for hash: " + hash);
+                    console.log("loading media page for postId: " + post);
                     let temp = resp.json();
                     console.count("RESPONSE:" + temp)
                     return temp;
@@ -67,27 +73,8 @@ export default function Default(props)
             if (err === "server") return
             console.log(err)
         })
-    }
+    }, []);
 
-    function getData(url)
-    {
-        fetch(url)
-        .catch((err) => 
-        {
-            console.log("something went wrong: " + err);
-        })
-        .then(x =>
-        {
-            console.log("loaded data from " + url);
-
-            x.json()
-                .then(i =>
-                    {
-                        return i.mime;
-                    })
-                    .catch(e => console.log(e));
-        })
-    }
 
     function searchButtonPressed()
     {
@@ -123,10 +110,6 @@ export default function Default(props)
         "searchButtonPressed" : searchButtonPressed,
     }
 
-    const sidebar = React.useRef("");
-    const hamburger = React.useRef("");
-    const main = React.useRef("");
-
     function toggleSidebarVisibility()
     {
         // ik this is really bad code, and now there isn't a css animation, but I couldn't get it to work
@@ -144,6 +127,35 @@ export default function Default(props)
         }
     }
 
+    function getMediaDisplayContainer(mediaJson)
+    {
+        if(!mediaJson || !mediaJson.files)
+            return;
+
+        const props = {
+            "image" : formatStringB(API_TEMPLATES.get_file.url, mediaJson.files[0].hash),
+            "hlsUrl": formatStringB(API_TEMPLATES.get_file.url, mediaJson.files[0].hash),
+            "caption": mediaJson.title,
+            "style" : {
+                display: 'inline-block',
+                margin: '20px',
+                border: '1px solid white',
+                verticalAlign : "bottom",
+            }
+        }
+                            
+        if(mediaJson.files[0].mime_int >= 20)
+        {
+            return <VideoPlayer{...props}></VideoPlayer>;
+        }
+        
+        return <ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer>;
+    }
+
+    if(mediaData == null)
+    {
+        return <div>Loading...</div>
+    }
     return (
         <div className="flex flex-col h-screen overflow-auto">
 
@@ -197,41 +209,50 @@ export default function Default(props)
             <main className="overflow-y-auto py-12 px-72" ref={main}>
             {/* PUT ALL DISPLAY STUFF IN HERE, ANYTHING OUTSIDE MAY NOT BE FORMATED CORRECTLY */}
             
-            {mediaData.map((json, index) => 
-                {
-                    const props = {
-                        "image" : formatStringB(API_TEMPLATES.get_file.url, hash),
-                        "hlsUrl": formatStringB(API_TEMPLATES.get_file.url, json.hash),
-                        "caption": json.mime,
-                        "style" : {
-                            display: 'inline-block',
-                            width: '200px',
-                            'margin': '20px',
-                            border: '1px solid white',
-                            // width : "200px",
-                            // border : "1px solid white",
-                            "verticalAlign" : "bottom",
 
-                            // "display": "flex",
-                            // width: "195px",
-                            // height: "185px",
-                            // "margin-top": "20px",
-                            // "align-items": "center",
-                            // "justify-content": "center"
-                        }
-                    }
-                                        
-                    if(json.mime_int >= 20)
-                    {
-                        return <VideoPlayer key={index} {...props}></VideoPlayer>;
-                    }
-                    
-                    return <ImageContainer key={index} {...props} imgError={e => console.log("image errr")}></ImageContainer>;
-                })}
-            
+            {/* {
+        "post_id": 1,
+        "title": "Shondo looking cute today!!!",
+        "description": "Just look at my Imouto Wifee!!! <3 <#",
+        "created_at": 1681030933270,
+        "files": [
+            {
+                "tags": null,
+                "hash_id": 1,
+                "mime": "image/jpg",
+                "mime_int": 1,
+                "file_size": 143885,
+                "width": 850,
+                "height": 1275,
+                "duration": 0,
+                "has_audio": false,
+                "hash": "962b5042569c658beb15b16b257a290847e9ee71d3ecfa4ccf732512c16f7348"
+            }
+        ]
+    } */}
+
+<table>
+    <tbody>
+        <tr><td><p>{mediaData.title}</p></td></tr>
+        <tr><td>{mediaData.description}</td></tr>
+    </tbody>
+</table>
+    
+
+        {getMediaDisplayContainer(mediaData)}
+  
             </main>
 
 
         </div>
+
+
+
+
+
+
+
+
+
     )
 }

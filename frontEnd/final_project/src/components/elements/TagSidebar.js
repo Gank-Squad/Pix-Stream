@@ -194,8 +194,6 @@ export default function TagSidebar(props)
 
                 <table ref={contextTagBox} className="tagbox">
                     <tbody>
-
-
                         {
                         tags.map((tag, index) => {
                             if(selectedTagIds && selectedTagIds.includes(tag.tag_id))

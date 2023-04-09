@@ -48,7 +48,7 @@ export default function Default(props)
         const ids = tags_full.map(element => ({ "tag_id" : element}));
         
         console.log(JSON.stringify(ids));
-        const url = addQueryParams(API_TEMPLATES.get_files_with_tags.url, {
+        const url = addQueryParams(API_TEMPLATES.get_posts_with_tags.url, {
             tags : true
         });
         
@@ -196,12 +196,41 @@ export default function Default(props)
             {/* PUT ALL DISPLAY STUFF IN HERE, ANYTHING OUTSIDE MAY NOT BE FORMATED CORRECTLY */}
 
                 <p className="text-xl font-bold text-custom-white">Displaying search results:</p>
+
+
+                {/* 
+                
+[
+    {
+        "post_id": 1,
+        "title": "Shondo looking cute today!!!",
+        "description": "Just look at my Imouto Wifee!!! <3 <#",
+        "created_at": 1681030933270,
+        "files": [
+            {
+                "tags": null,
+                "hash_id": 1,
+                "mime": "image/jpg",
+                "mime_int": 1,
+                "file_size": 143885,
+                "width": 850,
+                "height": 1275,
+                "duration": 0,
+                "has_audio": false,
+                "hash": "962b5042569c658beb15b16b257a290847e9ee71d3ecfa4ccf732512c16f7348"
+            }
+        ]
+    }
+]
+                */}
+
+
                 {mediaData.map((json, index) => 
                 {
-                    console.log(json.hash);
+                    console.log(json);
                     const props = {
-                        "image" : formatStringB(API_TEMPLATES.get_thumbnail.url, json.hash),
-                        "caption": json.mime,
+                        "image" : formatStringB(API_TEMPLATES.get_thumbnail.url, json.files[0].hash),
+                        "caption": `PostID  ${json.post_id}    ${json.title}           Created On ${json.created_at}       Description ${json.description}`,
                         "style" : {
                             display: 'inline-block',
                             width: '200px',
@@ -218,11 +247,11 @@ export default function Default(props)
                             console.log("hash is empty, doing nothing")
                             return "";
                         }
-                        console.log("hash " + hash);
-                        return '/media?hash=' + hash;
+                        console.log("post " + hash);
+                        return '/media?post=' + hash;
                     }
 
-                    return <a key={index}  href={redirect_media(json.hash)}><ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
+                    return <a key={index}  href={redirect_media(json.post_id)}><ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
                 })}
             </main>
         </div>

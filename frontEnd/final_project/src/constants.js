@@ -37,6 +37,7 @@ export const SERVER_HOST = ((window.navigator.userAgent.indexOf("Linux") != -1) 
 
 export const API_TEMPLATES = {
     get_file        : { url: `${SERVER_HOST}files/{hash}/`    , method: "GET" },
+    get_post        : { url: `${SERVER_HOST}posts/{postId}/`  , method: "GET" },
     get_thumbnail   : { url: `${SERVER_HOST}files/t/{hash}`    , method: "GET" },
     get_ts_file     : { url: `${SERVER_HOST}files/{hash}/{ts_fragment}`, method: "GET" },
     get_file_tags   : { url: `${SERVER_HOST}files/tags`      , method: "GET" },
@@ -45,4 +46,5 @@ export const API_TEMPLATES = {
     upload_post     : { url: `${SERVER_HOST}posts/upload/`   , method: "POST" },
 
     get_files_with_tags    : { url: `${SERVER_HOST}tags/files/` , method: "POST" },
+    get_posts_with_tags    : { url: `${SERVER_HOST}tags/posts/` , method: "POST" },
 }
