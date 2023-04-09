@@ -186,41 +186,37 @@ export default function Default(props)
                 </div>
             </header>
 
-            <main className="flex-1 overflow-y-auto px-80 py-12" ref={main}>
+            <main className="flex-1 overflow-y-auto px-80 py-20" ref={main}>
             {/* PUT ALL DISPLAY STUFF IN HERE, ANYTHING OUTSIDE MAY NOT BE FORMATED CORRECTLY */}
 
-                <p>Hello world, you are on home page {(page).toString()}</p>
+                <p className="text-xl font-bold text-custom-white">Displaying search results:</p>
                 {mediaData.map((json, index) => 
                 {
                     console.log(json.hash);
                     const props = {
-                        "image" : formatStringB(API_TEMPLATES.get_file.url, json.hash),
-                        "hlsUrl": formatStringB(API_TEMPLATES.get_file.url, json.hash),
+                        "image" : formatStringB(API_TEMPLATES.get_thumbnail.url, json.hash),
                         "caption": json.mime,
                         "style" : {
                             display: 'inline-block',
                             width: '200px',
                             'margin': '20px',
                             border: '1px solid white',
-                            // width : "200px",
-                            // border : "1px solid white",
                             "verticalAlign" : "bottom",
-
-                            // "display": "flex",
-                            // width: "195px",
-                            // height: "185px",
-                            // "margin-top": "20px",
-                            // "align-items": "center",
-                            // "justify-content": "center"
                         }
                     }
                     
-                    if(json.mime_int >= 20)
+                    function redirect_media(hash)
                     {
-                        return <button key={index} onClick={redirect_media.bind(this,json.hash)}><VideoContainer  {...props}></VideoContainer></button>;
+                        if (hash === null || hash === "")
+                        {
+                            console.log("hash is empty, doing nothing")
+                            return "";
+                        }
+                        console.log("hash " + hash);
+                        return '/media?hash=' + hash;
                     }
-                    
-                    return <button key={index}  onClick={redirect_media.bind(this,json.hash)}><ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer></button>;
+
+                    return <a href={redirect_media(json.hash)}><ImageContainer key={index} {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
                 })}
             </main>
         </div>

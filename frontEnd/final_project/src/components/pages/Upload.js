@@ -95,6 +95,7 @@ export default function Default(props)
     const mediaFile = React.useRef("");
     const subFile = React.useRef("");
     const title = React.useRef("");
+    const description = React.useRef("");
 
 
     function searchButtonPressed()
@@ -146,6 +147,8 @@ export default function Default(props)
             const data = new FormData();
 
             data.append("data", f);
+            data.append("title", title.current.value);
+            data.append("description", description.current.value);
 
             const totalSize = f.size;
             const uploadFile = f.name;
@@ -156,7 +159,7 @@ export default function Default(props)
                 setProgress(`${uploadFile}: uploaded ${loaded} / ${totalSize} bytes`);
             }
 
-            await postData(API_ENDPOINTS.media.upload_file, data, {}, progress)
+            await postData(API_TEMPLATES.upload_post, data, {}, progress)
             .then(response => JSON.parse(response.response))
             .then(json => 
             {
@@ -220,7 +223,7 @@ export default function Default(props)
                 <tr><td><input type="text" placeholder="Title" className="w-[512px] h-8 text-xl" ref={title}/></td></tr>
                 
                 <tr><td><p className="text-xl font-bold pt-4">Description (optional)</p></td></tr>
-                <tr><td><textarea placeholder="Description" className="w-[512px] h-32 text-lg"/></td></tr>
+                <tr><td><textarea placeholder="Description" className="w-[512px] h-32 text-lg" ref={description}/></td></tr>
                 
                 <tr><td><p className="text-xl font-bold pt-4">Upload Media</p></td></tr>
                 <tr><td><input className="text-custom-white" type="file" multiple="multiple" accept="image/*,video/*" ref={mediaFile} onChange={generatePreview}/></td></tr>

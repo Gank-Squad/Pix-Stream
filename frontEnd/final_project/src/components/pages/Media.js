@@ -33,6 +33,8 @@ export default function Default(props)
         loadMedia();
     }, []);
 
+    var med;
+
     function loadMedia()
     {
         if (hash === null || hash === "")
@@ -59,9 +61,7 @@ export default function Default(props)
                 }
             }
         ).then(dataJson => {
-            console.count("before:"+dataJson);
             setMediaData(dataJson);
-            console.count("after");
         }).catch(err => {
             if (err === "server") return
             console.log(err)
@@ -150,7 +150,7 @@ export default function Default(props)
             <nav ref={sidebar}
                 className="group fixed top-20 left-0 h-screen w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
                 data-te-sidenav-init
-                data-te-sidenav-hidden="false"
+                data-te-sidenav-hidden="true"
             >
                 <ul className="relative m-0 list-none px-[0.2rem]" data-te-sidenav-menu-ref>
                     <TagSidebar {...tagSidebarProps} />
@@ -195,12 +195,9 @@ export default function Default(props)
 
             <main className="overflow-y-auto py-12 px-72" ref={main}>
             {/* PUT ALL DISPLAY STUFF IN HERE, ANYTHING OUTSIDE MAY NOT BE FORMATED CORRECTLY */}
-            {
-                console.log("mediaData")
-            }
+            
             {mediaData.map((json, index) => 
                 {
-                    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                     const props = {
                         "image" : formatStringB(API_TEMPLATES.get_file.url, hash),
                         "hlsUrl": formatStringB(API_TEMPLATES.get_file.url, json.hash),
@@ -222,10 +219,7 @@ export default function Default(props)
                             // "justify-content": "center"
                         }
                     }
-                    
-                    
-                    
-                    console.log(json.hash);
+                                        
                     if(json.mime_int >= 20)
                     {
                         return <VideoPlayer key={index} {...props}></VideoPlayer>;

@@ -168,7 +168,7 @@ export default function Default(props)
                 {mediaData.map((json, index) => 
                 {
                     const props = {
-                        "image" : formatStringB(API_TEMPLATES.get_file.url, json.hash),
+                        "image" : formatStringB(API_TEMPLATES.get_thumbnail.url, json.hash),
                         "hlsUrl": formatStringB(API_TEMPLATES.get_file.url, json.hash),
                         "caption": json.mime,
                         "style" : {
@@ -188,13 +188,19 @@ export default function Default(props)
                             // "justify-content": "center"
                         }
                     }
-
-                    if(json.mime_int >= 20)
-                    {
-                        return <VideoPlayer key={index} {...props}></VideoPlayer>;
-                    }
                     
-                    return <ImageContainer key={index} {...props} imgError={e => console.log("image errr")}></ImageContainer>;
+                    function redirect_media(hash)
+                    {
+                        if (hash === null || hash === "")
+                        {
+                            console.log("hash is empty, doing nothing")
+                            return "";
+                        }
+                        console.log("hash " + hash);
+                        return '/media?hash=' + hash;
+                    }
+
+                    return <a href={redirect_media(json.hash)}><ImageContainer key={index} {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
                 })}
             </main>
         </div>
