@@ -65,20 +65,14 @@ public class ImageMagickHelper
         return ImageProcessor.createOptimalImageFrom(s2b.getImage());
     }
 
-    public static void saveImageWithMagick(BufferedImage buf, String path, byte imgformat)
+    public static void saveImageWithMagick(BufferedImage buf, String path)
             throws IOException, InterruptedException, IM4JavaException
     {
         if (buf == null)
             return;
 
         IMOperation op = new IMOperation();
-        
-        if(imgformat != FileFormat.UNKNOWN && FileFormat.isImageType(imgformat))
-        {
-            Logger.debug("Setting ImageMagick save format to {}", FileFormat.getFileExtension(imgformat));
-            op.format(FileFormat.getFileExtension(imgformat));
-        }
-        
+
         op.addImage(); // input
         op.addImage(path); // output
 

@@ -105,9 +105,34 @@ public class ImageProcessor
 
     public static boolean saveImage(BufferedImage buff, File path, byte imgformat)
     {
+
+
         try
         {
-            ImageMagickHelper.saveImageWithMagick(buff, path.getAbsolutePath(), imgformat);
+            File path2 = path;
+
+            if(!path2.getName().endsWith("." + FileFormat.getFileExtension(imgformat)))
+            {
+                path2 = new File(path.getAbsolutePath() + "." + FileFormat.getFileExtension(imgformat));
+            }
+
+            ImageMagickHelper.saveImageWithMagick(buff, path2.getAbsolutePath());
+
+            if(path.isFile())
+            {
+                if(path.delete())
+                {
+                    path2.renameTo(path);
+                }
+                else
+                {
+                    throw new IOException("Cannot replace existing file by doing stupid rename trick with image magick");
+                }
+            }
+            else
+            {
+                path2.renameTo(path);
+            }
             return true;
         }
         catch (IOException | InterruptedException | IM4JavaException e)
