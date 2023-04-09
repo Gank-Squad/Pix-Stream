@@ -7,7 +7,7 @@ public class PostBase
     public int post_id;
     public String title;
     public String description;
-    public Timestamp posted = new Timestamp(System.currentTimeMillis());;
+    public Timestamp created_at = new Timestamp(System.currentTimeMillis());;
 
     public PostBase()
     {

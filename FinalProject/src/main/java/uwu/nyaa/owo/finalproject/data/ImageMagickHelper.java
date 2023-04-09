@@ -19,6 +19,8 @@ public class ImageMagickHelper
 {
     public static final String IMAGE_DECODE_FORMAT = "bmp";
 
+    public static double JPEG_QUALITY = 95;
+
     public static boolean checkImageMagick()
     {
         ImageCommand cmd = new ImageCommand();
@@ -74,7 +76,13 @@ public class ImageMagickHelper
         IMOperation op = new IMOperation();
 
         op.addImage(); // input
-        op.addImage(path); // output
+
+        if(FileFormat.getFromFileExtension(StringHelper.getFileExtension(path)) == FileFormat.Image.JPG)
+        {
+            op.quality(JPEG_QUALITY);
+        }
+
+        op.addImage(path); // outputs
 
 
         ConvertCmd convert = new ConvertCmd();

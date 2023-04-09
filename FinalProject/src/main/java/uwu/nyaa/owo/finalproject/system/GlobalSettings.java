@@ -14,7 +14,8 @@ import java.util.logging.Level;
 public class GlobalSettings
 {
     public static boolean IS_DEBUG = false;
-    
+
+    public static final int THUMBNAIL_SIZE = 256;
 
     public static final ZonedDateTime ZONED_DATE_TIME = ZonedDateTime.now(ZoneOffset.UTC);
     

@@ -17,6 +17,7 @@ import org.tinylog.Logger;
 
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
+import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 
 public class ImageProcessor
 {
@@ -244,7 +245,7 @@ public class ImageProcessor
     {
         BufferedImage im = loadImage(src);
 
-        BufferedImage thumbnail = Scalr.resize(im, 128);
+        BufferedImage thumbnail = Scalr.resize(im, GlobalSettings.THUMBNAIL_SIZE);
 
         im.flush();
 

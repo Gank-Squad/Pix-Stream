@@ -12,7 +12,9 @@ import java.util.TimeZone;
 
 import org.tinylog.Logger;
 
+import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 import uwu.nyaa.owo.finalproject.data.models.Post;
+import uwu.nyaa.owo.finalproject.data.models.PostBase;
 
 public class TablePost
 {
@@ -94,6 +96,53 @@ public class TablePost
     
     
     
+    public static Post getPost(int postId, boolean includeFiles, boolean includeTags)
+    {
+        try (Connection c = DatabaseConnection.getConnection())
+        {
+            return getPost(postId, includeFiles, includeTags, c);
+        }
+        catch (SQLException e) 
+        {
+            Logger.warn(e, "Error while getting post with id {} ", postId);
+        }
+        return null;
+    }
+    public static Post getPost(int postId, boolean includeFiles, boolean includeTags, Connection c) throws SQLException
+    {
+        final String SQL = "SELECT post_id, time, title, description FROM tbl_post WHERE post_id = ?";
+        
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+            pstmt.setInt(1, postId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()) 
+            {
+                Post p = new Post();
+                p.post_id = rs.getInt(1);
+                p.created_at  = rs.getTimestamp(2);
+                p.title = rs.getString(3);
+                p.description = rs.getString(4);
+
+                if(includeFiles)
+                {
+                    List<Integer> files = TablePostFiles.getAllFiles(p.post_id, c);
+                    
+                    Logger.debug("found {} files for post {}: {}", files.size(), p.post_id, files);
+                    
+                    TableFile.getFiles(files, includeTags, p.files, c);    
+                }
+                
+                return p;
+            }
+        }
+        
+        return null;
+    }
+    
+    
     public static List<Post> getPosts(int limit, boolean includeTags)
     {
         try (Connection c = DatabaseConnection.getConnection())
@@ -124,7 +173,7 @@ public class TablePost
             {
                 Post p = new Post();
                 p.post_id = rs.getInt(1);
-                p.posted  = rs.getTimestamp(2);
+                p.created_at  = rs.getTimestamp(2);
                 p.title = rs.getString(3);
                 p.description = rs.getString(4);
 
@@ -141,4 +190,74 @@ public class TablePost
         
         return posts;
     }
+    
+    
+    public static List<PostBase> getPostsWithFile(int file_id, Connection c) throws SQLException
+    {
+        final String SQL = "SELECT tbl_post.post_id, time, title, description FROM tbl_post INNER JOIN tbl_post_files ON tbl_post.post_id = tbl_post_files.post_id WHERE tbl_post_files.hash_id = ?;";
+        
+       
+        LinkedList<PostBase> items = new LinkedList<>();
+        
+        try(PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+            pstmt.setInt(1, file_id);
+            
+            ResultSet rs = pstmt.executeQuery();
+            
+            while(rs.next())
+            {
+                PostBase p = new PostBase();
+                p.post_id = rs.getInt(1);
+                p.created_at  = rs.getTimestamp(2);
+                p.title = rs.getString(3);
+                p.description = rs.getString(4);
+                
+                items.add(p);
+            }
+        }
+        
+        return items;
+    }
+    
+
+    public static List<Post> getPostsContaining(int[] tag_id, int limit, boolean includeTags) throws IllegalArgumentException
+    {
+        try(Connection c = DatabaseConnection.getConnection())
+        {
+            return getPostsContaining(tag_id, limit, includeTags, c);
+        }
+        catch (SQLException e)
+        {
+            Logger.warn(e, "Exception while files with tags");
+        }
+        return new LinkedList<>();
+    }
+    
+    public static List<Post> getPostsContaining(int[] tag_id, int limit, boolean includeTags, Connection c) throws SQLException
+    {
+        if(tag_id.length == 0)
+        {
+            throw new IllegalArgumentException("Cannot take empty tag array");
+        }
+        
+        List<HashInfo> files = TableHashTag.getFilesContaining(tag_id, limit, includeTags, c);
+        
+        LinkedList<Post> posts = new LinkedList<>();
+        for(HashInfo hi : files)
+        {
+            List<PostBase> _posts = getPostsWithFile(hi.hash_id, c);
+            
+            for(PostBase pb : _posts)
+            {
+                Post p = new Post(pb);
+                p.files.add(hi);
+                
+                posts.add(p);
+            }
+        }
+        
+        return posts;
+    }
+    
 }

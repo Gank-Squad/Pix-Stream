@@ -215,11 +215,12 @@ public class VideoProcessor
 
     public static void createThumbnail(File src, File dest)
     {
+        int t = GlobalSettings.THUMBNAIL_SIZE;
         FFmpegBuilder builder = new FFmpegBuilder()
 
                 .setInput(src.getAbsolutePath()).overrideOutputFiles(true).addOutput(dest.getAbsolutePath())
 
-                .addExtraArgs("-vf", "thumbnail,scale=min(128\\,iw*min(1\\,(128/ih))):min(128\\,ih*min(1\\,(128/iw)))")
+                .addExtraArgs("-vf", String.format("thumbnail,scale=min(%d\\,iw*min(1\\,(%d/ih))):min(%d\\,ih*min(1\\,(%d/iw)))", t, t, t, t))
                 .addExtraArgs("-vframes", "1")
                 .addExtraArgs("-f", "image2")
                 .addExtraArgs("-c:v", "mjpeg")

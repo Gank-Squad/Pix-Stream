@@ -386,7 +386,12 @@ public class FileProcessor
 
             if(!FileFormat.isAudioType(mimeType))
             {
-                VideoProcessor.createThumbnail(tmpMediaFile, thumbFile);
+                VideoProcessor.createThumbnail(f, thumbFile);
+
+                if(!thumbFile.isFile())
+                {
+                    VideoProcessor.createThumbnail(tmpMediaFile, thumbFile);
+                }
             }
 
             tmpMediaFile.delete();

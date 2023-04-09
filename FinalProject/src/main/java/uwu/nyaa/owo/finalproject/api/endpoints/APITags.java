@@ -14,15 +14,16 @@ import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import uwu.nyaa.owo.finalproject.data.db.TableHashTag;
+import uwu.nyaa.owo.finalproject.data.db.TablePost;
 import uwu.nyaa.owo.finalproject.data.db.TableTag;
 import uwu.nyaa.owo.finalproject.data.models.FullTag;
 import uwu.nyaa.owo.finalproject.data.models.HashInfo;
+import uwu.nyaa.owo.finalproject.data.models.Post;
 import uwu.nyaa.owo.finalproject.data.models.TagFileCount;
 
 @Path("tags")
@@ -131,6 +132,60 @@ public class APITags
         int[] tag_ids = tags.stream().mapToInt(FullTag::getTagId).toArray();
         
         List<HashInfo> items = TableHashTag.getFilesContaining(tag_ids, limit, withTags);
+        
+        try 
+        {
+            return Response.status(200).entity(this.jsonMapper.writeValueAsString(items)).build();    
+        }
+        catch (JsonProcessingException e) 
+        {
+            Logger.error(e, "Error in getFilesWithTags while processing json");
+            return Response.status(500).build();
+        }
+    }
+    
+    
+    
+    
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/posts")
+    public Response getPostsWithTags(String json, @QueryParam("limit") int limit, @QueryParam("tags") @DefaultValue("true") boolean withTags)
+    {
+        if (limit <= 0 || limit > 200)
+        {
+            limit = 200;
+        }
+
+        Logger.debug("got request for posts with tags: {}\n limit: {}, with tags: {}", json, limit);
+
+        List<FullTag> tags;
+        try
+        {
+            TypeFactory typeFactory = jsonMapper.getTypeFactory();
+            tags = jsonMapper.readValue(json, typeFactory.constructCollectionType(List.class, FullTag.class));
+        }
+        catch (RuntimeException e)
+        {
+            Logger.error(e);
+            return Response.status(500).build();
+        }
+        catch (JsonMappingException e)
+        {
+            Logger.warn(e, "Failed to map json in getFilesWithTags, ignoring");
+            return Response.status(400).build();
+        }
+        catch (JsonProcessingException e)
+        {
+            Logger.warn(e, "Failed to process json in getFilesWithTags, ignoring");
+            return Response.status(400).build();
+        }
+        
+        int[] tag_ids = tags.stream().mapToInt(FullTag::getTagId).toArray();
+        
+        List<Post> items = TablePost.getPostsContaining(tag_ids, limit, false);
         
         try 
         {

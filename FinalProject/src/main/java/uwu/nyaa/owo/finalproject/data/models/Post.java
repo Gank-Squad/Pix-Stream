@@ -12,7 +12,13 @@ public class Post extends PostBase
     {
         super();
     }
-    
+    public Post(PostBase p)
+    {
+        this.post_id = p.post_id;
+        this.title = p.title;
+        this.description = p.description;
+        this.created_at = p.created_at;
+    }
     public Post(int post_id, String title, String description)
     {
         super(post_id, title, description);
