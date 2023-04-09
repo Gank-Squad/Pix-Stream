@@ -3,7 +3,7 @@ import React from "react";
 import { API_ENDPOINTS } from "../../constants";
 export default function TagSidebar(props) 
 {
-    const { searchCallback, hideSearchButton, searchButtonPressed } = props;
+    const { searchCallback, hideSearchButton, searchButtonPressed, selectedTagIds } = props;
 
 
     // basically global variables / instance variables 
@@ -28,6 +28,7 @@ export default function TagSidebar(props)
             .then(json => {
 
                 setTags(json);
+
             })
             .catch(e => console.log(e));
 
@@ -106,8 +107,6 @@ export default function TagSidebar(props)
     }
 
     function tagButtonPressed(e, tag) {
-        if (!e || !e.target)
-            return;
 
         const trSelected = selectedTagBox.current.querySelector(`tr[tag-id="${tag.tag_id}"]`);
         const trContext = contextTagBox.current.querySelector(`tr[tag-id="${tag.tag_id}"]`);
@@ -123,9 +122,25 @@ export default function TagSidebar(props)
     }
 
 
+    function getClickableTagHTML(tag, index)
+    {
+        return <tr key={index} index={index} tag-id={tag.tag_id}>
+        <td>
+            <div className="tag">
+                <i className="fa fa-tag"></i>
+                <button onClick={(e) => tagButtonPressed(e, tag)} 
+                className="text-custom-white text-ellipsis hover:bg-button-depressed truncate rounded px-2 w-48 text-left">
+                    <label>
+                        {tag.namespace + ":" + tag.subtag}
+                    </label>
+                </button>                                        
+            </div>
+        </td>
+    </tr>
+    }
+     
+
     return (
-
-
         <div className="px-4 ">
 
             <div className="tagbox-container">
@@ -153,8 +168,17 @@ export default function TagSidebar(props)
                 </header>
 
                 <table ref={selectedTagBox} className="tagbox">
-                    <tbody>
+                <tbody>
+                    {
+                    tags.map((tag, index) => {
+                        if(!selectedTagIds)
+                            return;
 
+                        if(!selectedTagIds.includes(tag.tag_id))
+                            return;
+
+                        return getClickableTagHTML(tag, index);
+                    })}
                     </tbody>
                 </table>
             </div>
@@ -174,21 +198,15 @@ export default function TagSidebar(props)
 
                         {
                         tags.map((tag, index) => {
-                            return <tr key={index} index={index} tag-id={tag.tag_id}>
-                                <td>
-                                    <div className="tag">
-                                        <i className="fa fa-tag"></i>
-                                        <button onClick={(e) => tagButtonPressed(e, tag)} 
-                                        className="text-custom-white text-ellipsis hover:bg-button-depressed truncate rounded px-2 w-48 text-left">
-                                            <label>
-                                                {tag.namespace + ":" + tag.subtag}
-                                            </label>
-                                        </button>                                        
-                                    </div>
-                                </td>
-                            </tr>
-                        })}
+                            if(selectedTagIds && selectedTagIds.includes(tag.tag_id))
+                            {
+                                return;
+                            }
+                                // return;
 
+                            return getClickableTagHTML(tag, index);
+
+                        })}
                     </tbody>
                 </table>
             </div>

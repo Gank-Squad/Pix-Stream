@@ -12,6 +12,7 @@ export default function Default(props)
 
     const params = new URLSearchParams(window.location.search);
     const page = parseInt(params.get('page')) || 1;
+    const post = params.get("post") || 0;
     const hash = params.get("hash") || "";
 
     const [search, setSearch] = React.useState([]);

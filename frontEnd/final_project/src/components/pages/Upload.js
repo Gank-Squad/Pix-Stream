@@ -165,20 +165,27 @@ export default function Default(props)
             {
                 console.log(json);
 
-                if(!json.upload_accepted || json.hash === "" || json.hash === undefined)
+                if(json.files.length === 0)
+                {
+                    console.log("Upload responded with 0 files json, skipping adding tags");
                     return;
-    
-                const url = formatStringB(API_TEMPLATES.add_tag_to_file.url, json.hash);
-                console.log(url);
-                fetch(url, {
-                    method: "post",
-                    "headers" : {
-                        "Content-Type" : "application/json"
-                    },
-                    body:  JSON.stringify(searchItems)
-                }).then(response => {
-                    console.log(response.status);
-                })
+                }
+
+                for(const sub_json of json.files)
+                {
+                    const url = formatStringB(API_TEMPLATES.add_tag_to_file.url, sub_json.hash);
+                    console.log(url);
+                    fetch(url, {
+                        method: "post",
+                        "headers" : {
+                            "Content-Type" : "application/json"
+                        },
+                        body:  JSON.stringify(searchItems)
+                    }).then(response => {
+                        console.log("Adding tag status " + response.status);
+                    })
+                }
+                
                 })
                 .catch(err => console.log(err));
         }

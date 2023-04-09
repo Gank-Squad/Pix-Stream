@@ -66,9 +66,12 @@ export default function Default(props)
     }
 
 
-    function searchButtonPressed(e)
+    function searchButtonPressed()
     {
-        window.location.href = '/results?tags=';
+        const url = formatStringB('/results?tags={IDS}', 
+        search.map(elements => elements.tag_id).join(","))
+    
+        window.location.href = url;
     }
 
     function searchCallback(searchItems)
@@ -173,7 +176,7 @@ export default function Default(props)
                         "caption": json.mime,
                         "style" : {
                             display: 'inline-block',
-                            width: '200px',
+                            width: '256px',
                             'margin': '20px',
                             border: '1px solid white',
                             // width : "200px",
@@ -189,8 +192,6 @@ export default function Default(props)
                         }
                     }
 
-                    console.log(props);
-                    
                     function redirect_media(hash)
                     {
                         if (hash === null || hash === "")
@@ -202,7 +203,7 @@ export default function Default(props)
                         return '/media?hash=' + hash;
                     }
 
-                    return <a href={redirect_media(json.hash)}><ImageContainer key={index} {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
+                    return <a key={index}  href={redirect_media(json.hash)}><ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
                 })}
             </main>
         </div>

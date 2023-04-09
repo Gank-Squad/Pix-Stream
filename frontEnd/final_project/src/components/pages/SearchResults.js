@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { API_ENDPOINTS, API_TEMPLATES } from '../../constants';
+import { API_ENDPOINTS, API_TEMPLATES, ROUTES } from '../../constants';
 import { formatStringB, addQueryParams } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
 import ImageContainer from '../elements/Image';
@@ -13,7 +13,13 @@ export default function Default(props)
 
     const params = new URLSearchParams(window.location.search);
     const page = parseInt(params.get('page')) || 1;
-    const tags_full = params.get('tags') || "";
+    const _tags_full = params.get('tags') || "";
+    const tags_full = _tags_full.split(",").map(Number).filter((value) => !isNaN(value));;
+
+    if(tags_full.length === 0)
+    {
+        window.location.href = ROUTES.home;
+    }
 
     const [search, setSearch] = React.useState([]);
     const [mediaData, setMediaData] = React.useState([]);
@@ -24,41 +30,40 @@ export default function Default(props)
         console.log(`Page ${page} was loaded!`);
         console.log(`Cookies from props: ${cookies}`);
     }, [cookies, page]);
+
+    React.useEffect(() => 
+    {
+        console.log(`MediaData ${JSON.stringify(mediaData)} was loaded!`);
+    }, [mediaData]);
+    
     React.useEffect(() => 
     {
         console.log("Updating media with new search " + JSON.stringify(search));
         loadMedia();
     }, []); // search
 
+
     function loadMedia()
     {
-        let url = addQueryParams(API_ENDPOINTS.media.get_file, {limit : 10});
-
+        const ids = tags_full.map(element => ({ "tag_id" : element}));
+        
+        console.log(JSON.stringify(ids));
+        const url = addQueryParams(API_TEMPLATES.get_files_with_tags.url, {
+            tags : true
+        });
+        
         const fetchData = {
-            method : "GET"
+            method : "POST",
+            headers : { "Content-Type": "application/json" },
+            body : JSON.stringify(ids)
         }
-
-        // if they search with tags, only give media with those tags
-        if(tags_full !== "")
-        {
-            const tags = tags_full.substring(0,tags_full.length - 1).split(",");
-            const ids = tags.map(element => ({ "tag_id" : parseInt(element)}));
-            
-            console.log(JSON.stringify(ids));
-            url = addQueryParams(API_TEMPLATES.get_files_with_tags.url, {
-                tags : true
-            });
-            fetchData.method = "POST";
-            fetchData.headers = { "Content-Type": "application/json" };
-            fetchData.body = JSON.stringify(ids);
-        }
-
 
         console.log("loading media from api " + url + " " + JSON.stringify(fetchData));
 
         fetch(url, fetchData).then(resp => {
             if (resp.status === 200)
             {
+                console.log("Got some sick json");
                 return resp.json();    
             }
             else
@@ -67,6 +72,7 @@ export default function Default(props)
                 return Promise.reject("server");
             }
         }).then(dataJson => {
+            console.log(dataJson);
             setMediaData(dataJson);
         }).catch(err => {
             if (err === "server") return
@@ -77,12 +83,11 @@ export default function Default(props)
 
     function searchButtonPressed()
     {
-        let url = '/results?tags=';
-        const ids = search.map(elements => ({tag_id : elements.tag_id}));
-
-        ids.forEach(id => (url += id.tag_id + ","));
-
+        const url = formatStringB('/results?tags={IDS}', 
+            search.map(elements => elements.tag_id).join(","))
+        
         window.location.href = url;
+        
     }
 
     function searchCallback(searchItems)
@@ -107,6 +112,7 @@ export default function Default(props)
         "searchCallback" : searchCallback,
         "hideSearchButton" : false,
         "searchButtonPressed" : searchButtonPressed,
+        "selectedTagIds" : tags_full
     }
 
     const sidebar = React.useRef("");
@@ -216,7 +222,7 @@ export default function Default(props)
                         return '/media?hash=' + hash;
                     }
 
-                    return <a href={redirect_media(json.hash)}><ImageContainer key={index} {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
+                    return <a key={index}  href={redirect_media(json.hash)}><ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
                 })}
             </main>
         </div>
