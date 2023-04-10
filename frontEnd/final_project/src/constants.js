@@ -27,7 +27,8 @@ export const SERVER_HOST = ((window.navigator.userAgent.indexOf("Linux") != -1) 
         // should be POST, and send json, files/{filehash}/tag
         add_tag_to_file : `${SERVER_HOST}files/`,
         get_tags : `${SERVER_HOST}tags/`,
-        upload_file : `${SERVER_HOST}files/upload/`
+        upload_file : `${SERVER_HOST}files/upload/`,
+        get_posts : `${SERVER_HOST}posts/`,
     },
     search : {
         get_files_with_tags : `${SERVER_HOST}tags/files/?tags=true`,

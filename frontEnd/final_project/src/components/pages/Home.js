@@ -26,7 +26,7 @@ export default function Default(props)
 
     function loadMedia()
     {
-        let url = addQueryParams(API_ENDPOINTS.media.get_file, {limit : 10});
+        let url = addQueryParams(API_ENDPOINTS.media.get_posts, {limit : 10});
 
         const fetchData = {
             method : "GET"
@@ -45,7 +45,7 @@ export default function Default(props)
         // }
         
 
-        console.log("loading media from api " + url + " " + JSON.stringify(fetchData));
+        console.log("loading posts from api " + url + " " + JSON.stringify(fetchData));
 
         fetch(url, fetchData).then(resp => {
             if (resp.status === 200)
@@ -58,6 +58,7 @@ export default function Default(props)
                 return Promise.reject("server");
             }
         }).then(dataJson => {
+            console.log(dataJson);
             setMediaData(dataJson);
         }).catch(err => {
             if (err === "server") return
@@ -171,39 +172,29 @@ export default function Default(props)
                 {mediaData.map((json, index) => 
                 {
                     const props = {
-                        "image" : formatStringB(API_TEMPLATES.get_thumbnail.url, json.hash),
-                        "hlsUrl": formatStringB(API_TEMPLATES.get_file.url, json.hash),
-                        "caption": json.mime,
+                        "image" : formatStringB(API_TEMPLATES.get_thumbnail.url, json.files[0].hash),
+                        "caption": `PostID  ${json.post_id}    ${json.title}           Created On ${json.created_at}       Description ${json.description}`,
                         "style" : {
                             display: 'inline-block',
-                            width: '256px',
+                            width: '200px',
                             'margin': '20px',
                             border: '1px solid white',
-                            // width : "200px",
-                            // border : "1px solid white",
                             "verticalAlign" : "bottom",
-
-                            // "display": "flex",
-                            // width: "195px",
-                            // height: "185px",
-                            // "margin-top": "20px",
-                            // "align-items": "center",
-                            // "justify-content": "center"
                         }
                     }
 
-                    function redirect_media(hash)
+                    function redirect_media(postId)
                     {
-                        if (hash === null || hash === "")
+                        if (postId === null || postId < 1)
                         {
-                            console.log("hash is empty, doing nothing")
+                            console.log("invalid postId, doing nothing")
                             return "";
                         }
-                        console.log("hash " + hash);
-                        return '/media?hash=' + hash;
+                        console.log("hash " + postId);
+                        return '/media?post=' + postId;
                     }
 
-                    return <a key={index}  href={redirect_media(json.hash)}><ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
+                    return <a key={index}  href={redirect_media(json.post_id)}><ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
                 })}
             </main>
         </div>
