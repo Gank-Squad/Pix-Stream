@@ -694,6 +694,10 @@ p
   height: 256;
 }
 
+.h-\[256px\] {
+  height: 256px;
+}
+
 .w-48 {
   width: 12rem;
 }
@@ -722,6 +726,14 @@ p
   width: 2.5rem;
 }
 
+.w-\[256\] {
+  width: 256;
+}
+
+.w-\[256px\] {
+  width: 256px;
+}
+
 .flex-1 {
   flex: 1 1 0%;
 }
@@ -748,6 +760,10 @@ p
 
 .flex-col {
   flex-direction: column;
+}
+
+.justify-center {
+  justify-content: center;
 }
 
 .overflow-auto {
@@ -838,6 +854,10 @@ p
 
 .p-4 {
   padding: 1rem;
+}
+
+.p-8 {
+  padding: 2rem;
 }
 
 .px-1 {
