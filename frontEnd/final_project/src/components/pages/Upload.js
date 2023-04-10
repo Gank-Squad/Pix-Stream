@@ -131,16 +131,33 @@ export default function Default(props)
         setPreview(newPreview);
     }
 
+    function checkForValidUpload()
+    {
+        if (title.current.value === "")
+        {
+            alert("missing title");
+            return false;
+        }
+        if (!files || files.length < 1)
+        {
+            alert("missing media");
+            return false;
+        }
+        if (searchItems.length === 0)
+        {
+            alert("missing tags");
+            return false;
+        }
+
+        return true;
+    }
 
     async function beginUpload(e)
     {
         e.preventDefault();
 
-        if (!files || files.length < 1)
-        {
-            alert("You gotta add a file >:(")
+        if (! await checkForValidUpload())
             return;
-        }
 
         for (let f of files)
         {
