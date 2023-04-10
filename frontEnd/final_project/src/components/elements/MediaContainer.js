@@ -27,53 +27,73 @@ export default function VideoContainer(props)
         }
     } = props;
 
-    const max_width = 8;
+    const max_width = 256;
     const max_height = 256;
+
+    
+
+    function getWidthForDesiredHeight(oldWidth,oldHeight,newHeight)
+    {
+        const ratio = newHeight/oldHeight;
+
+        return (oldWidth * ratio);
+    }
+
+    const thumb = React.useRef("");
 
     function imgError(image) 
     {
         // set the source to no media image, disregard error
+        thumb.current.setAttribute("src", NO_MEDIA_IMG);
         return true;
     }
 
     function thumbnailPreview()
     {
+
+        
+
+
         // should return div that is of a set width and height
         // div should contain image, which has at least one of its dimensions equal to widht or height of container
         
         //get thumbnail url
         const thumb_url = formatStringB(API_TEMPLATES.get_thumbnail.url, hash);
 
-        const dx = Math.abs(max_width - props.metaData.width);
-        const dy = Math.abs(max_height - props.metaData.height);
+
+        // this needs to be swapped out for code that does an aspect ratio check
+        // const dx = Math.abs(max_width - props.metaData.width);
+        // const dy = Math.abs(max_height - props.metaData.height);
+
+        const dx = props.metaData.width;
+        const dy = props.metaData.height;
+
+        // return <img className="border-dashed border-2 border-white" src="https://www.w3schools.com/tags/img_girl.jpg" alt="Girl in a jacket" height="10" />
+
+        
 
         if (dx > dy)
         {
             // display width should = max_width
-            return (
-                // make it a fixed width and height for consistent tiling
-                <div className="border-dashed border-2 border-white" width={max_width} height={max_height}>
-                    <img
-                        className="border-dashed border-2 border-white"
-                        src={thumb_url} width={max_width} onError={imgError} loading="lazy" />
-                    {/* <div className="text-custom-white caption">caption</div> */}
-
-                </div>
-            );
+            // make it a fixed width and height for consistent tiling
+            return <div className="border-dashed border-2 border-white h-[256] w-256">
+                <img
+                    className="border-solid border-2 border-white" ref={thumb}
+                    src={thumb_url} width={max_width} onError={imgError} loading="lazy" />
+                {/* <div className="text-custom-white caption">caption</div> */}
+            </div>
         }
         else
         {
             // display height should = max_height
-            return (
-                // make it a fixed width and height for consistent tiling
-                <div className="border-solid border-2 border-white" width={max_width} height={max_height}>
-                    <img
-                        className="border-dashed border-2 border-white"
-                        src={thumb_url} height={max_height} onError={imgError} loading="lazy" />
-                    {/* <div className="text-custom-white caption">caption</div> */}
+            const newWidth = getWidthForDesiredHeight(props.metaData.width, props.metaData.height, max_height);
 
-                </div>
-            );
+            return <div className="border-dashed border-2 border-white">
+                <img
+                    className="border-dashed border-2 border-white" ref={thumb}
+                    src={thumb_url} width={newWidth} onError={imgError} loading="lazy" />
+                {/* <div className="text-custom-white caption">caption</div> */}
+            </div>
         }
 
     }

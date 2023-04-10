@@ -662,6 +662,10 @@ p
   aspect-ratio: 16 / 9;
 }
 
+.aspect-auto {
+  aspect-ratio: auto;
+}
+
 .h-20 {
   height: 5rem;
 }
@@ -684,6 +688,10 @@ p
 
 .h-10 {
   height: 2.5rem;
+}
+
+.h-\[256\] {
+  height: 256;
 }
 
 .w-48 {
@@ -716,6 +724,10 @@ p
 
 .flex-1 {
   flex: 1 1 0%;
+}
+
+.flex-auto {
+  flex: 1 1 auto;
 }
 
 .-translate-x-60 {

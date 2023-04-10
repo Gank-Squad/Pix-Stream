@@ -193,8 +193,7 @@ export default function Default(props)
                             created_at : json.created_at,
                             mime_int : json.files[0].mime_int,
                             duration : json.files[0].duration,
-                            // width : json.files[0].width,
-                            width : 10,
+                            width : json.files[0].width,
                             height : json.files[0].height,
                         }
                     }
@@ -211,7 +210,8 @@ export default function Default(props)
                     }
 
                     // return <a key={index}  href={redirect_media(json.post_id)}><ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
-                    return <a key={index}  href={redirect_media(json.post_id)}><MediaContainer {...props} ></MediaContainer></a>;
+                    // return <a key={index}  href={redirect_media(json.post_id)}><MediaContainer {...props} ></MediaContainer></a>;
+                    return <a key={index}  href={redirect_media(json.post_id)}><MediaContainer {...props} /></a>;
                 })}
             </main>
         </div>
