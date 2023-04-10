@@ -35,6 +35,18 @@ export const SERVER_HOST = ((window.navigator.userAgent.indexOf("Linux") != -1) 
     }
 };
 
+export const DISPLAY_TYPES = {
+    // type for search results, home page
+    thumb_preview   : 1,
+    // type for media page dispaly
+    general_display : 2,
+    // likely exclusive use for image, imposes no restriction on width or height
+    full_size_display: 3, 
+}
+
+export const NO_MEDIA_IMG = "https://media.discordapp.net/attachments/447901281328168962/1094429564563894373/nomedia.png";
+
+export const MIME_IMG_CUTOFF = 19;
 
 export const API_TEMPLATES = {
     get_file        : { url: `${SERVER_HOST}files/{hash}/`    , method: "GET" },

@@ -1,10 +1,11 @@
 import React from 'react';
 
-import { API_ENDPOINTS, API_TEMPLATES } from '../../constants';
+import { API_ENDPOINTS, API_TEMPLATES, DISPLAY_TYPES } from '../../constants';
 import { formatStringB, addQueryParams } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
 import ImageContainer from '../elements/Image';
 import VideoPlayer from '../elements/Video';
+import MediaContainer from '../elements/MediaContainer';
 
 export default function Default(props)
 {
@@ -165,21 +166,36 @@ export default function Default(props)
                 </div>
             </header>
 
-            <main className="flex-1 overflow-y-auto px-80 py-12" ref={main}>
+            <main className="flex-1 overflow-y-auto px-80 py-20" ref={main}>
             {/* PUT ALL DISPLAY STUFF IN HERE, ANYTHING OUTSIDE MAY NOT BE FORMATED CORRECTLY */}
 
-                <p>Hello world, you are on home page {(page).toString()}</p>
+                {/* <p>Hello world, you are on home page {(page).toString()}</p> */}
                 {mediaData.map((json, index) => 
                 {
+                    // const props = {
+                    //     "image" : formatStringB(API_TEMPLATES.get_thumbnail.url, json.files[0].hash),
+                    //     "caption": `PostID  ${json.post_id}    ${json.title}           Created On ${json.created_at}       Description ${json.description}`,
+                    //     "style" : {
+                    //         display: 'inline-block',
+                    //         width: '200px',
+                    //         'margin': '20px',
+                    //         border: '1px solid white',
+                    //         "verticalAlign" : "bottom",
+                    //     }
+                    // }
                     const props = {
-                        "image" : formatStringB(API_TEMPLATES.get_thumbnail.url, json.files[0].hash),
-                        "caption": `PostID  ${json.post_id}    ${json.title}           Created On ${json.created_at}       Description ${json.description}`,
-                        "style" : {
-                            display: 'inline-block',
-                            width: '200px',
-                            'margin': '20px',
-                            border: '1px solid white',
-                            "verticalAlign" : "bottom",
+                        "hash" : json.files[0].hash,
+                        "displayType" : DISPLAY_TYPES.thumb_preview,
+                        metaData : {
+                            id : json.post_id,
+                            title : json.title,
+                            description : json.description,
+                            created_at : json.created_at,
+                            mime_int : json.files[0].mime_int,
+                            duration : json.files[0].duration,
+                            // width : json.files[0].width,
+                            width : 10,
+                            height : json.files[0].height,
                         }
                     }
 
@@ -194,7 +210,8 @@ export default function Default(props)
                         return '/media?post=' + postId;
                     }
 
-                    return <a key={index}  href={redirect_media(json.post_id)}><ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
+                    // return <a key={index}  href={redirect_media(json.post_id)}><ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
+                    return <a key={index}  href={redirect_media(json.post_id)}><MediaContainer {...props} ></MediaContainer></a>;
                 })}
             </main>
         </div>
