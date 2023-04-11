@@ -249,6 +249,6 @@ public class ImageProcessor
 
         im.flush();
 
-        saveImage(thumbnail, dest, FileFormat.Image.JPG);
+        saveImage(thumbnail, dest, FileFormat.Image.PNG);
     }
 }
