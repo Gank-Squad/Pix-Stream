@@ -97,6 +97,7 @@ public class APIPosts
 
         if (BOUNDARY == null)
         {
+            FORM_STREAM.close();
             return Response.status(400, "Bad format data").build();
         }
 
@@ -104,6 +105,7 @@ public class APIPosts
 
         if (partInputStream.isLastPart())
         {
+            FORM_STREAM.close();
             return Response.status(400, "Bad format data").build();
         }
 
@@ -111,6 +113,7 @@ public class APIPosts
 
         if (p == null || p.qualifiers.get("name") == null || !p.qualifiers.get("name").equals("data"))
         {
+            FORM_STREAM.close();
             return Response.status(400, "Could not read data field from form first").build();
         }
 
@@ -119,8 +122,11 @@ public class APIPosts
         byte[] header = p.partInputStream.readNBytes(256);
         byte mime = FileDetector.getFileMimeType(header);
 
+        Logger.debug("Detected mime type: {} [{}]", mime, FileFormat.getMimeType(mime));
+
         if (mime == FileFormat.UNKNOWN)
         {
+            FORM_STREAM.close();
             return Response.status(400, "Unknown data format").build();
         }
 
@@ -140,6 +146,7 @@ public class APIPosts
         if (fa.hash_id == -1)
         {
             Logger.warn("Server fricked up file upload or something, returned a -1 hash_id");
+            FORM_STREAM.close();
             return Response.status(500, "Server fcked up man").build();
         }
 
@@ -148,6 +155,7 @@ public class APIPosts
         if (p == null || p.qualifiers.get("name") == null || !p.qualifiers.get("name").equals("title"))
         {
             Logger.debug("Could not read title from file upload");
+            FORM_STREAM.close();
             return Response.status(400, "Could not read title field from form data").build();
         }
 
@@ -156,12 +164,14 @@ public class APIPosts
         if (title == null || title.isEmpty() || title.isBlank())
         {
             Logger.debug("File upload title was blank empty or null");
+            FORM_STREAM.close();
             return Response.status(400, "Title was null, blank or empty, bad request").build();
         }
 
         if (p.partInputStream.read() != PartInputStream.EOF)
         {
             Logger.debug("File upload title was too long");
+            FORM_STREAM.close();
             return Response.status(400, "Title was longer than 1024 bytes, bad request").build();
         }
 
@@ -170,6 +180,7 @@ public class APIPosts
         if (p == null || p.qualifiers.get("name") == null || !p.qualifiers.get("name").equals("description"))
         {
             Logger.debug("Could not read description from form data");
+            FORM_STREAM.close();
             return Response.status(400, "Could not read description field from form data").build();
         }
 
@@ -178,12 +189,14 @@ public class APIPosts
         if (description == null || description.isEmpty() || description.isBlank())
         {
             Logger.debug("File upload description was empty blank or null");
+            FORM_STREAM.close();
             return Response.status(400, "Description was null, blank or empty, bad request").build();
         }
 
         if (p.partInputStream.read() != PartInputStream.EOF)
         {
             Logger.debug("File upload description was too long");
+            FORM_STREAM.close();
             return Response.status(400, "Description was longer than 5*1024 bytes, bad request").build();
         }
 
@@ -192,6 +205,7 @@ public class APIPosts
         if (post_id == -1)
         {
             Logger.debug("Post id returned -1, somehow");
+            FORM_STREAM.close();
             return Response.status(500, "Could not make post, server error").build();
         }
 

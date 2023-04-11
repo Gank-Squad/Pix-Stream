@@ -283,6 +283,8 @@ public class APIFiles
         byte[] header = p.partInputStream.readNBytes(256);
         byte mime = FileDetector.getFileMimeType(header);
 
+        Logger.debug("Detected mime type: {} [{}]", mime, FileFormat.getMimeType(mime));
+        
         if(mime == FileFormat.UNKNOWN)
         {
             return Response.status(400, "Unknown data format").build();

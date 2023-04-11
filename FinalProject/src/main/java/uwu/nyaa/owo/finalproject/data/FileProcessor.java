@@ -375,7 +375,14 @@ public class FileProcessor
             
             try
             {
-                VideoProcessor.encodeUniversal(f, tmpMediaFile);
+                if(FileFormat.isAudioType(mimeType))
+                {
+                    VideoProcessor.encodeUniversalAudioOnly(f, tmpMediaFile);
+                }
+                else 
+                {
+                    VideoProcessor.encodeUniversal(f, tmpMediaFile);    
+                }
                 VideoProcessor.splitVideoForHLS(tmpMediaFile, mediaFile);
             }
             catch (IOException e)
@@ -396,7 +403,11 @@ public class FileProcessor
 
             tmpMediaFile.delete();
         }
-
+        else {
+            Logger.warn("Could not detect file {}", fa.hashes);
+            return fa;
+        }
+        
         int hash_id = TableHash.insertHash(b.SHA256);
 
         fa.filePath = mediaFile;

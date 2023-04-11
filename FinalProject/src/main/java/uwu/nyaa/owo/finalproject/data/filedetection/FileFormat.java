@@ -35,6 +35,8 @@ public interface FileFormat
     {
         public static final byte FLAC = 40;
         public static final byte WAV = 41;
+        public static final byte MP3 = 42;
+        public static final byte OGG = 43;
 
     }
 
@@ -59,8 +61,10 @@ public interface FileFormat
         {
         default:
             return false;
+        case Audio.MP3:
         case Audio.FLAC:
         case Audio.WAV:
+        case Audio.OGG:
             return true;
         }
     }
@@ -138,6 +142,10 @@ public interface FileFormat
             return "audio/flac";
         case Audio.WAV:
             return "audio/wav";
+        case Audio.MP3:
+            return "audio/mp3";
+        case Audio.OGG:
+            return "audio/ogg";
 
         }
     }
@@ -197,6 +205,11 @@ public interface FileFormat
 
         case "avif":
             return Image.AVIF;
+            
+        case "mp3":
+            return Audio.MP3;
+        case "ogg":
+            return Audio.OGG;
         }
     }
 
@@ -238,6 +251,11 @@ public interface FileFormat
             return "flac";
         case Audio.WAV:
             return "wav";
+        case Audio.MP3:
+            return "mp3";
+        case Audio.OGG:
+            return "ogg";
         }
     }
 }
+

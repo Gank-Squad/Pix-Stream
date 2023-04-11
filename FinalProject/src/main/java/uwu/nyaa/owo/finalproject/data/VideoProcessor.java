@@ -87,6 +87,66 @@ public class VideoProcessor
         job.run();
     }
 
+    
+    
+    /**
+     * Encodes the given file to the given output file with settings designed to be
+     * universally playable
+     * 
+     * @param input  The file to encode
+     * @param output The output file
+     * @throws IOException
+     */
+    public static void encodeUniversalAudioOnly(File input, File output) throws IOException
+    {
+        encodeUniversalAudioOnly(input.getAbsolutePath(), output.getAbsolutePath());
+    }
+
+    /**
+     * Encodes the given file to the given output file with settings designed to be
+     * universally playable
+     * 
+     * @param input  The file to encode
+     * @param output The output file
+     * @throws IOException
+     */
+    public static void encodeUniversalAudioOnly(String input, String output) throws IOException
+    {
+        FFmpegBuilder builder = new FFmpegBuilder()
+
+                .setInput(input).overrideOutputFiles(true).addOutput(output)
+
+                // mp4 has shit subtitle support
+                // we'll handle this later
+                .disableSubtitle()
+                .disableVideo()
+                .setFormat("mp4")
+
+                // playable anywhere
+                .setAudioCodec("aac") // using the aac codec
+                .setAudioChannels(2)
+
+                .addExtraArgs("-g", "48")
+                .addExtraArgs("-keyint_min", "48")
+
+                .setStrict(FFmpegBuilder.Strict.EXPERIMENTAL) // Allow FFmpeg to use experimental specs
+                .done();
+
+        FFmpegJob job;
+        if (GlobalSettings.IS_DEBUG)
+        {
+            job = FFmpegHelper.EXECUTOR.createJob(builder,
+                    new FFmpegHelper.FFmpegProgressHook(FFmpegHelper.FFPROBE.probe(input)));
+        }
+        else
+        {
+            job = FFmpegHelper.EXECUTOR.createJob(builder);
+        }
+
+        job.run();
+    }
+    
+    
     /**
      * Splits the given video into tls fragments for hls streaming
      * 
