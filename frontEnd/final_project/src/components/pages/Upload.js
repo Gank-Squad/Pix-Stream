@@ -1,11 +1,13 @@
 import React from 'react';
 
 import TagSidebar from '../elements/TagSidebar';
-import { API_ENDPOINTS, API_TEMPLATES } from '../../constants';
+import { API_ENDPOINTS, API_TEMPLATES, DISPLAY_TYPES } from '../../constants';
+
 import { formatStringB } from '../../requests';
 import ImageContainer from '../elements/Image';
 import VideoPlayer from '../elements/Video';
 import HeaderBar from '../elements/HeaderBar';
+import MediaContainer from '../elements/MediaContainer';
 
 import postData from '../../requests';
 
@@ -30,6 +32,8 @@ export default function Default(props)
     const subFile = React.useRef("");
     const title = React.useRef("");
     const description = React.useRef("");
+
+    const previewLoadCount = 5;
 
 
     function searchCallback(searchItems)
@@ -104,7 +108,7 @@ export default function Default(props)
         {
             newFiles.push(f);
 
-            if (x < 5)
+            if (x < previewLoadCount)
             {
                 newPreview.push(URL.createObjectURL(f));
                 x++;
@@ -251,31 +255,34 @@ export default function Default(props)
                 </tbody>
                 </table>
 
-                <div className="relative w-[60%] px-[5%] aspect-video inline-block">
+                <div >
 {
-                    files.map((file, i) => {
+                    files.map((file, index) => {
 
-                        let props = {}
-
-                        if (file.type.startsWith("image/"))
-                        {
-                            props = {
-                                image    : filePreviews[i],
-                                caption  : file.name,
-                                fileType : file.type
-                                // onClick : (e) => removePreviewClick(e, i),
+                        const props = {
+                            "link" : filePreviews[index],
+                            "hash" : filePreviews[index],
+                            "displayType" : DISPLAY_TYPES.thumb_preview,
+                            metaData : {
+                                id : 0,
+                                title : file.name,
+                                description : file.name,
+                                created_at : 0,
+                                mime_int : 0,
+                                duration : 0,
+                                width : 256,
+                                height : 256,
                             }
-
-                            return <ImageContainer {...props} key={i}></ImageContainer>;
                         }
-                        else
-                        {
-                            props = {
-                                hlsUrl: API_ENDPOINTS.media.get_file + "C38028E6C58EF639317C357F71976EDD66FF6524A63D590CF213D3562873FE21/",
-                            }
 
-                            return <VideoPlayer {...props}></VideoPlayer>;
-                        }
+                        return <a key={index} 
+                        className='border p-4 flex items-center justify-around inline-block '>
+                            <MediaContainer {...props} />
+                            
+                            <div >
+                                <p className='text-ellipsis wrap'>{file.name}</p>
+                            </div>
+                        </a>;
                     })
                    }
 

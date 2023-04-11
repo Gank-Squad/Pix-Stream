@@ -141,7 +141,7 @@ export default function TagSidebar(props)
      
 
     return (
-        <div className="px-4 ">
+        <div className="px-4 h-full">
 
             <div className="tagbox-container">
                 <header className="tagbox-header">

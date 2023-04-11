@@ -35,19 +35,6 @@ export default function Default(props)
             method : "GET"
         }
 
-        // if(search.length !== 0)
-        // {
-        //     const ids = search.map(element => ({ tag_id : element.tag_id }));
-
-        //     url = addQueryParams(API_TEMPLATES.get_files_with_tags.url, {
-        //         tags : true
-        //     });
-        //     fetchData.method = "POST";
-        //     fetchData.headers = { "Content-Type": "application/json" };
-        //     fetchData.body = JSON.stringify(ids);
-        // }
-        
-
         console.log("loading posts from api " + url + " " + JSON.stringify(fetchData));
 
         fetch(url, fetchData).then(resp => {
@@ -139,9 +126,12 @@ export default function Default(props)
                         }
 
                         return <a key={index} href={redirect_media(json.post_id)} 
-                        className='inline-block'
-                        >
+                        className='border p-4 space-x-4 inline-block '>
                             <MediaContainer {...props} />
+                            
+                            <div>
+                                <p>{json.title}</p>
+                            </div>
                         </a>;
                     })
                 }

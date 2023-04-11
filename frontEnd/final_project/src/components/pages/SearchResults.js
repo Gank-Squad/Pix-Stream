@@ -1,12 +1,11 @@
 import React from 'react';
 
-import { API_ENDPOINTS, API_TEMPLATES, ROUTES } from '../../constants';
+import { MAX_HEIGHT, MAX_WIDTH, API_ENDPOINTS, API_TEMPLATES, ROUTES,DISPLAY_TYPES } from '../../constants';
 import { formatStringB, addQueryParams } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
-import ImageContainer from '../elements/Image';
-import VideoPlayer from '../elements/Video';
-import VideoContainer from '../elements/VideoContainer';
 import HeaderBar from '../elements/HeaderBar';
+
+import MediaContainer from '../elements/MediaContainer';
 
 export default function Default(props)
 {
@@ -166,13 +165,7 @@ export default function Default(props)
                     </nav>}
 
 
-                    <main className="flex-1 flex-wrap">
-
-                        
-
-
-
-            {/* PUT ALL DISPLAY STUFF IN HERE, ANYTHING OUTSIDE MAY NOT BE FORMATED CORRECTLY */}
+            <main className="flex-1 flex-wrap">
 
                 <p className="text-xl font-bold text-custom-white">Displaying search results:</p>
 
@@ -204,7 +197,7 @@ export default function Default(props)
                     */}
 
 
-                    {mediaData.map((json, index) => 
+                    {/* {mediaData.map((json, index) => 
                     {
                         console.log(json);
                         const props = {
@@ -231,7 +224,46 @@ export default function Default(props)
                         }
 
                         return <a key={index}  href={redirect_media(json.post_id)}><ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
-                    })}
+                    })} */}
+
+                        { mediaData.map((json, index) => {
+
+                        const props = {
+                            "hash" : json.files[0].hash,
+                            "displayType" : DISPLAY_TYPES.thumb_preview,
+                            metaData : {
+                                id : json.post_id,
+                                title : json.title,
+                                description : json.description,
+                                created_at : json.created_at,
+                                mime_int : json.files[0].mime_int,
+                                duration : json.files[0].duration,
+                                width : json.files[0].width,
+                                height : json.files[0].height,
+                            }
+                        }
+
+                        function redirect_media(postId)
+                        {
+                            if (postId === null || postId < 1)
+                            {
+                                console.log("invalid postId, doing nothing")
+                                return "";
+                            }
+                            console.log("hash " + postId);
+                            return '/media?post=' + postId;
+                        }
+
+                        return <a key={index} href={redirect_media(json.post_id)} 
+                        className='border p-4 space-x-4 inline-block '>
+                            <MediaContainer {...props} />
+                            
+                            <div className={`w-[${MAX_WIDTH}px]`}>
+                                <p className='text-ellipsis truncate'>{json.title}</p>
+                            </div>
+                        </a>;
+                        })
+                        }
                     </main>
                 </div>
         </div>

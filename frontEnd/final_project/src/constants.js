@@ -1,4 +1,10 @@
 
+
+export const MAX_WIDTH = 256;
+export const MAX_HEIGHT = 256;
+
+
+
 export const ROUTES = {
     default  : "/",
     home     : "/home",
