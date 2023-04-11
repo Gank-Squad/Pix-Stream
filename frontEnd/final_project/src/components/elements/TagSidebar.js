@@ -145,8 +145,6 @@ export default function TagSidebar(props)
 
             <div className="tagbox-container">
                 <header className="tagbox-header">
-                    <label className="text-custom-white font-bold">Selected Tags</label><br/>
-{/* bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l */}
                     <div className="inline-flex">
 
                         {
@@ -161,13 +159,19 @@ export default function TagSidebar(props)
                         
                         <button onClick={clearButtonPressed} ref={tagClearButton} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-0 px-1 rounded-r">
                             Clear</button>
-                    </div>
-                    
 
-                    
+                            
+                    </div>
+
+                    <div id="search-box">
+                <input onChange={searchValueKeyDown} ref={tagSearch} id="tag-search" type="text" placeholder="Tag Search..."></input>
+            </div>
                 </header>
 
-                <table ref={selectedTagBox} className="tagbox">
+
+                <label className="text-custom-white font-bold">Selected Tags</label><br/>
+
+            <table ref={selectedTagBox} className="tagbox">
                 <tbody>
                     {
                     tags.map((tag, index) => {
@@ -183,9 +187,7 @@ export default function TagSidebar(props)
                 </table>
             </div>
 
-            <div id="search-box">
-                <input onChange={searchValueKeyDown} ref={tagSearch} id="tag-search" type="text" placeholder="Tag Search..."></input>
-            </div>
+          
 
             <div className="tagbox-container">
                 <header className="tagbox-header">

@@ -50,10 +50,6 @@ export default function VideoContainer(props)
 
     function thumbnailPreview()
     {
-
-        
-
-
         // should return div that is of a set width and height
         // div should contain image, which has at least one of its dimensions equal to widht or height of container
         
@@ -70,33 +66,48 @@ export default function VideoContainer(props)
 
         // return <img className="border-dashed border-2 border-white" src="https://www.w3schools.com/tags/img_girl.jpg" alt="Girl in a jacket" height="10" />
 
-        
-
+        console.log("rendering thing");
         if (dx > dy)
         {
             // display width should = max_width
             // make it a fixed width and height for consistent tiling
-            return <div className="border-dashed border-2 border-white inline-block w-[256px] h-[256px]">
-                <img
-                    className="border-solid border-2 border-white justify-center" ref={thumb}
-                    src={thumb_url} width={max_width} onError={imgError} loading="lazy" />
-                {/* <div className="text-custom-white caption">caption</div> */}
-            </div>
+            return (
+                <div className="border-dashed border-2 border-white inline-block w-[256px] h-[256px] flex justify-center items-center">
+                  <img
+                    className="border-dashed border-2 border-white"
+                    ref={thumb}
+                    src={thumb_url}
+                    width={max_width}
+                    onError={imgError}
+                    loading="lazy"
+                    style={{ objectFit: "contain" }}
+                  />
+                  {/* <div className="text-custom-white caption">caption</div> */}
+                </div>
+              );
         }
         else
         {
+            console.log("height uwu");
             // display height should = max_height
             const newWidth = getWidthForDesiredHeight(props.metaData.width, props.metaData.height, max_height);
 
-            return <div className="border-dashed border-2 border-white inline-block w-[256px] h-[256px]">
+            return (
+                <div className="border-dashed border-2 border-white inline-block w-[256px] h-[256px] flex justify-center items-center">
                 <img
-                    className="border-dashed border-2 border-white justify-center" ref={thumb}
-                    src={thumb_url} width={newWidth} onError={imgError} loading="lazy" />
+                    className="border-dashed border-2 border-white"
+                    ref={thumb}
+                    src={thumb_url}
+                    width={newWidth}
+                    onError={imgError}
+                    loading="lazy"
+                />
                 {/* <div className="text-custom-white caption">caption</div> */}
-            </div>
+                </div>
+            );
         }
-
     }
+    
     function generalDisplay()
     {
         return (<div></div>)

@@ -5,6 +5,7 @@ import { API_ENDPOINTS, API_TEMPLATES } from '../../constants';
 import { formatStringB } from '../../requests';
 import ImageContainer from '../elements/Image';
 import VideoPlayer from '../elements/Video';
+import HeaderBar from '../elements/HeaderBar';
 
 import postData from '../../requests';
 
@@ -21,14 +22,15 @@ export default function Default(props)
     const [files       , setFiles  ] = React.useState([]);
     const [filePreviews, setPreview] = React.useState([]);
     const [displayProgress  , setProgress] = React.useState("");
+    const [sidebarVisible, setSidebarVisible] = React.useState(true);
 
     const [images, setImageData] = React.useState([]);
 
-    React.useEffect(() => 
-    {
-        console.log(`Page ${page} was loaded!`);
-        console.log(`Cookies from props: ${cookies}`);
-    }, [cookies, page]);
+    const mediaFile = React.useRef("");
+    const subFile = React.useRef("");
+    const title = React.useRef("");
+    const description = React.useRef("");
+
 
     function searchCallback(searchItems)
     {
@@ -73,29 +75,11 @@ export default function Default(props)
             })
     }
 
-    function redirect_tags()
-    {
-        window.location.href = '/tags';
-    }
-    function redirect_upload()
-    {
-        window.location.href = '/upload';
-    }
-    function redirect_home()
-    {
-        window.location.href = '/home';
-    }
-
     const tagSidebarProps = {
         "searchCallback" : searchCallback,
         "hideSearchButton" : true,
         "searchButtonPressed" : searchButtonPressed,
     }
-
-    const mediaFile = React.useRef("");
-    const subFile = React.useRef("");
-    const title = React.useRef("");
-    const description = React.useRef("");
 
 
     function searchButtonPressed()
@@ -209,39 +193,42 @@ export default function Default(props)
     }
 
     return (
-        <div className="flex flex-col h-screen overflow-auto">
 
-            {/* This should be a modified version to remove search
-                So that user can select the tags their upload will have
-            */}
+        <div className="flex flex-col h-screen">
+        <HeaderBar toggleSidebarVisibility={()=>setSidebarVisible(!sidebarVisible)} />
+        <div className="flex flex-row flex-1">
+
+            {sidebarVisible &&
             <nav
-                className="group fixed top-20 left-0 h-screen w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
+                className="group  top-0 left-0 h-screen w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
                 data-te-sidenav-init
                 data-te-sidenav-hidden="false"
-            >
+                >
                 <ul className="relative m-0 list-none px-[0.2rem]" data-te-sidenav-menu-ref>
                     <TagSidebar {...tagSidebarProps} />
                 </ul>
-            </nav>
+            </nav>}
 
-            <header className="w-full p-4 h-20 bg-custom-dark-blue fixed">
-                <table>
-                    <tbody>
+
+            <main className="flex-1 flex-wrap">
+            <table className="py-8 static inline-block">
+                <thead>
                     <tr>
-                <td><div className="text-left inline-block">
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l" onClick={redirect_home}>Home</button>
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 border border-blue-700 px-4" onClick={redirect_tags}>Tags</button>
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-r" disabled onClick={redirect_upload}>Upload</button>
-                </div></td>
-                <td className="center"><div className="text-center inline"><p className="text-xl font-bold">PixStream</p></div></td>
-                </tr></tbody>
-                </table>
-            </header>
+                        <td>
+                            
+                   {
+                    function(){
 
-            <main className="py-24 px-72 static w-full " >
-                
-
-                <table className="py-8 static inline-block">
+                        if(displayProgress === "" || !displayProgress)
+                        {
+                            return ;
+                        }
+                        return <p>{displayProgress}</p>;
+                    }()
+                   }
+                        </td>
+                    </tr>
+                </thead>
                     <tbody>
                 <tr><td><p className="text-xl font-bold">Title</p></td></tr>
                 <tr><td><input type="text" placeholder="Title" className="w-[512px] h-8 text-xl" ref={title}/></td></tr>
@@ -293,21 +280,11 @@ export default function Default(props)
                    }
 
 
-                   {
-                    function(){
-
-                        if(displayProgress === "" || !displayProgress)
-                        {
-                            return ;
-                        }
-                        return <p>{displayProgress}</p>;
-                    }()
-                   }
                 </div>
                 
                 
             </main>
-            
         </div>
+</div>
     )
 }

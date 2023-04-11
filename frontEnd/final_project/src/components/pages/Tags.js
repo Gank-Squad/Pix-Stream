@@ -3,6 +3,7 @@ import React from 'react';
 import { API_ENDPOINTS } from '../../constants';
 import TagSidebar from '../elements/TagSidebar';
 import ImageContainer from '../elements/Image';
+import HeaderBar from '../elements/HeaderBar';
 
 export default function Default(props)
 {
@@ -17,6 +18,7 @@ export default function Default(props)
     const page = parseInt(params.get('page')) || 1;
 
     const [images, setImageData] = React.useState([]);
+    const [sidebarVisible, setSidebarVisible] = React.useState(true);
 
 
     React.useEffect(() => 
@@ -108,63 +110,28 @@ export default function Default(props)
     }
 
     return (
-        <div className="flex flex-col h-screen overflow-auto">
+        <div className="flex flex-col h-screen">
+                <HeaderBar toggleSidebarVisibility={()=>setSidebarVisible(!sidebarVisible)} />
+                <div className="flex flex-row flex-1">
 
-            {/* This is the sidebar/tag search */}
-            <nav ref={sidebar}
-                className="group fixed top-20 left-0 h-screen w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
-                data-te-sidenav-init
-                data-te-sidenav-hidden="false"
-            >
-                <ul className="relative m-0 list-none px-[0.2rem]" data-te-sidenav-menu-ref>
-                    <TagSidebar {...tagSidebarProps} />
-                </ul>
-            </nav>
-
-            <header className="w-full p-4 h-20 bg-custom-dark-blue absolute">
-                <table>
-                    <tbody>
-                    <tr>
-                <td><div className="text-left inline-block">
-                    {/* The following is the code for the hamburger menu
-                    but I'm not really sure how to make it show up inline with everything else */}
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l"
-                        data-te-sidenav-toggle-ref
-                        aria-haspopup="true"
-                        onClick={toggleSidebarVisibility}
-                        ref={hamburger}>
-                        <span className="block [&>svg]:h-5 [&>svg]:w-5 [&>svg]:text-white">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="currentColor"
-                                className="h-5 w-5">
-                                    <path
-                                    fillRule="evenodd"
-                                    d="M3 6.75A.75.75 0 013.75 6h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 6.75zM3 12a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 12zm0 5.25a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75a.75.75 0 01-.75-.75z"
-                                    clipRule="evenodd" />
-                            </svg>
-                        </span>
-                    </button>
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l" onClick={redirect_home}>Home</button>
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 border border-blue-700 px-4" disabled onClick={redirect_tags}>Tags</button>
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-r" onClick={redirect_upload}>Upload</button>
-                </div></td>
-
-                <td className="center"><div className="text-center inline"><p className="text-xl font-bold">PixStream</p></div></td>
-                </tr></tbody>
-                </table>
-            </header>
-
-            <main className="overflow-y-auto py-12 px-72" ref={main}>
-            {/* PUT ALL DISPLAY STUFF IN HERE, ANYTHING OUTSIDE MAY NOT BE FORMATED CORRECTLY */}
-
-                <p>You are on the tags page eeeeeeeeeeeeeeeeeeeeee</p>
-
-            </main>
+                    {sidebarVisible &&
+                    <nav
+                        className="group  top-0 left-0 h-screen w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
+                        data-te-sidenav-init
+                        data-te-sidenav-hidden="false"
+                        >
+                        <ul className="relative m-0 list-none px-[0.2rem]" data-te-sidenav-menu-ref>
+                            <TagSidebar {...tagSidebarProps} />
+                        </ul>
+                    </nav>}
 
 
+                    <main className="flex-1 flex-wrap">
+
+                        <p>You are on the tags page eeeeeeeeeeeeeeeeeeeeee</p>
+
+                    </main>
+                </div>
         </div>
     )
 }
