@@ -28,17 +28,10 @@ public class TableLocalHash
      */
     public static boolean insertHashes(int hashID, byte[] sha1, byte[] md5, byte[] phash)
     {
-        final String SQL = "INSERT INTO tbl_local_hash(hash_id, md5, sha1, phash) VALUES (?, ?, ?, ?)";
         
-        try (Connection c = DatabaseConnection.getConnection(); 
-             PreparedStatement pstmt = c.prepareStatement(SQL))
+        try (Connection c = DatabaseConnection.getConnection())
         {
-            pstmt.setInt(1, hashID);
-            pstmt.setBytes(2, md5);
-            pstmt.setBytes(3, sha1);
-            pstmt.setBytes(4, phash);
-            pstmt.execute();
-            return true;
+            return insertHashes(hashID, sha1, md5, phash, c);
         }
         catch (SQLException e)
         {
@@ -46,5 +39,21 @@ public class TableLocalHash
         }
         
         return false;
+    }
+    
+    public static boolean insertHashes(int hashID, byte[] sha1, byte[] md5, byte[] phash, Connection c) throws SQLException
+    {
+        final String SQL = "INSERT INTO tbl_local_hash(hash_id, md5, sha1, phash) VALUES (?, ?, ?, ?)";
+        
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+            pstmt.setInt(1, hashID);
+            pstmt.setBytes(2, md5);
+            pstmt.setBytes(3, sha1);
+            pstmt.setBytes(4, phash);
+            pstmt.execute();
+        }
+      
+        return true;
     }
 }

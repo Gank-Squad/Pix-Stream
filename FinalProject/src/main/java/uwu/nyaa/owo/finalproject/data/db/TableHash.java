@@ -26,10 +26,24 @@ public class TableHash
      */
     public static int insertHash(byte[] sha256Hash)
     {
+        try (Connection c = DatabaseConnection.getConnection())
+        {
+
+            return insertHash(sha256Hash, c);
+        }
+        catch (SQLException e)
+        {
+            Logger.warn(e, String.format("Error inserting hash %s", ByteHelper.bytesToHex(sha256Hash)));    
+        }
+        
+        return -1;
+    }
+    
+    public static int insertHash(byte[] sha256Hash, Connection c) throws SQLException
+    {
         final String SQL = "INSERT INTO tbl_hash(hash) VALUES (?) RETURNING hash_id";
         
-        try (Connection c = DatabaseConnection.getConnection(); 
-             PreparedStatement pstmt = c.prepareStatement(SQL))
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
         {
 
             pstmt.setBytes(1, sha256Hash);
@@ -41,15 +55,9 @@ public class TableHash
                 return rs.getInt(1);    
             }
         }
-        catch (SQLException e)
-        {
-            Logger.warn(e, String.format("Error inserting hash %s", ByteHelper.bytesToHex(sha256Hash)));    
-        }
-        
+       
         return -1;
     }
-    
-    
     /**
      * Looks for the hash_id of the given SHA256
      * @param sha256Hash The SHA256 to search

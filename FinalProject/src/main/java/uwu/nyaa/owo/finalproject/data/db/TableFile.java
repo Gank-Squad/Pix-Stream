@@ -43,20 +43,9 @@ public class TableFile
      */
     public static boolean insertFile(int hashID, long size, byte mime, int width, int height, int duration, boolean has_audio)
     {
-        final String SQL = "INSERT INTO tbl_file(hash_id, size, mime, width, height, duration, has_audio) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        
-        try (Connection c = DatabaseConnection.getConnection(); 
-             PreparedStatement pstmt = c.prepareStatement(SQL))
+        try (Connection c = DatabaseConnection.getConnection())
         {
-            pstmt.setInt(1, hashID);
-            pstmt.setLong(2, size);
-            pstmt.setInt(3, mime);
-            pstmt.setInt(4, width);
-            pstmt.setInt(5, height);
-            pstmt.setInt(6, duration);
-            pstmt.setBoolean(7, has_audio);
-            pstmt.execute();
-            return true;
+            return insertFile(hashID, size, mime, width, height, duration, has_audio, c);
         }
         catch (SQLException e)
         {
@@ -66,7 +55,24 @@ public class TableFile
         return false;
     }
     
-
+    public static boolean insertFile(int hashID, long size, byte mime, int width, int height, int duration, boolean has_audio, Connection c) throws SQLException
+    {
+        final String SQL = "INSERT INTO tbl_file(hash_id, size, mime, width, height, duration, has_audio) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+            pstmt.setInt(1, hashID);
+            pstmt.setLong(2, size);
+            pstmt.setInt(3, mime);
+            pstmt.setInt(4, width);
+            pstmt.setInt(5, height);
+            pstmt.setInt(6, duration);
+            pstmt.setBoolean(7, has_audio);
+            pstmt.execute();
+        }
+        
+        return true;
+    }
     
     public static List<HashInfo> getFiles(int limit, boolean includeTags)
     {

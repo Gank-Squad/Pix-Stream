@@ -79,6 +79,28 @@ public class TableTag
     }
 
 
+    public static int insertOrSelectTag(String fullTag)
+    {
+        try (Connection c = DatabaseConnection.getConnection())
+        {
+            return insertOrSelectTag(fullTag, c);
+        }
+        catch (SQLException e)
+        {
+            Logger.warn(e, String.format("Error selecting or inserting tag with value %s", fullTag));
+        }
+
+        return -1;
+    }
+    public static int insertOrSelectTag(String fullTag, Connection c) throws NullPointerException, SQLException
+    {
+        int tag_id = getTagId(fullTag, c);
+        
+        if(tag_id != -1)
+            return tag_id;
+        
+        return insertTag(fullTag, c);
+    }
     /**
      * gets the id for the given tag or -1
      * @param fulltag The tag to search

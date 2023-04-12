@@ -207,23 +207,30 @@ public class TableHashTag
     }
     
     
-    public static void insertAssociation(int hash_id, int tag_id)
+    public static boolean insertAssociation(int hash_id, int tag_id)
     {
-        final String SQL = "INSERT INTO tbl_hash_tag(hash_id, tag_id) VALUES (?, ?)";
-
-        try (Connection c = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = c.prepareStatement(SQL))
+        try (Connection c = DatabaseConnection.getConnection())
         {
-            pstmt.setInt(1, hash_id);
-            pstmt.setInt(2, tag_id);
-            pstmt.execute();
+            return insertAssociation(hash_id, tag_id, c);
         }
         catch (SQLException e)
         {
             Logger.warn(e, "Error adding hash-tag association");
         }
+        return false;
     }
-    
+    public static boolean insertAssociation(int hash_id, int tag_id, Connection c) throws SQLException
+    {
+        final String SQL = "INSERT INTO tbl_hash_tag(hash_id, tag_id) VALUES (?, ?)";
+
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+            pstmt.setInt(1, hash_id);
+            pstmt.setInt(2, tag_id);
+            pstmt.execute();
+        }
+        return true;
+    }
     
     public static void insertRandomAccociations(int ammount)
     {

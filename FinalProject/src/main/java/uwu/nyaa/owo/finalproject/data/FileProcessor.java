@@ -7,14 +7,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.tinylog.Logger;
 
 import uwu.nyaa.owo.finalproject.data.ImageProcessor.ImageInfo;
 import uwu.nyaa.owo.finalproject.data.VideoProcessor.VideoInfo;
+import uwu.nyaa.owo.finalproject.data.db.DatabaseConnection;
 import uwu.nyaa.owo.finalproject.data.db.TableFile;
 import uwu.nyaa.owo.finalproject.data.db.TableHash;
+import uwu.nyaa.owo.finalproject.data.db.TableHashTag;
 import uwu.nyaa.owo.finalproject.data.db.TableLocalHash;
+import uwu.nyaa.owo.finalproject.data.db.TableTag;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
 import uwu.nyaa.owo.finalproject.data.models.FileUpload;
@@ -408,28 +413,60 @@ public class FileProcessor
             return fa;
         }
         
-        int hash_id = TableHash.insertHash(b.SHA256);
-
-        fa.filePath = mediaFile;
-        fa.hash_id = hash_id;
-
-        if(hash_id == -1)
+        try (Connection c = DatabaseConnection.getConnection())
         {
-            Logger.warn("Unable to insert file with hash {}", fileHash);
-            return fa;
+            int hash_id = TableHash.insertHash(b.SHA256, c);
+
+            fa.filePath = mediaFile;
+            fa.hash_id = hash_id;
+
+            if(hash_id == -1)
+            {
+                Logger.warn("Unable to insert file with hash {}", fileHash);
+                return fa;
+            }
+            
+            int file_mime_tag = TableTag.insertOrSelectTag(String.format("filetype:%s", FileFormat.getMimeType(mimeType)),c);
+            int file_mime_int_tag = TableTag.insertOrSelectTag(String.format("filetype int:%d", mimeType),c);
+            int file_metadata_audio_tag = -1;
+            
+            if(has_audio)
+            {
+                file_metadata_audio_tag = TableTag.insertOrSelectTag(String.format("metadata:has audio", mimeType),c);
+            }
+            
+            if(file_mime_tag != -1)
+            {
+                TableHashTag.insertAssociation(hash_id, file_mime_tag,c);
+            }
+            
+            if(file_mime_int_tag != -1)
+            {
+                TableHashTag.insertAssociation(hash_id, file_mime_int_tag,c);
+            }
+            
+            if(file_metadata_audio_tag != -1)
+            {
+                TableHashTag.insertAssociation(hash_id, file_metadata_audio_tag,c);
+            }
+            if(!TableLocalHash.insertHashes(hash_id, b.SHA1, b.MD5, b.PHASH, c))
+            {
+                Logger.warn("Unable to insert local hashes for file {}", fileHash);
+            }
+            
+            if(!TableFile.insertFile(hash_id, fileSize, mimeType, width, height, duration, has_audio, c))
+            {
+                Logger.warn("Unable to insert file information for {}", fileHash);
+            }
+            
+            fa.accepted = true;
+        }
+        catch (SQLException e)
+        {
+            Logger.warn(e, "Database query failed while processing file {}", fa.hashes);
+            fa.accepted = false;
         }
         
-        if(!TableLocalHash.insertHashes(hash_id, b.SHA1, b.MD5, b.PHASH))
-        {
-            Logger.warn("Unable to insert local hashes for file {}", fileHash);
-        }
-        
-        if(!TableFile.insertFile(hash_id, fileSize, mimeType, width, height, duration, has_audio))
-        {
-            Logger.warn("Unable to insert file information for {}", fileHash);
-        }
-
-        fa.accepted = true;
         return fa;
     }
 }
