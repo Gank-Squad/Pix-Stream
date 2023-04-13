@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { API_ENDPOINTS } from '../../constants';
+import { API_ENDPOINTS, API_TEMPLATES } from '../../constants';
 import TagSidebar from '../elements/TagSidebar';
 import ImageContainer from '../elements/Image';
 import HeaderBar from '../elements/HeaderBar';
+import { formatStringB, addQueryParams } from '../../requests';
 
 export default function Default(props)
 {
@@ -18,6 +19,7 @@ export default function Default(props)
     const page = parseInt(params.get('page')) || 1;
 
     const [images, setImageData] = React.useState([]);
+    const [tags, setTags] = React.useState([]);
     const [sidebarVisible, setSidebarVisible] = React.useState(true);
 
 
@@ -26,6 +28,30 @@ export default function Default(props)
         console.log(`Page ${page} was loaded!`);
         console.log(`Cookies from props: ${cookies}`);
     }, [cookies, page]);
+
+    React.useEffect(()=>{
+        loadTags();
+    }, [])
+
+
+    function loadTags()
+    {
+        fetch(
+            API_ENDPOINTS.media.get_tags, {method:"GET"}
+        ).then(resp =>{
+            if (resp.status ===200)
+            {
+                return resp.json();
+            }
+            console.log("Status: " + resp.status);
+            return Promise.reject("server");
+        }).then(dataJson =>{
+            setTags(dataJson);
+        }).catch(err =>{
+            if (err === "server") return;
+            console.log(err);
+        })
+    }
 
 
     function searchCallback(searchItems)
@@ -69,44 +95,9 @@ export default function Default(props)
             })
     }
 
-
-    function redirect_tags()
-    {
-        window.location.href = '/tags';
-    }
-    function redirect_upload()
-    {
-        window.location.href = '/upload';
-    }
-    function redirect_home()
-    {
-        window.location.href = '/home';
-    }
-
     const tagSidebarProps = {
         "searchCallback" : searchCallback,
         "hideSearchButton" : false,
-    }
-
-    const sidebar = React.useRef("");
-    const hamburger = React.useRef("");
-    const main = React.useRef("");
-
-    function toggleSidebarVisibility()
-    {
-        // ik this is really bad code, and now there isn't a css animation, but I couldn't get it to work
-        if (sidebar.current.getAttribute("data-te-sidenav-hidden") == "false")
-        {
-            sidebar.current.setAttribute("data-te-sidenav-hidden", "true");
-            hamburger.current.setAttribute("class", "bg-blue-700 hover:bg-blue-500 text-white font-bold py-2 px-4 border border-blue-700 rounded-l");
-            main.current.setAttribute("class", "overflow-y-scroll py-12 px-12")
-        }
-        else
-        {
-            sidebar.current.setAttribute("data-te-sidenav-hidden", "false");
-            hamburger.current.setAttribute("class", "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l");
-            main.current.setAttribute("class", "overflow-y-scroll py-12 px-72")
-        }
     }
 
     return (
@@ -128,8 +119,18 @@ export default function Default(props)
 
                     <main className="flex-1 flex-wrap">
 
-                        <p>You are on the tags page eeeeeeeeeeeeeeeeeeeeee</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-8 bg-button-depressed m-24 px-8 pt-2 pb-4 rounded-3xl">
+                            <p className="col-span-full text-center text-4xl font-bold font-sans">Tags</p>
+                        {
+                            tags.map((json, index) =>{
+                                const tag = json.namespace + ":" + json.subtag;
 
+                                return <a href={"/results?tags=" + json.tag_id}>
+                                        <p className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-0 px-1 rounded-r">{tag}</p>
+                                    </a>
+                            })
+                        }
+                        </div>
                     </main>
                 </div>
         </div>
