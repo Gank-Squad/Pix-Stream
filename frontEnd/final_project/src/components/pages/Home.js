@@ -1,10 +1,8 @@
 import React from 'react';
 
-import { API_ENDPOINTS, API_TEMPLATES, DISPLAY_TYPES } from '../../constants';
+import { API_ENDPOINTS, DISPLAY_TYPES } from '../../constants';
 import { formatStringB, addQueryParams } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
-import ImageContainer from '../elements/Image';
-import VideoPlayer from '../elements/Video';
 import MediaContainer from '../elements/MediaContainer';
 import HeaderBar from '../elements/HeaderBar';
 
@@ -24,7 +22,7 @@ export default function Default(props)
     {
         console.log("Updating media with new search " + JSON.stringify(search));
         loadMedia();
-    }, [search]); // 
+    }, [search]);
 
 
     function loadMedia()

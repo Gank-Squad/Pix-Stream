@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { API_ENDPOINTS, API_TEMPLATES, ROUTES } from '../../constants';
-import { formatStringB, addQueryParams } from '../../requests';
+import { API_TEMPLATES, ROUTES } from '../../constants';
+import { formatStringB } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
 import ImageContainer from '../elements/Image';
 import VideoPlayer from '../elements/Video';
@@ -15,9 +15,6 @@ export default function Default(props)
     const page = parseInt(params.get('page')) || 1;
     const post = params.get("post") || 0;
 
-    const sidebar = React.useRef("");
-    const hamburger = React.useRef("");
-    const main = React.useRef("");
     const [sidebarVisible, setSidebarVisible] = React.useState(true);
 
     if(post <= 0)
@@ -27,11 +24,6 @@ export default function Default(props)
 
     const [search, setSearch] = React.useState([]);
     const [mediaData, setMediaData] = React.useState({});
-
-    const vprops = {
-        m3u8: API_ENDPOINTS.media.get_file + "D2765EC844F9C92DF35152A5725E0ED381221F202B9BDC190DF599942DEFE930",
-        domain: API_ENDPOINTS.media.get_file + "D2765EC844F9C92DF35152A5725E0ED381221F202B9BDC190DF599942DEFE930/"
-    };
 
     React.useEffect(() => 
     {
@@ -93,40 +85,10 @@ export default function Default(props)
         setSearch(searchItems);
     }
 
-    function redirect_tags()
-    {
-        window.location.href = '/tags';
-    }
-    function redirect_upload()
-    {
-        window.location.href = '/upload';
-    }
-    function redirect_home()
-    {
-        window.location.href = '/home';
-    }
-
     const tagSidebarProps = {
         "searchCallback" : searchCallback,
         "hideSearchButton" : false,
         "searchButtonPressed" : searchButtonPressed,
-    }
-
-    function toggleSidebarVisibility()
-    {
-        // ik this is really bad code, and now there isn't a css animation, but I couldn't get it to work
-        if (sidebar.current.getAttribute("data-te-sidenav-hidden") == "false")
-        {
-            sidebar.current.setAttribute("data-te-sidenav-hidden", "true");
-            hamburger.current.setAttribute("class", "bg-blue-700 hover:bg-blue-500 text-white font-bold py-2 px-4 border border-blue-700 rounded-l");
-            main.current.setAttribute("class", "overflow-y-scroll py-12 px-12")
-        }
-        else
-        {
-            sidebar.current.setAttribute("data-te-sidenav-hidden", "false");
-            hamburger.current.setAttribute("class", "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l");
-            main.current.setAttribute("class", "overflow-y-scroll py-12 px-72")
-        }
     }
 
     function getMediaDisplayContainer(mediaJson)
