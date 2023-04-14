@@ -93,6 +93,9 @@ export default function Default(props)
         "searchCallback" : searchCallback,
         "hideSearchButton" : false,
         "searchButtonPressed" : searchButtonPressed,
+        "displayOnlyMode" : true,
+        "displayTags" : (mediaData && mediaData.files && mediaData.files[0].tags)
+        ? mediaData.files[0].tags : []
     }
 
     function getMediaDisplayContainer(mediaJson)

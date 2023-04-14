@@ -1,6 +1,7 @@
 
 import React from "react";
 import { API_ENDPOINTS, API_TEMPLATES } from "../../constants";
+import { formatStringB } from "../../requests";
 export default function TagSidebar(props) 
 {
     const { createTagButton, searchCallback, hideSearchButton, 
@@ -39,6 +40,9 @@ export default function TagSidebar(props)
     // on page load, fetch tags from api
     React.useEffect(() => {
 
+        if(selectedTagIds)
+            setSelectedTags(selectedTagIds);
+
         if(displayOnlyMode)
             return;
 
@@ -59,16 +63,9 @@ export default function TagSidebar(props)
     }
 
     // standard functions 
-    function clearSelected() {
-        // selectedTagBox.current is the DOM element, selectedTagBox is the react object
-        // selectedTagBox.current can be used like normal js
-        const contextTags = selectedTagBox.current.querySelectorAll('tr');
-
-        const tbody = contextTagBox.current.querySelector('tbody');
-
-        contextTags.forEach(element => {
-            tbody.appendChild(element);
-        });
+    function clearSelected() 
+    {
+        setSelectedTags([]);
     }
 
     // display tags
@@ -130,10 +127,10 @@ export default function TagSidebar(props)
     {
         let s = selectedTags;
 
-        if(selectedTagIds)
-        {
-            s = s.concat(selectedTagIds);
-        }
+        // if(selectedTagIds)
+        // {
+        //     s = s.concat(selectedTagIds);
+        // }
         
         const search = s.map(tag_id => {
 
@@ -255,11 +252,24 @@ export default function TagSidebar(props)
         });
     }
 
+    function redirectToSearchPage(tags)
+    {
+        if(!tags || tags.length <= 0)
+            return;
+
+        const url = formatStringB('/results?tags={IDS}', tags.map(tag => tag.tag_id).join(","))
+    
+        window.location.href = url;
+    }
 
     function updateTagSelection(tag)
     {
         if(displayOnlyMode)
+        {
+            redirectToSearchPage([tag]);
             return;
+        }
+            
 
         if(selectedTags.includes(tag.tag_id))
         {
@@ -345,18 +355,14 @@ export default function TagSidebar(props)
                         
                     tags.map((tag, index) => {
 
-                        if(!selectedTagIds && !selectedTags)
+                        if(!selectedTags)
                             return;
 
                         if(selectedTags && selectedTags.includes(tag.tag_id))
                         {
                             return getClickableTagHTML(tag, index);
                         }
-
-                        if((selectedTagIds && selectedTagIds.includes(tag.tag_id)))
-                        {
-                            return getClickableTagHTML(tag, index);
-                        }
+                        return;
                     })}
 
 
@@ -377,8 +383,7 @@ export default function TagSidebar(props)
                     <tbody>
                         {!displayOnlyMode&&
                         tags.map((tag, index) => {
-                            if(selectedTags && selectedTags.includes(tag.tag_id) ||
-                            selectedTagIds && selectedTagIds.includes(tag.tag_id))
+                            if(selectedTags && selectedTags.includes(tag.tag_id))
                             {
                                 return;
                             }
