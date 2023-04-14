@@ -204,7 +204,7 @@ public class DatabaseConnection
         Logger.info("post id {}", id);
         
         
-        TablePost.getPosts(3, true);
+//        TablePost.getPosts(3, true);
         
     }
 }

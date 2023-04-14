@@ -12,6 +12,7 @@ import java.util.TimeZone;
 
 import org.tinylog.Logger;
 
+import uwu.nyaa.owo.finalproject.data.DatabaseSortBy;
 import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 import uwu.nyaa.owo.finalproject.data.models.Post;
 import uwu.nyaa.owo.finalproject.data.models.PostBase;
@@ -148,11 +149,11 @@ public class TablePost
     }
     
     
-    public static List<Post> getPosts(int limit, boolean includeTags)
+    public static List<Post> getPosts(int limit, boolean includeTags, int orderBy)
     {
         try (Connection c = DatabaseConnection.getConnection())
         {
-            return  getPosts(limit, includeTags, c);
+            return  getPosts(limit, includeTags, orderBy, c);
         }
         catch (SQLException e) 
         {
@@ -162,11 +163,42 @@ public class TablePost
         return new LinkedList<>();
     }
     
-    public static List<Post> getPosts(int limit, boolean includeTags, Connection c) throws SQLException
+    public static List<Post> getPosts(int limit, boolean includeTags, int orderBy, Connection c) throws SQLException
     {
         List<Post> posts = new LinkedList<>();
         
-        final String SQL = "SELECT post_id, time, title, description FROM tbl_post LIMIT ?";
+        StringBuilder querBuilder = new StringBuilder();
+        querBuilder.append("SELECT post_id, time, title, description FROM tbl_post ");
+        
+        if(DatabaseSortBy.isValidSort(orderBy))
+        {
+            switch (orderBy & DatabaseSortBy.SORT_MASK)
+            {
+            case DatabaseSortBy.NONE:
+            case DatabaseSortBy.RANDOM:
+                querBuilder.append("ORDER BY random() ");
+                break;
+                
+            case DatabaseSortBy.TIME:
+                querBuilder.append("ORDER BY tbl_post.time ");
+                break;
+            }
+            
+            if(DatabaseSortBy.isAscending(orderBy))
+            {
+                querBuilder.append("ASC ");
+            }
+            else 
+            {
+                querBuilder.append("DESC ");
+            }
+        }
+        
+        querBuilder.append("LIMIT ? ");
+        
+        final String SQL = querBuilder.toString();
+        
+        Logger.debug(SQL);
         
         try (PreparedStatement pstmt = c.prepareStatement(SQL))
         {
