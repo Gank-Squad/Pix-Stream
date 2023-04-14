@@ -3,7 +3,7 @@ import React from 'react';
 import { API_ENDPOINTS, API_TEMPLATES } from '../../constants';
 import TagSidebar from '../elements/TagSidebar';
 import HeaderBar from '../elements/HeaderBar';
-import { formatStringB } from '../../requests';
+import { addQueryParams, formatStringB } from '../../requests';
 
 export default function Default(props)
 {
@@ -14,6 +14,7 @@ export default function Default(props)
     const page = parseInt(params.get('page')) || 1;
 
     const [tags, setTags] = React.useState([]);
+    const [tagFileCount, setTagFileCount] = React.useState([]);
     const [search, setSearch] = React.useState([]);
     const [sidebarVisible, setSidebarVisible] = React.useState(true);
 
@@ -47,7 +48,18 @@ export default function Default(props)
             return Promise.reject("server");
         }).then(dataJson =>{
             setTags(dataJson);
-        }).catch(err =>{
+
+            
+            const url = API_TEMPLATES.get_tag_file_count.url +"?" + 
+            dataJson.map(x => ( "tid="+x.tag_id.toString())).join("&");
+            return fetch(url, {'method' : "GET"});
+
+        })
+        .then(res => res.json())
+        .then(json => {
+            setTagFileCount(json);
+        })
+        .catch(err =>{
             if (err === "server") return;
             console.log(err);
         })
@@ -151,10 +163,21 @@ export default function Default(props)
                                 // if there is no namespace, don't add the :
                                 const tag = json.namespace === "" ? json.subtag : json.namespace + ":" + json.subtag;
 
+                                let i = tagFileCount.findIndex(x => x.tag_id === json.tag_id);
+                                let count = -1;
+                                if(i !== -1)
+                                {  
+                                    count = tagFileCount[i].count;
+                                }
+
                                 // make each tag a link to the search results page for that tag
-                                return <a href={"/results?tags=" + json.tag_id}>
-                                        <p className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-1 rounded">{tag}</p>
-                                    </a>
+                                return <a href={"/results?tags=" + json.tag_id} title={tag}>
+                                <div className="flex items-center justify-between bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-1 rounded">
+                                  <span className="mr-auto truncate">{tag}</span>
+                                  <span className="ml-auto truncate">[{count} files]</span>
+                                </div>
+                              </a>
+                              
                             })
                         }
                         </div>
