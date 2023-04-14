@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { MAX_WIDTH, API_TEMPLATES, ROUTES, DISPLAY_TYPES } from '../../constants';
+import { MAX_DIMENSIONS, API_TEMPLATES, ROUTES, DISPLAY_TYPES } from '../../constants';
 import { formatStringB, addQueryParams } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
 import HeaderBar from '../elements/HeaderBar';
@@ -156,7 +156,7 @@ export default function Default(props)
                         className='border p-4 space-x-4 inline-block '>
                             <MediaContainer {...props} />
                             
-                            <div className={`w-[${MAX_WIDTH}px]`}>
+                            <div className={`w-[${MAX_DIMENSIONS.preview_width}px]`}>
                                 <p className='text-ellipsis truncate'>{json.title}</p>
                             </div>
                         </a>;

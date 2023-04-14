@@ -1,10 +1,9 @@
 import React from 'react'
 
-import VideoPlayer from './Video';
 import { DISPLAY_TYPES,
     API_TEMPLATES,
-    MIME_IMG_CUTOFF,
-    NO_MEDIA_IMG } from '../../constants';
+    NO_MEDIA_IMG,
+    MAX_DIMENSIONS } from '../../constants';
 import { formatStringB } from '../../requests';
 
 export default function VideoContainer(props)
@@ -27,10 +26,6 @@ export default function VideoContainer(props)
             height
         }
     } = props;
-
-    const max_width = 256;
-    const max_height = 256;
-
     
 
     function getWidthForDesiredHeight(oldWidth,oldHeight,newHeight)
@@ -87,7 +82,7 @@ export default function VideoContainer(props)
                         // className="border-dashed border-2 border-white"
                         ref={thumb}
                         src={thumb_url}
-                        width={max_width}
+                        width={MAX_DIMENSIONS.preview_width}
                         onError={imgError}
                         loading="lazy"
                         style={{ objectFit: "contain" }}
@@ -100,7 +95,7 @@ export default function VideoContainer(props)
         {
             console.log("height uwu");
             // display height should = max_height
-            const newWidth = getWidthForDesiredHeight(props.metaData.width, props.metaData.height, max_height);
+            const newWidth = getWidthForDesiredHeight(props.metaData.width, props.metaData.height, MAX_DIMENSIONS.preview_height);
 
             return (
                 <div className="inline-block w-[256px] h-[256px] flex justify-center items-center">

@@ -1,8 +1,9 @@
-
-
-export const MAX_WIDTH = 256;
-export const MAX_HEIGHT = 256;
-
+export const MAX_DIMENSIONS = {
+    preview_width   : 256,
+    preview_height  : 256,
+    general_width   : 768,
+    general_height  : 768,
+}
 
 
 export const ROUTES = {
