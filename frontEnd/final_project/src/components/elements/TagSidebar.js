@@ -152,7 +152,7 @@ export default function TagSidebar(props)
 
         const id = addOnlySelectedTag();
 
-        if(id === -1 && createTagButton)
+        if(id === -1)
         {
             createTagFromSearchBar();
         }
