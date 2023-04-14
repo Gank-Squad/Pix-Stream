@@ -129,6 +129,7 @@ export default function Default(props)
     )}
 
     <main className="flex-1 flex-wrap overflow-y-auto">
+    <center>
                         {/* display all the media in tiles using MediaContainer */}
                 <p className="text-xl font-bold text-custom-white">Displaying search results:</p>
 
@@ -172,6 +173,7 @@ export default function Default(props)
                         </a>;
                         })
                         }
+                        </center>
                     </main>
                 </div>
         </div>

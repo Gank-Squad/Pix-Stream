@@ -166,6 +166,12 @@ export default function Default(props)
         mins = mins.toString()
         secs = secs.toString()
 
+        if(hrs === "0" && mins === "0")
+            return secs + " seconds";
+
+        if(hrs === "0")
+            return mins + " minutes, " + secs + " seconds";
+
         if(hrs.length < 2)
             hrs = "0" + hrs;
 
@@ -175,12 +181,7 @@ export default function Default(props)
         if(secs.length < 2)
             secs = "0" + secs;
 
-        if(hrs === "00" && mins === "00")
-            return secs + " seconds";
-
-        if(hrs === "00")
-            return mins + " minutes & " + secs + " seconds";
-
+        
         return hrs + ':' + mins + ':' + secs;
       }
     
@@ -206,13 +207,11 @@ export default function Default(props)
       <center>
         {getMediaDisplayContainer(mediaData)}
 
-        <div className="mx-8 text-ellipsis truncate grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 bg-button-depressed px-8 pt-2 pb-4 rounded-3xl">
-          <table className="text-custom-white">
+        <div className="mx-8  grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 bg-button-depressed px-8 pt-2 pb-4 rounded-3xl">
+          <table className="text-custom-white text-ellipsis wrap">
             <tbody>
               <p className="text-xl font-bold text-custom-white">{mediaData.title}</p>
-              <tr>
-                <td>{mediaData.description}</td>
-              </tr>
+                {mediaData.description&&mediaData.description.split(/\n/g).map(x => <tr><tr><span>{x}</span></tr></tr>)}
               <br />
               {mediaData &&
                 mediaData.files &&

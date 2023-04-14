@@ -32,7 +32,7 @@ export default function Default(props)
     function loadMedia()
     {
         // arbitrarily setting the limit to 10, can be anything
-        let url = addQueryParams(API_ENDPOINTS.media.get_posts, {limit : 10});
+        let url = addQueryParams(API_ENDPOINTS.media.get_posts, {limit : 100000});
 
         const fetchData = {
             method : "GET"
@@ -99,6 +99,7 @@ export default function Default(props)
     )}
 
     <main className="flex-1 flex-wrap overflow-y-auto">
+        <center>
                 {/* create preview for all the images loaded from api */}
                 { mediaData.map((json, index) => {
 
@@ -137,6 +138,7 @@ export default function Default(props)
                         </a>;
                     })
                 }
+                </center>
             </main>
         </div>
 </div>

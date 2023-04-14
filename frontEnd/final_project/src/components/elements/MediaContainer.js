@@ -178,7 +178,7 @@ export default function VideoContainer(props)
                     <div className={"inline-block w-["+ newWidth + 
                     "px] h-[" + MAX_DIMENSIONS.general_height + "px] flex justify-center items-center"} loading="lazy">
                         <VideoPlayer hlsUrl={media_url} hlsDomain={hlsDomain}/>
-                        <div className="text-custom-white caption">{caption}</div>
+                        {/* <div className="text-custom-white caption">{caption}</div> */}
                     </div>
                 )
             }
