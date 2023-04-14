@@ -119,7 +119,7 @@ export default function Default(props)
         };
 
         return (
-            <div>
+            <div className='m-4'>
                 <MediaContainer {...props} />
             </div>
         )
@@ -196,7 +196,7 @@ export default function Default(props)
                 data-te-sidenav-init
                 data-te-sidenav-hidden="false"
                 >
-                <ul className="relative m-0 list-none px-[0.2rem]" data-te-sidenav-menu-ref>
+                <ul className="relative m-0 list-none px-[0.2rem] " data-te-sidenav-menu-ref>
                     <TagSidebar {...tagSidebarProps} />
                 </ul>
             </nav>}
@@ -206,7 +206,7 @@ export default function Default(props)
             <center>
                 {getMediaDisplayContainer(mediaData)}
 
-                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 bg-button-depressed m-24 px-8 pt-2 pb-4 rounded-3xl">
+                <div className="mx-8 text-ellipsis truncate grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 bg-button-depressed px-8 pt-2 pb-4 rounded-3xl">
                 <table className="text-custom-white">
                     <tbody>
                 <p className="text-xl font-bold text-custom-white">{mediaData.title}</p>
@@ -214,7 +214,7 @@ export default function Default(props)
                         <br/>
                         {mediaData && mediaData.files && mediaData.files.map((file, index) => {
                             return <div>
-                                <tr><td>SHA256: {file.hash}</td></tr>
+                                <tr><td><span>SHA256: {file.hash}</span></td></tr>
                                 <tr><td>Size: {humanFileSize(file.file_size)}</td></tr>
                                 <tr><td>Duration: {msToTime(file.duration)}</td></tr>
                                 <tr><td>Width: {file.width}</td></tr>
