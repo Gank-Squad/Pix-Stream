@@ -81,6 +81,7 @@ export default function Default(props)
         "searchCallback" : searchCallback,
         "hideSearchButton" : true,
         "searchButtonPressed" : searchButtonPressed,
+        "createTagButton" : true,
     }
 
 
