@@ -7,7 +7,6 @@ export default function TagSidebar(props)
 
 
     // basically global variables / instance variables 
-    const [search, setSearch] = React.useState([]);
     const [tags, setTags] = React.useState([]);
     const [selectedTags, setSelectedTags] = React.useState([]);
 
@@ -24,8 +23,13 @@ export default function TagSidebar(props)
 
 
     React.useEffect(() => {
-        console.log(tags);
+        console.log("All tags: ", tags);
     }, [tags]);
+
+
+    React.useEffect(() => {
+        console.log("Selected tags: ", selectedTags);
+    }, [selectedTags]);
 
 
     React.useEffect(() => {
@@ -35,7 +39,6 @@ export default function TagSidebar(props)
             .then(json => {
 
                 setTags(json);
-                console.log(json);
 
             })
             .catch(e => console.log(e));
@@ -80,24 +83,23 @@ export default function TagSidebar(props)
 
     function updateSearch() 
     {
-        const contextTags = selectedTagBox.current.querySelectorAll('tr');
+        let s = selectedTags;
 
-        let s = [];
-        contextTags.forEach(element => 
+        if(selectedTagIds)
         {
-            const i = element.getAttribute("index");
+            s = s.concat(selectedTagIds);
+        }
+        
+        const search = s.map(tag_id => {
 
-            if(i)
-            {
-                s.push(tags[i]);
-            }
+            let i = tags.findIndex(x => x.tag_id === tag_id);
+
+            return tags[i];
         });
-
-        setSearch(prevItems => s);
 
         if(searchCallback)
         {
-            searchCallback(s);
+            searchCallback(search);
         }
     }
 
@@ -115,75 +117,90 @@ export default function TagSidebar(props)
     }
 
 
-async function createTagFromSearchBar(e)
-{
-    const tag = tagSearch.current.value.trim();
-    const spl = tag.split(":", 2);
-   console.log(spl); 
-    let namespace = "";
-    let subtag = "";
-
-    if(spl.length === 1)
+    async function createTagFromSearchBar(e)
     {
-        subtag = spl[0];
-    }
-    else 
-    {
-        namespace = spl[0];
-        subtag = spl[1];
-    }
-
-    if(subtag === "")
-        return;
-
-    const json = [
-        {
-            "namespace" : namespace,
-            "subtag" : subtag
-        }
-    ]
-
-    console.log(JSON.stringify(json));
+        const tag = tagSearch.current.value.trim();
+        const spl = tag.split(":", 2);
     
-    await fetch(API_TEMPLATES.create_tag.url, {
-        "method" : "POST",
-        "headers" : {
-            "content-type" : "application/json"
-        },
-        "body" : JSON.stringify(json)
-    })
-    .then(r => {
-        if(r.status !== 200)
-          return Promise.reject("server");
+        let namespace = "";
+        let subtag = "";
 
-        return r.json()
-    })
-    .then(json => 
+        if(spl.length === 1)
+        {
+            subtag = spl[0];
+        }
+        else 
+        {
+            namespace = spl[0];
+            subtag = spl[1];
+        }
+
+        if(subtag === "")
+            return;
+
+        const json = [
+            {
+                "namespace" : namespace,
+                "subtag" : subtag
+            }
+        ]
+        
+        await fetch(API_TEMPLATES.create_tag.url, {
+            "method" : "POST",
+            "headers" : {
+                "content-type" : "application/json"
+            },
+            "body" : JSON.stringify(json)
+        })
+        .then(r => {
+            if(r.status !== 200)
+            return Promise.reject("server");
+
+            return r.json()
+        })
+        .then(json => 
+        {
+            // behold!!! the power of javascript! !!!! 
+            let  added = new Set();
+            for(let tag of json)
+            {
+                if(tags.findIndex(x => x.tag_id === tag.tag_id) === -1)
+                {
+                    added.add(tag);
+                }
+            }            
+
+            setTags(old => [...old, ...added]);
+
+            for(let tag of json)
+            {
+                updateTagSelection(tag, true);
+            }
+            updateSearch();
+
+            tagSearch.current.value = "";
+            filterTags("");
+
+        }).catch(e => {
+            if(e === "server") return;
+            console.log(e)
+        });
+    }
+
+
+    function updateTagSelection(tag, doNotupdateSearch)
     {
-        console.log(json);
-       setTags(old => old.concat(json) );
-       tagSearch.current.value = "";
-       updateSearch();
-       filterTags("");
-
-       setSelectedTags(old => old.concat(json.map(x => x.tag_id)));
-    }).catch(e => {
-        if(e === "server") return;
-        console.log(e)
-    });
-}
-
-    function tagButtonPressed(e, tag) {
-
-        const trSelected = selectedTagBox.current.querySelector(`tr[tag-id="${tag.tag_id}"]`);
-        const trContext = contextTagBox.current.querySelector(`tr[tag-id="${tag.tag_id}"]`);
-
-        if (trSelected) {
-            contextTagBox.current.querySelector('tbody').appendChild(trSelected);
+        if(selectedTags.includes(tag.tag_id))
+        {
+            setSelectedTags(old => old.filter(t => t != tag.tag_id));
         }
-        else {
-            selectedTagBox.current.querySelector('tbody').appendChild(trContext);
+        else 
+        {
+            setSelectedTags(old => [...old, tag.tag_id]);
         }
+
+        if(doNotupdateSearch)
+            return;
 
         updateSearch();
     }
@@ -195,7 +212,7 @@ async function createTagFromSearchBar(e)
         <td>
             <div className="tag">
                 <i className="fa fa-tag"></i>
-                <button onClick={(e) => tagButtonPressed(e, tag)} 
+                <button onClick={(e) => updateTagSelection(tag)} 
                 className="text-custom-white text-ellipsis hover:bg-button-depressed truncate rounded px-2 w-48 text-left">
                     <label>
                         {
@@ -213,7 +230,7 @@ async function createTagFromSearchBar(e)
         </td>
     </tr>
     }
-     
+
 
     return (
         <div className="px-4 h-full">
@@ -255,6 +272,7 @@ async function createTagFromSearchBar(e)
             <table ref={selectedTagBox} className="tagbox">
                 <tbody>
                     {
+                        
                     tags.map((tag, index) => {
 
                         if(!selectedTagIds && !selectedTags)

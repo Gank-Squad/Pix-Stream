@@ -33,6 +33,9 @@ export default function Default(props)
 
     const previewLoadCount = 5;
 
+    React.useEffect(() => {
+        console.log(searchItems);
+    }, [searchItems]);
 
     function searchCallback(searchItems)
     {
