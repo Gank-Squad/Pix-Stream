@@ -9,6 +9,11 @@ import java.util.List;
 
 import org.tinylog.Logger;
 
+/**
+ * Maps a post to files, many-many, so we know what post has what files
+ * @author minno
+ *
+ */
 public class TablePostFiles
 {
     public static final String DELETION_QUERY = "DROP TABLE IF EXISTS tbl_post_files";

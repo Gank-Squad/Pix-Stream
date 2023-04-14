@@ -10,6 +10,11 @@ import org.tinylog.Logger;
 
 import uwu.nyaa.owo.finalproject.data.ByteHelper;
 
+/**
+ * Stores a file hash with a primary key, used for all files
+ * @author minno
+ *
+ */
 public class TableHash
 {
     public static final String DELETION_QUERY = "DROP TABLE IF EXISTS tbl_hash";

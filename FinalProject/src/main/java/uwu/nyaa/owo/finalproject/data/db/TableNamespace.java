@@ -7,6 +7,11 @@ import java.sql.SQLException;
 
 import org.tinylog.Logger;
 
+/**
+ * Stores tag namespaces
+ * @author minno
+ *
+ */
 public class TableNamespace
 {
     public static final String DELETION_QUERY = "DROP TABLE IF EXISTS tbl_namespace";

@@ -16,6 +16,12 @@ import org.tinylog.Logger;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+/**
+ * This was a modification of:
+ * - https://github.com/GuntherRotsch/guntherrotsch.github.io/tree/code/jaxrs-multipart
+ * @author minno
+ *
+ */
 public class MultiPartFormDataParser
 {
     public static class Part
@@ -30,6 +36,7 @@ public class MultiPartFormDataParser
         InputStream inputStream = getResetableInputStream(entityStream);
         PartInputStream partInputStream;
 
+        // rewrite this whole part, cause we're doing the parsing by hand >>:)))
         do
         {
             partInputStream = new PartInputStream(inputStream, ("\r\n" + boundary).getBytes(StandardCharsets.US_ASCII));

@@ -24,6 +24,11 @@ import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector;
 import uwu.nyaa.owo.finalproject.data.filedetection.FileFormat;
 import uwu.nyaa.owo.finalproject.data.models.FileUpload;
 
+/**
+ * Handles file processing to add stuff to the database and filesystem
+ * @author minno
+ *
+ */
 public class FileProcessor
 {
     /**
@@ -103,7 +108,11 @@ public class FileProcessor
     }
     
     
-    
+    /**
+     * Holds various types of file hash
+     * @author minno
+     *
+     */
     public static class Hashes 
     {
         public byte[] SHA256;
@@ -276,11 +285,21 @@ public class FileProcessor
 
 
 
+    /**
+     * Handles adding a file to the database and processing it for serving
+     * @param path The path to the file
+     * @return FileUpload object, never null
+     */
     public static FileUpload addFile(String path)
     {
         return addFile(new File(path));
     }
     
+    /**
+     * Handles adding a file to the database and processing it for serving
+     * @param path THe path to the file
+     * @return FileUpload object, never null
+     */
     public static FileUpload addFile(File f)
     {
         FileUpload fa = new FileUpload();
@@ -292,7 +311,7 @@ public class FileProcessor
             return fa;
         }
             
-        
+        // hash our file, we need this for the database
         Hashes b = getFileHashes(f);
         
         if(b == null || b.SHA256.length == 0)
@@ -301,6 +320,7 @@ public class FileProcessor
             return fa;
         }
 
+        // define paths we might need, hash is important for this aswell 
         fa.hashes = b;
         String fileHash = ByteHelper.bytesToHex(b.SHA256);
         String mediaPath = PathHelper.getMediaPath(fileHash);
@@ -319,6 +339,7 @@ public class FileProcessor
             thumbFile.getParentFile().mkdirs();
         }
 
+        // we already have this file, so we do nothing more
         if(mediaFile.exists())
         {
             fa.hash_id = TableHash.getHashID(b.SHA256);
@@ -326,6 +347,7 @@ public class FileProcessor
             return fa;
         }
         
+        // prepare file metadata
         long fileSize = f.length();
         byte mimeType = FileDetector.getFileMimeType(f);
         int width = 0;
@@ -334,6 +356,7 @@ public class FileProcessor
         boolean has_audio = false;
         
         
+        // processing the file based on filetype and creating thumbnails 
         if(FileFormat.isImageType(mimeType))
         {
             ImageInfo i = ImageProcessor.getImageInfo(f);
@@ -357,6 +380,7 @@ public class FileProcessor
                 {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
+                    Logger.warn(e);
                     return fa;
                 }
             }
@@ -364,7 +388,8 @@ public class FileProcessor
             ImageProcessor.createThumbnail(mediaFile, thumbFile);
         }
         else if(FileFormat.isVideoType(mimeType) || FileFormat.isAudioType(mimeType))
-        {
+        { 
+            // also works on audio*
             VideoInfo i = VideoProcessor.getVideoInfo(f);
             
             width = i.width;
@@ -388,6 +413,10 @@ public class FileProcessor
                 {
                     VideoProcessor.encodeUniversal(f, tmpMediaFile);    
                 }
+                
+                // we want to serve the video from backend, so we need to prep this for hls
+                // big boi cpu usage incomming, but ffmpeg is a beast
+                // this will block the thread until ffmpeg exists, but the api endpoint should handle this 
                 VideoProcessor.splitVideoForHLS(tmpMediaFile, mediaFile);
             }
             catch (IOException e)
@@ -396,6 +425,7 @@ public class FileProcessor
                 return fa;
             }
 
+            // if we have an audio file, don't try and make any thumbnail
             if(!FileFormat.isAudioType(mimeType))
             {
                 VideoProcessor.createThumbnail(f, thumbFile);
@@ -413,8 +443,11 @@ public class FileProcessor
             return fa;
         }
         
+        
+        // file processing is done, database time
         try (Connection c = DatabaseConnection.getConnection())
         {
+            // start with the hash, basically the core of our db structure
             int hash_id = TableHash.insertHash(b.SHA256, c);
 
             fa.filePath = mediaFile;
@@ -426,6 +459,7 @@ public class FileProcessor
                 return fa;
             }
             
+            // some auto tagging for metadata
             int file_mime_tag = TableTag.insertOrSelectTag(String.format("filetype:%s", FileFormat.getMimeType(mimeType)),c);
             int file_mime_int_tag = TableTag.insertOrSelectTag(String.format("filetype int:%d", mimeType),c);
             int file_metadata_audio_tag = -1;
@@ -449,6 +483,9 @@ public class FileProcessor
             {
                 TableHashTag.insertAssociation(hash_id, file_metadata_audio_tag,c);
             }
+            
+            
+            // other file metadata
             if(!TableLocalHash.insertHashes(hash_id, b.SHA1, b.MD5, b.PHASH, c))
             {
                 Logger.warn("Unable to insert local hashes for file {}", fileHash);

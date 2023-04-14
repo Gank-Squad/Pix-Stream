@@ -2,7 +2,7 @@ package uwu.nyaa.owo.finalproject.data.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.ResultSet; 
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -13,6 +13,11 @@ import org.tinylog.Logger;
 import uwu.nyaa.owo.finalproject.data.models.FullTag;
 import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 
+/**
+ * Maps the tbl_hash id to tbl_tag ids in a many-many relationship
+ * @author minno
+ *
+ */
 public class TableHashTag
 {
     public static final String DELETION_QUERY = "DROP TABLE IF EXISTS tbl_hash_tag";

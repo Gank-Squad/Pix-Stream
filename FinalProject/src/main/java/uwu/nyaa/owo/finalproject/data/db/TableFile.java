@@ -15,6 +15,11 @@ import uwu.nyaa.owo.finalproject.data.FileProcessor.ImmutableMessageDigest;
 import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 import uwu.nyaa.owo.finalproject.data.models.HashInfoBase;
 
+/**
+ * Stores file metadata about a hash as well as queries using this table
+ * @author minno
+ *
+ */
 public class TableFile
 {
     public static final String DELETION_QUERY = "DROP TABLE IF EXISTS tbl_file";

@@ -14,12 +14,20 @@ import net.bramp.ffmpeg.progress.Progress;
 import net.bramp.ffmpeg.progress.ProgressListener;
 import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 
+/**
+ * Handles ffmpeg and ffprobe stuff 
+ * @author minno
+ *
+ */
 public class FFmpegHelper
 {
     public static  FFmpeg FFMPEG;
     public static FFprobe FFPROBE;
     public static  FFmpegExecutor EXECUTOR;
  
+    /**
+     * Checks for ffmpeg and ffprobe, throws runtime error if they're not found
+     */
     public static void checkFFmpeg()
     {
         GlobalSettings.updatePathsForLinux();

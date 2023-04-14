@@ -7,6 +7,11 @@ import java.sql.SQLException;
 
 import org.tinylog.Logger;
 
+/**
+ * Stores and queries subtags 
+ * @author minno
+ *
+ */
 public class TableSubtag
 {
     public static final String DELETION_QUERY = "DROP TABLE IF EXISTS tbl_subtag";

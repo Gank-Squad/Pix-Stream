@@ -2,6 +2,11 @@ package uwu.nyaa.owo.finalproject.data.filedetection;
 
 import uwu.nyaa.owo.finalproject.data.filedetection.FileDetector.FileHeader;
 
+/**
+ * Information used to detect audio files
+ * @author minno
+ *
+ */
 public class AudioDetector
 {
     public static final byte[] FLAC_HEADER = "fLaC".getBytes();

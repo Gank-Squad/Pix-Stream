@@ -1,6 +1,5 @@
 package uwu.nyaa.owo.finalproject.data.models;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class FullTag

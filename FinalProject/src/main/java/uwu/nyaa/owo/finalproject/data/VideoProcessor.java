@@ -273,13 +273,23 @@ public class VideoProcessor
 
     }
 
+    
+    /**
+     * Creates a thumbnail from the given video
+     * @param src
+     * @param dest
+     */
     public static void createThumbnail(File src, File dest)
     {
+        // why tf did i do this, instead of using a param??
         int t = GlobalSettings.THUMBNAIL_SIZE;
         FFmpegBuilder builder = new FFmpegBuilder()
 
-                .setInput(src.getAbsolutePath()).overrideOutputFiles(true).addOutput(dest.getAbsolutePath())
+                .setInput(src.getAbsolutePath())
+                .overrideOutputFiles(true)
+                .addOutput(dest.getAbsolutePath())
 
+                // holy output scaling to ensure the correct size thumbnail
                 .addExtraArgs("-vf", String.format("thumbnail,scale=min(%d\\,iw*min(1\\,(%d/ih))):min(%d\\,ih*min(1\\,(%d/iw)))", t, t, t, t))
                 .addExtraArgs("-vframes", "1")
                 .addExtraArgs("-f", "image2")
@@ -309,11 +319,22 @@ public class VideoProcessor
         }
     }
 
+    
+    /**
+     * gets video or audio file information
+     * @param f The path to the file
+     * @return
+     */
     public static VideoInfo getVideoInfo(File f)
     {
         return getVideoInfo(f.getAbsolutePath());
     }
 
+    /**
+     * gets video or audio file information
+     * @param f The path to the file
+     * @return
+     */
     public static VideoInfo getVideoInfo(String f)
     {
         VideoInfo info = new VideoInfo();
@@ -357,6 +378,12 @@ public class VideoProcessor
         return info;
     }
 
+    
+    /**
+     * information about a video / audio file
+     * @author minno
+     *
+     */
     public static class VideoInfo
     {
         public boolean is_valid;

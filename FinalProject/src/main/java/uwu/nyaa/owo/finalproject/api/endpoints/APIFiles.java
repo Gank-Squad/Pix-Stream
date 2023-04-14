@@ -49,30 +49,41 @@ import uwu.nyaa.owo.finalproject.data.models.Post;
 @Path("/files")
 public class APIFiles
 {
+    /**
+     * This is needed for the upload endpoint
+     */
     @Context
     private HttpServletRequest request;
 
     private final ObjectMapper jsonMapper = new ObjectMapper();
-    
+
+    /**
+     * Gets a list of files from the database
+     * 
+     * @param limit    The amount you want
+     * @param withTags If they should have tags
+     * @return a Json array of file metadata
+     * @throws JsonProcessingException
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBulkFileMetadata(@QueryParam("limit") int limit, @QueryParam("tags") boolean withTags) throws JsonProcessingException
+    public Response getBulkFileMetadata(@QueryParam("limit") int limit, 
+            @QueryParam("tags") boolean withTags,
+            @QueryParam("sort") int sortBy)
+            throws JsonProcessingException
     {
-        if(limit <= 0 || limit > 200)
+        if (limit <= 0)
         {
             limit = 200;
         }
-        
+
         Logger.info(Integer.toString(limit));
-        
+
         List<HashInfo> items = TableFile.getFiles(limit, withTags);
-        
-        return Response.status(200)
-                .entity(this.jsonMapper.writeValueAsString(items))
-                .build();
+
+        return Response.status(200).entity(this.jsonMapper.writeValueAsString(items)).build();
     }
-    
-    
+
     @GET
     @Produces({ "image/png", "image/jpeg", "image/webp", "image/gif", "application/vnd.apple.mpegurl" })
     @Path("/{filehash}")
@@ -94,13 +105,14 @@ public class APIFiles
         {
             return Response.ok(f, "image/png").build();
         }
-        else if(f.isDirectory())
+        else if (f.isDirectory())
         {
             File m3u8 = new File(f, "index.m3u8");
 
-            if(m3u8.isFile())
+            if (m3u8.isFile())
             {
-                // TODO: read the m3u8 file, and replace all occurance of {FMT} with the server address
+                // TODO: read the m3u8 file, and replace all occurance of {FMT} with the server
+                // address
                 // Pointing to the endpoint for video files below
                 // I.E http://localhost:xzy/
 
@@ -110,19 +122,19 @@ public class APIFiles
         return Response.status(404, "Could not find file").build();
 
     }
-    
-    
+
     @GET
     @Produces({ "video/ts", "video/mp4" })
     @Path("/{filehash}/{video_fragment}")
-    public Response getContentVideoFiles(@PathParam("filehash") String filehash, @PathParam("video_fragment") String video)
+    public Response getContentVideoFiles(@PathParam("filehash") String filehash,
+            @PathParam("video_fragment") String video)
     {
         if (filehash.length() != 64 || !filehash.matches("^[a-fA-F0-9]+$"))
         {
             return Response.status(400, "Bad request, must be SHA256").build();
         }
-        
-        if(video.length() <= 3 || !video.matches("^[0-9]+\\.ts$"))
+
+        if (video.length() <= 3 || !video.matches("^[0-9]+\\.ts$"))
         {
             return Response.status(400, "Bad request, video fragment should be in the form 0000.ts").build();
         }
@@ -141,7 +153,7 @@ public class APIFiles
 
         return Response.ok(f, "video/ts").build();
     }
-    
+
     @GET
     @Produces({ "image/png", "image/jpeg", "image/webp", "image/gif" })
     @Path("/t/{filehash}")
@@ -167,7 +179,6 @@ public class APIFiles
         return Response.ok(f, "image/jpeg").build();
     }
 
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{filehash}/info")
@@ -181,15 +192,14 @@ public class APIFiles
         byte[] sha256 = ByteHelper.bytesFromHex(fileHash);
         HashInfo items = TableFile.getFile(sha256, true);
 
-        if(items == null)
+        if (items == null)
         {
             return Response.status(404, "Could not find metadata").build();
         }
 
-        return Response.status(200)
-                .entity(this.jsonMapper.writeValueAsString(items))
-                .build();
+        return Response.status(200).entity(this.jsonMapper.writeValueAsString(items)).build();
     }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{filehash}/tag")
@@ -203,7 +213,7 @@ public class APIFiles
         byte[] sha256 = ByteHelper.bytesFromHex(fileHash);
         int hash_id = TableHash.getHashID(sha256);
 
-        if(hash_id == -1)
+        if (hash_id == -1)
         {
             return Response.status(404, "The file does not exist").build();
         }
@@ -230,15 +240,15 @@ public class APIFiles
             return Response.status(400).build();
         }
 
-        if(tags == null)
+        if (tags == null)
         {
             Logger.error("Tags was null after no error while reading json??");
             return Response.status(500).build();
         }
 
-        for(FullTag t : tags)
+        for (FullTag t : tags)
         {
-            if(t.tag_id == -1)
+            if (t.tag_id == -1)
             {
                 continue;
             }
@@ -247,8 +257,7 @@ public class APIFiles
 
         return Response.status(200).build();
     }
-    
-    
+
     @POST
     @Path("/upload")
     @Produces(MediaType.APPLICATION_JSON)
@@ -260,32 +269,33 @@ public class APIFiles
 
         Logger.info(BOUNDARY);
 
-        if(BOUNDARY == null)
+        if (BOUNDARY == null)
         {
             return Response.status(400, "Bad format data").build();
         }
 
         PartInputStream partInputStream = MultiPartFormDataParser.readPrecedingBoundary(BOUNDARY, FORM_STREAM);
 
-        if(partInputStream.isLastPart())
+        if (partInputStream.isLastPart())
         {
             return Response.status(400, "Bad format data").build();
         }
 
         MultiPartFormDataParser.Part p = MultiPartFormDataParser.readNextPart(BOUNDARY, FORM_STREAM);
 
-        if(p == null || p.qualifiers.get("name") == null || !p.qualifiers.get("name").equals("data"))
+        if (p == null || p.qualifiers.get("name") == null || !p.qualifiers.get("name").equals("data"))
         {
             return Response.status(400, "Could not read 'data' field from form data first").build();
         }
 
-        // partInputStream doesn't support #mark and #reset, so we need to read these here to add later
+        // partInputStream doesn't support #mark and #reset, so we need to read these
+        // here to add later
         byte[] header = p.partInputStream.readNBytes(256);
         byte mime = FileDetector.getFileMimeType(header);
 
         Logger.debug("Detected mime type: {} [{}]", mime, FileFormat.getMimeType(mime));
-        
-        if(mime == FileFormat.UNKNOWN)
+
+        if (mime == FileFormat.UNKNOWN)
         {
             return Response.status(400, "Unknown data format").build();
         }
@@ -293,7 +303,7 @@ public class APIFiles
         String tempPath = Files.createTempDirectory("upload").toString();
         File file = Paths.get(tempPath, Long.toString(System.currentTimeMillis())).toFile();
 
-        try(FileOutputStream fout = new FileOutputStream(file))
+        try (FileOutputStream fout = new FileOutputStream(file))
         {
             fout.write(header);
             p.partInputStream.transferTo(fout);
@@ -303,7 +313,7 @@ public class APIFiles
 
         FileUpload fa = FileProcessor.addFile(file);
 
-        if(!fa.accepted)
+        if (!fa.accepted)
         {
             return Response.status(500).entity(jsonMapper.writeValueAsString(fa)).build();
         }
@@ -311,5 +321,4 @@ public class APIFiles
         return Response.status(200).entity(jsonMapper.writeValueAsString(fa)).build();
     }
 
-    
 }

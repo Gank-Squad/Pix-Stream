@@ -21,6 +21,9 @@ import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 
 public class ImageProcessor
 {
+    
+    // ============= begin stuff i took from another project i made, which i think is a mix of stack overflow and other reading ===
+    
     /**
      * Gets the optimal image type for the given transparency
      * 
@@ -91,7 +94,16 @@ public class ImageProcessor
 
         return result;
     }
-
+ // ============= end stuff i took from another project i made, which i think is a mix of stack overflow and other reading ===
+    
+    
+    
+    
+    /**
+     * basic image object to return info
+     * @author minno
+     *
+     */
     public static class ImageInfo
     {
         public int width;
@@ -104,12 +116,21 @@ public class ImageProcessor
         }
     }
 
+    /**
+     * Man what a pain again, not using file extensions made this break a lot
+     * Saves the given image in the given image format
+     * @param buff the image to save
+     * @param path The location to save the image
+     * @param imgformat The image format to save as 
+     * @return True if saved, otherwise false
+     */
     public static boolean saveImage(BufferedImage buff, File path, byte imgformat)
     {
-
-
         try
         {
+            // hahahhaahhhhhh why tf did i have to do it like this
+            // image magick just always saves as a .tiff if you don't put a file extension
+            // literally nothing you can do about it, so this is stupid
             File path2 = path;
 
             if(!path2.getName().endsWith("." + FileFormat.getFileExtension(imgformat)))
@@ -117,8 +138,10 @@ public class ImageProcessor
                 path2 = new File(path.getAbsolutePath() + "." + FileFormat.getFileExtension(imgformat));
             }
 
+            // save it
             ImageMagickHelper.saveImageWithMagick(buff, path2.getAbsolutePath());
 
+            // rename it to the actual name you wanted (in this case with no file extension)
             if(path.isFile())
             {
                 if(path.delete())
@@ -141,6 +164,8 @@ public class ImageProcessor
             Logger.warn(e, "Failed to save {} with image magick", path);
         }
         
+        
+        // fallback, should never be used, only supports like 5 image formats
         try 
         {
             ImageIO.write(buff, FileFormat.getFileExtension(imgformat), path);
@@ -154,16 +179,27 @@ public class ImageProcessor
         return false;
     }
     
+    /**
+     * loads the image into java format
+     * @param path The file location
+     * @return The image
+     */
     public static BufferedImage loadImage(String path)
     {
         return loadImage(new File(path));
     }
 
+    /**
+     * loads the image into java format
+     * @param path The file location
+     * @return The image
+     */
     public static BufferedImage loadImage(File path)
     {
         if (!path.isFile())
             return null;
 
+        // based image magick pipe function
         try
         {
             return ImageMagickHelper.loadImageWithMagick(path.getAbsolutePath());
@@ -191,17 +227,31 @@ public class ImageProcessor
         return null;
     }
 
+    
+    
+    /**
+     * Gets the width and height of the image, and if it's valid
+     * @param filename
+     * @return
+     */
     public static ImageProcessor.ImageInfo getImageInfo(File filename)
     {
         return getImageInfo(filename.getAbsolutePath());
     }
 
+    
+    /**
+     * Gets the width and height of the image, and if it's valid
+     * @param filename
+     * @return
+     */
     public static ImageProcessor.ImageInfo getImageInfo(String filename)
     {
         ImageProcessor.ImageInfo simpleInfo = new ImageProcessor.ImageInfo();
         simpleInfo.width = -1;
         simpleInfo.height = -1;
 
+        // image magick just died here, but luckily ffmpeg is based, and supports everything we need
         try
         {
             FFmpegProbeResult p = FFmpegHelper.FFPROBE.probe(filename);
@@ -223,6 +273,7 @@ public class ImageProcessor
             Logger.warn(e, "Failed to probe image {}, trying to load image instead", filename);
         }
 
+        // bad method, but uses image magick to load if possible
         BufferedImage buff = ImageProcessor.loadImage(filename);
 
         if (buff != null)
@@ -241,6 +292,12 @@ public class ImageProcessor
         return simpleInfo;
     }
 
+    
+    /**
+     * Creates a thumbnail of the given image
+     * @param src The source image path
+     * @param dest The dest image path
+     */
     public static void createThumbnail(File src, File dest)
     {
         BufferedImage im = loadImage(src);

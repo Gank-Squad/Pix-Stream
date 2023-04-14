@@ -13,6 +13,11 @@ import uwu.nyaa.owo.finalproject.data.StringHelper;
 import uwu.nyaa.owo.finalproject.data.models.FullTag;
 import uwu.nyaa.owo.finalproject.data.models.TagFileCount;
 
+/**
+ * Maps the namespace and subtags together and queries related to tags
+ * @author minno
+ *
+ */
 public class TableTag
 {
     public static final String DELETION_QUERY = "DROP TABLE IF EXISTS tbl_tag";

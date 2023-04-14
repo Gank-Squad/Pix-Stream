@@ -16,6 +16,11 @@ import uwu.nyaa.owo.finalproject.data.models.HashInfo;
 import uwu.nyaa.owo.finalproject.data.models.Post;
 import uwu.nyaa.owo.finalproject.data.models.PostBase;
 
+/**
+ * Stores and queries post information
+ * @author minno
+ *
+ */
 public class TablePost
 {
     public static final String DELETION_QUERY = "DROP TABLE IF EXISTS tbl_post";

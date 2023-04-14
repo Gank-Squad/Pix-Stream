@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * From https://github.com/GuntherRotsch/guntherrotsch.github.io/tree/code/jaxrs-multipart again
  * PartInputStream filters a given InputStream till the boundary also given to
  * constructor. The InputStream need to support #mark and #reset methods to
  * enable 'read-ahead' of characters. This allows detection of the given

@@ -2,6 +2,11 @@ package uwu.nyaa.owo.finalproject.data;
 
 import java.io.File;
 
+/**
+ * useful string manip
+ * @author minno
+ *
+ */
 public class StringHelper
 {
     /**

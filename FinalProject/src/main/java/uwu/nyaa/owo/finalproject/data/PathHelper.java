@@ -5,14 +5,24 @@ import java.io.File;
 import org.tinylog.Logger;
 import uwu.nyaa.owo.finalproject.system.GlobalSettings;
 
+/**
+ * Handles folder structure and file pathing
+ * @author minno
+ *
+ */
 public class PathHelper
 {
+    // where allll the stuff goes, for uploaded media
     public static final File MEDIA_DIR_BASE;
 
     static  {
         MEDIA_DIR_BASE = new File(GlobalSettings.MEDIA_PATH);
         MEDIA_DIR_BASE.mkdirs();
     }
+    
+    /**
+     * Creates all the needed directories for stuff
+     */
     public static void initPaths()
     {
         MEDIA_DIR_BASE.mkdirs();
@@ -70,7 +80,7 @@ public class PathHelper
     }
     
     /**
-     * gets the path to the given media value
+     * gets the path to the given media value, DOES NOT CHECK THE STRING, 
      * @param name a sha256 file hash which corresponds to a file with the hash
      * @return the path to the file 
      */
@@ -82,7 +92,7 @@ public class PathHelper
     }
     
     /**
-     * gets the path to the given media value
+     * gets the path to the given media value, DOES NOT CHECK THE STRING, 
      * @param name a sha256 file hash which corresponds to the thumbnail of the file with the hash
      * @return the path to the file 
      */

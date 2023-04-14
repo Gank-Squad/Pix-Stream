@@ -1,5 +1,10 @@
 package uwu.nyaa.owo.finalproject.data.filedetection;
 
+/**
+ * All the fileformats our application can support
+ * @author minno
+ *
+ */
 public interface FileFormat
 {
     public static final byte UNKNOWN = -1;

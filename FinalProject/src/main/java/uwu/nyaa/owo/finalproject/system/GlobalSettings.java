@@ -53,6 +53,9 @@ public class GlobalSettings
 
     public static Boolean isLinux = false;
 
+    /**
+     * Tries to find ffmpeg, ffprobe and image magick in env variables 
+     */
     public static void updatePathsFromEnv()
     {
         if (ProcessStarter.getGlobalSearchPath() == null)
@@ -90,6 +93,9 @@ public class GlobalSettings
         }
     }
     
+    /**
+     * sets the default paths to my linux machines ffmpeg and magick
+     */
     public static void updatePathsForLinux()
     {
         if(System.getProperty("os.name").toLowerCase().equals("linux"))
@@ -103,6 +109,10 @@ public class GlobalSettings
     }
 
 
+    /**
+     * Looks for ffmpeg and ffprobe in the given dir 
+     * @param dir
+     */
     public static void searchFFMPEG(String dir)
     {
         String ext = isLinux ? "" : ".exe";

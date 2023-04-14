@@ -10,8 +10,18 @@ import org.tinylog.Logger;
 
 import uwu.nyaa.owo.finalproject.data.ByteHelper;
 
+/**
+ * Detects filetypes, very useful because the file extension is a lie
+ * @author minno
+ *
+ */
 public class FileDetector
 {
+    /**
+     * magick byte header data
+     * @author minno
+     *
+     */
     public static class FileHeader
     {
         public byte[] header;
@@ -26,6 +36,11 @@ public class FileDetector
         }
     }
 
+    /**
+     * Combines a list of lists into one
+     * @param arrs
+     * @return
+     */
     private static FileHeader[] combineArr(FileHeader[]... arrs)
     {
         int sum = 0;
@@ -51,9 +66,17 @@ public class FileDetector
         return headers;
     }
 
+    /**
+     * A list of all filetypes we can detect
+     */
     public static final FileHeader[] HEADER_MAP = combineArr(ImageDetector.HEADER_MAP, VideoDetector.HEADER_MAP,
             AudioDetector.HEADER_MAP);
 
+    /**
+     * Gets a readable mimetype
+     * @param mime
+     * @return
+     */
     public static String getReadableMime(byte mime)
     {
         if (FileFormat.isImageType(mime))
@@ -74,6 +97,11 @@ public class FileDetector
         return "application/unknown";
     }
 
+    /**
+     * Gets the mime type of whatever file the given bytes is
+     * @param header The header bytes of the file 
+     * @return The mime type as a byte
+     */
     public static byte getFileMimeType(byte[] header)
     {
         for(FileHeader f : HEADER_MAP)
@@ -86,6 +114,14 @@ public class FileDetector
 
         return FileFormat.UNKNOWN;
     }
+    
+    /**
+     * Gets the mime type from an input stream,
+     * THIS DOES NOT RESET THE STREAM, 
+     * Always read 256 bytes, be prepared to not have that information
+     * @param stream The file input stream to read from
+     * @return The mime type as a byte
+     */
     public static byte getFileMimeType(InputStream stream)
     {
         byte[] header;
@@ -112,6 +148,12 @@ public class FileDetector
         return FileFormat.UNKNOWN;
     }
 
+    
+    /**
+     * Gets the file mime type
+     * @param file The path to the file
+     * @return The mime type as a byte
+     */
     public static byte getFileMimeType(File file)
     {
         byte[] header;

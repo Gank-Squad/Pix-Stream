@@ -6,6 +6,11 @@ import java.sql.SQLException;
 
 import org.tinylog.Logger;
 
+/**
+ * Stores extra hash information about a file 
+ * @author minno
+ *
+ */
 public class TableLocalHash
 {
     public static final String DELETION_QUERY = "DROP TABLE IF EXISTS tbl_local_hash";

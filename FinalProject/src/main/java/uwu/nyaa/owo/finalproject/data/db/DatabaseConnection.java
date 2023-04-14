@@ -35,6 +35,7 @@ public class DatabaseConnection
     public static final int POSTGRES_PORT = 5432;
     public static final String POSTGRES_URI = String.format("jdbc:postgresql://%s:%d/", POSTGRES_DOMAIN, POSTGRES_PORT);
     public static final String POSTGRES_USER = "postgres";
+    // a very good idea, nobody will guess this ;3c
     public static final String POSTGRES_PASSWORD = "123";
 
     public static final String POSTGRES_DATABASE = "master";
@@ -71,6 +72,9 @@ public class DatabaseConnection
         return getConnection(POSTGRES_DATABASE);
     }
 
+    /**
+     * Creates the database
+     */
     public static void createDatabase()
     {
         try (Connection c = getConnection("");
@@ -148,6 +152,8 @@ public class DatabaseConnection
                 statement.execute(TablePost.DELETION_QUERY);
             }
             
+            // NOTE: order matters!
+            // make sure foreign key tables are made last!!!
             statement.execute(TableHash.CREATION_QUERY);
             statement.execute(TableLocalHash.CREATION_QUERY);
             statement.execute(TableFile.CREATION_QUERY);
@@ -170,6 +176,7 @@ public class DatabaseConnection
     
     
 
+    // DEBUG ONLY 
     public static void main(String args[]) throws IOException, InterruptedException, IM4JavaException
     {
         ResourceLoader.loadTinyLogConfig();
