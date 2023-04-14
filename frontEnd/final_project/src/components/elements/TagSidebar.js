@@ -3,7 +3,10 @@ import React from "react";
 import { API_ENDPOINTS, API_TEMPLATES } from "../../constants";
 export default function TagSidebar(props) 
 {
-    const { createTagButton, searchCallback, hideSearchButton, searchButtonPressed, selectedTagIds } = props;
+    const { createTagButton, searchCallback, hideSearchButton, 
+            searchButtonPressed, selectedTagIds,
+            displayOnlyMode, displayTags
+        } = props;
 
 
     // basically global variables / instance variables 
@@ -28,11 +31,15 @@ export default function TagSidebar(props)
 
 
     React.useEffect(() => {
-        console.log("Selected tags: ", selectedTags);
+        console.log("Updating search with Selected tags: ", selectedTags);
+        updateSearch();
     }, [selectedTags]);
 
 
     React.useEffect(() => {
+
+        if(displayOnlyMode)
+            return;
 
         fetch(TAGS_API, { 'method': 'get' })
             .then(response => response.json())
@@ -46,7 +53,7 @@ export default function TagSidebar(props)
     }, []);
 
 
-    if (tags == null || tags.length === 0) {
+    if ((tags == null || tags.length === 0) && !displayOnlyMode) {
         return <p>Loading...</p>;
     }
 
@@ -81,6 +88,40 @@ export default function TagSidebar(props)
         });
     }
 
+    function addOnlySelectedTag()
+    {
+        const entry = tagSearch.current.value;
+        let contextTags = contextTagBox.current.querySelectorAll('tr');
+
+        let onlyElement = null;
+        for(let element of contextTags)
+        {
+            const label = element.getElementsByTagName('label').item(0);
+
+            if (!label)
+                continue;
+
+            if (label.textContent.includes(entry)) 
+            {
+                if(onlyElement != null)
+                    return -1;
+
+                onlyElement = element;
+            }
+        }
+
+        if(onlyElement == null)
+            return -1;
+
+        
+        const id = onlyElement.getAttribute("tag-id");
+
+        if(!id) 
+            return -1;
+
+        return id;
+    }
+
     function updateSearch() 
     {
         let s = selectedTags;
@@ -103,7 +144,28 @@ export default function TagSidebar(props)
         }
     }
 
-    function searchValueKeyDown(e) {
+    function onKeyEnter(e)
+    {
+        if(e.keyCode !== 13)
+            return;
+
+        const id = addOnlySelectedTag();
+
+        if(id === -1 && createTagButton)
+        {
+            createTagFromSearchBar();
+        }
+        else if(parseInt(id))
+        {
+            updateTagSelection({"tag_id" : parseInt(id)});
+        }
+    }
+
+    function searchValueKeyDown(e) 
+    {
+     
+        if(displayOnlyMode)
+            return;
         filterTags(tagSearch.current.value);
     }
 
@@ -119,6 +181,8 @@ export default function TagSidebar(props)
 
     async function createTagFromSearchBar(e)
     {
+        if(displayOnlyMode)
+            return;
         const tag = tagSearch.current.value.trim();
         const spl = tag.split(":", 2);
     
@@ -188,8 +252,11 @@ export default function TagSidebar(props)
     }
 
 
-    function updateTagSelection(tag, doNotupdateSearch)
+    function updateTagSelection(tag)
     {
+        if(displayOnlyMode)
+            return;
+
         if(selectedTags.includes(tag.tag_id))
         {
             setSelectedTags(old => old.filter(t => t != tag.tag_id));
@@ -198,11 +265,6 @@ export default function TagSidebar(props)
         {
             setSelectedTags(old => [...old, tag.tag_id]);
         }
-
-        if(doNotupdateSearch)
-            return;
-
-        updateSearch();
     }
 
 
@@ -221,7 +283,7 @@ export default function TagSidebar(props)
                                 {
                                     return tag.subtag;
                                 }
-                                return tag.namespace + tag.subtag;
+                                return tag.namespace + ":" + tag.subtag;
                             }()
                         }
                     </label>
@@ -235,7 +297,7 @@ export default function TagSidebar(props)
     return (
         <div className="px-4 h-full">
 
-            <div className="tagbox-container">
+{!displayOnlyMode &&            <div className="tagbox-container">
                 <header className="tagbox-header">
                     <div className="inline-flex">
 
@@ -261,14 +323,18 @@ export default function TagSidebar(props)
                         }    
                     </div>
 
-                    <div id="search-box">
-                <input onChange={searchValueKeyDown} ref={tagSearch} id="tag-search" type="text" placeholder="Tag Search..."></input>
+                     <div id="search-box">
+                <input 
+                onKeyUp={onKeyEnter}
+                onChange={searchValueKeyDown} ref={tagSearch} id="tag-search" type="text" placeholder="Tag Search...">
+
+                </input>
             </div>
                 </header>
 
 
-                <label className="text-custom-white font-bold">Selected Tags</label><br/>
-
+                   <label className="text-custom-white font-bold">Selected Tags</label>
+                    <br/>
             <table ref={selectedTagBox} className="tagbox">
                 <tbody>
                     {
@@ -288,9 +354,13 @@ export default function TagSidebar(props)
                             return getClickableTagHTML(tag, index);
                         }
                     })}
+
+
+
                     </tbody>
                 </table>
-            </div>
+
+            </div>}
 
           
 
@@ -301,7 +371,7 @@ export default function TagSidebar(props)
 
                 <table ref={contextTagBox} className="tagbox">
                     <tbody>
-                        {
+                        {!displayOnlyMode&&
                         tags.map((tag, index) => {
                             if(selectedTags && selectedTags.includes(tag.tag_id) ||
                             selectedTagIds && selectedTagIds.includes(tag.tag_id))
@@ -313,6 +383,11 @@ export default function TagSidebar(props)
                             return getClickableTagHTML(tag, index);
 
                         })}
+                        
+                    {displayOnlyMode && displayTags && displayTags.map((tag, index) => 
+                    {
+                        return getClickableTagHTML(tag, index);
+                    })}
                     </tbody>
                 </table>
             </div>

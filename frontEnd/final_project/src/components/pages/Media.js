@@ -34,14 +34,11 @@ export default function Default(props)
 
     React.useEffect(() => 
     {
-        // console.log(mediaData);
+        console.log(mediaData);
     }, [mediaData]);
 
     React.useEffect(() => 
     {
-
-        setSidebarVisible(!sidebarVisible)
-
         if (post === null || post <= 0)
         {
             alert("invalid url - no media loaded");
@@ -93,7 +90,14 @@ export default function Default(props)
         "searchCallback" : searchCallback,
         "hideSearchButton" : false,
         "searchButtonPressed" : searchButtonPressed,
+        "displayOnlyMode" : true,
+        "displayTags" : (mediaData && mediaData.files && mediaData.files[0]
+            && mediaData.files[0].tags ) ? mediaData.files[0]
+            && mediaData.files[0].tags  : []
+            
+        
     }
+    console.log(tagSidebarProps);
 
     function getMediaDisplayContainer(mediaJson)
     {

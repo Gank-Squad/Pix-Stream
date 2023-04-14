@@ -95,7 +95,6 @@ export default function VideoContainer(props)
         }
         else
         {
-            console.log("height uwu");
             // display height should = max_height
             const newWidth = getWidthForDesiredHeight(props.metaData.width, props.metaData.height, MAX_DIMENSIONS.preview_height);
 

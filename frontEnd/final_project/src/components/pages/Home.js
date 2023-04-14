@@ -18,10 +18,13 @@ export default function Default(props)
     const [sidebarVisible, setSidebarVisible] = React.useState(true);
 
 
+    React.useEffect(() => {
+        loadMedia();
+    }, []);
+
     React.useEffect(() => 
     {
         console.log("Updating media with new search " + JSON.stringify(search));
-        loadMedia();
     }, [search]);
 
 
@@ -32,8 +35,6 @@ export default function Default(props)
         const fetchData = {
             method : "GET"
         }
-
-        console.log("loading posts from api " + url + " " + JSON.stringify(fetchData));
 
         fetch(url, fetchData).then(resp => {
             if (resp.status === 200)
@@ -46,7 +47,6 @@ export default function Default(props)
                 return Promise.reject("server");
             }
         }).then(dataJson => {
-            console.log(dataJson);
             setMediaData(dataJson);
         }).catch(err => {
             if (err === "server") return
@@ -60,6 +60,7 @@ export default function Default(props)
         const url = formatStringB('/results?tags={IDS}', 
         search.map(elements => elements.tag_id).join(","))
     
+        console.log(url);
         window.location.href = url;
     }
 
@@ -119,7 +120,6 @@ export default function Default(props)
                                 console.log("invalid postId, doing nothing")
                                 return "";
                             }
-                            console.log("hash " + postId);
                             return '/media?post=' + postId;
                         }
 
