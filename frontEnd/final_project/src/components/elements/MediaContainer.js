@@ -3,8 +3,11 @@ import React from 'react'
 import { DISPLAY_TYPES,
     API_TEMPLATES,
     NO_MEDIA_IMG,
-    MAX_DIMENSIONS } from '../../constants';
+    MAX_DIMENSIONS,
+    MIME_IMG_CUTOFF } from '../../constants';
 import { formatStringB } from '../../requests';
+import VideoPlayer from './Video';
+
 
 export default function VideoContainer(props)
 {
@@ -54,7 +57,6 @@ export default function VideoContainer(props)
         if(link)
         {
             thumb_url = link;
-
         }
         else 
         {
@@ -118,16 +120,98 @@ export default function VideoContainer(props)
     
     function generalDisplay()
     {
-        return (<div></div>)
+        let media_url;
+        if(link)
+        {
+            media_url = link;
+        }
+        else 
+        {
+            media_url = formatStringB(API_TEMPLATES.get_file.url, hash);
+        }
+
+        const dx = props.metaData.width;
+        const dy = props.metaData.height;
+
+        if (dx > dy)
+        {
+            // display width should = max_width
+            // make it a fixed width and height for consistent tiling
+
+            // it is a video
+            if (props.metaData.mime_int > MIME_IMG_CUTOFF)
+            {
+                // const hlsUrl = link ? link : "";
+                const caption = "this is the caption";
+                return (
+                    <div className={"inline-block w-["+ MAX_DIMENSIONS.general_width + 
+                    "px] h-[" + MAX_DIMENSIONS.general_height + "px] flex justify-center items-center"} loading="lazy">
+                        <VideoPlayer hlsUrl={media_url} hlsDomain={hlsDomain}/>
+                        <div className="text-custom-white caption">{caption}</div>
+                    </div>
+                )
+            }
+            return (
+                <div className={"inline-block w-["+ MAX_DIMENSIONS.general_width + 
+                    "px] h-[" + MAX_DIMENSIONS.general_height + "px] flex justify-center items-center"}>
+                    <img
+                        // className="border-dashed border-2 border-white"
+                        ref={thumb}
+                        src={media_url}
+                        width={MAX_DIMENSIONS.general_width}
+                        onError={imgError}
+                        loading="lazy"
+                        style={{ objectFit: "contain" }}
+                    />
+                  {/* <div className="text-custom-white caption">caption</div> */}
+                </div>
+              );
+        }
+        else
+        {
+            // display height should = max_height
+            const newWidth = getWidthForDesiredHeight(props.metaData.width, props.metaData.height, MAX_DIMENSIONS.general_height);
+            // it is a video
+            if (props.metaData.mime_int > MIME_IMG_CUTOFF)
+            {
+                // const hlsUrl = link ? link : "";
+                const caption = "this is the caption";
+                return (
+                    <div className={"inline-block w-["+ newWidth + 
+                    "px] h-[" + MAX_DIMENSIONS.general_height + "px] flex justify-center items-center"} loading="lazy">
+                        <VideoPlayer hlsUrl={media_url} hlsDomain={hlsDomain}/>
+                        <div className="text-custom-white caption">{caption}</div>
+                    </div>
+                )
+            }
+            return (
+                <div className={"inline-block w-["+ MAX_DIMENSIONS.general_width + 
+                    "px] h-[" + MAX_DIMENSIONS.general_height + "px] flex justify-center items-center"}>
+                    <img
+                        // className="border-dashed border-2 border-white"
+                        ref={thumb}
+                        src={media_url}
+                        width={newWidth}
+                        onError={imgError}
+                        loading="lazy"
+                        style={{ objectFit: "contain" }}
+                    />
+                  {/* <div className="text-custom-white caption">caption</div> */}
+                </div>
+              );
+        }
     }
 
     function fullDisplay()
     {
+        console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+
         return (<div></div>)
     }
 
     function getCorrectDisplay(displayType)
     {
+        console.log("displayType:"+displayType)
         switch (displayType)
         {
             case DISPLAY_TYPES.thumb_preview:
@@ -141,7 +225,7 @@ export default function VideoContainer(props)
         }
     }
 
-    return getCorrectDisplay();
+    return getCorrectDisplay(displayType);
 
     // function imgError(image) 
     // {

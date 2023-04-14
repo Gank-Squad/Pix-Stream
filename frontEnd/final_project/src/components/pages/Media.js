@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { API_TEMPLATES, ROUTES } from '../../constants';
+import { API_TEMPLATES, ROUTES, DISPLAY_TYPES } from '../../constants';
 import { formatStringB } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
 import ImageContainer from '../elements/Image';
+import MediaContainer from '../elements/MediaContainer';
 import VideoPlayer from '../elements/Video';
 import HeaderBar from '../elements/HeaderBar';
 
@@ -33,11 +34,14 @@ export default function Default(props)
 
     React.useEffect(() => 
     {
-        console.log(mediaData);
+        // console.log(mediaData);
     }, [mediaData]);
 
     React.useEffect(() => 
     {
+
+        setSidebarVisible(!sidebarVisible)
+
         if (post === null || post <= 0)
         {
             alert("invalid url - no media loaded");
@@ -45,7 +49,7 @@ export default function Default(props)
         }
         
         const url = formatStringB(API_TEMPLATES.get_post.url, post);
-        console.log(url);
+
         fetch(url, {method:"GET"}).then(resp =>
             {
                 if (resp.status === 200)
@@ -97,23 +101,25 @@ export default function Default(props)
             return;
 
         const props = {
-            "image" : formatStringB(API_TEMPLATES.get_file.url, mediaJson.files[0].hash),
-            "hlsUrl": formatStringB(API_TEMPLATES.get_file.url, mediaJson.files[0].hash),
-            "caption": mediaJson.title,
-            "style" : {
-                display: 'inline-block',
-                margin: '20px',
-                border: '1px solid white',
-                verticalAlign : "bottom",
+            "hash" : mediaData.files[0].hash,
+            "displayType" : DISPLAY_TYPES.general_display,
+            metaData : {
+                id : mediaData.post_id.id,
+                title : mediaData.title,
+                description : mediaData.description,
+                created_at : mediaData.created_at,
+                mime_int : mediaData.files[0].mime_int,
+                duration : mediaData.files[0].duration,
+                width : mediaData.files[0].width,
+                height : mediaData.files[0].height,
             }
-        }
-                            
-        if(mediaJson.files[0].mime_int >= 20)
-        {
-            return <VideoPlayer{...props}></VideoPlayer>;
-        }
-        
-        return <ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer>;
+        };
+
+        return (
+            <div>
+                <MediaContainer {...props} />
+            </div>
+        )
     }
 
     if(mediaData == null)
