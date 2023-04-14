@@ -14,7 +14,7 @@ export default function Default(props)
     const page = parseInt(params.get('page')) || 1;
     const post = params.get("post") || 0;
 
-    const [sidebarVisible, setSidebarVisible] = React.useState(false);
+    const [sidebarVisible, setSidebarVisible] = React.useState(true);
 
     // if there is no post, redirect to home page isntead of 404ing or displaying empty media page
     if(post <= 0)
@@ -129,6 +129,62 @@ export default function Default(props)
     {
         return <div>Loading...</div>
     }
+    function humanFileSize(bytes, si=false, dp=1) {
+        const thresh = si ? 1000 : 1024;
+      
+        if (Math.abs(bytes) < thresh) {
+          return bytes + ' B';
+        }
+      
+        const units = si 
+          ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] 
+          : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+        let u = -1;
+        const r = 10**dp;
+      
+        do {
+          bytes /= thresh;
+          ++u;
+        } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+      
+      
+        return bytes.toFixed(dp) + ' ' + units[u];
+      }
+      
+    function msToTime(s) 
+    {
+        if(s <= 0)
+        return "N/A";
+        var ms = s % 1000;
+        s = (s - ms) / 1000;
+        var secs = s % 60;
+        s = (s - secs) / 60;
+        var mins = s % 60;
+        var hrs = (s - mins) / 60;
+      
+        hrs = hrs.toString()
+        mins = mins.toString()
+        secs = secs.toString()
+
+        if(hrs.length < 2)
+            hrs = "0" + hrs;
+
+        if(mins.length < 2)
+            mins = "0" + mins;
+
+        if(secs.length < 2)
+            secs = "0" + secs;
+
+        if(hrs === "00" && mins === "00")
+            return secs + " seconds";
+
+        if(hrs === "00")
+            return mins + " minutes & " + secs + " seconds";
+
+        return hrs + ':' + mins + ':' + secs;
+      }
+    
+
     return (
 <div className="flex flex-col h-screen">
         <HeaderBar toggleSidebarVisibility={()=>setSidebarVisible(!sidebarVisible)} />
@@ -147,18 +203,29 @@ export default function Default(props)
 
 
             <main className="flex-1 flex-wrap">
+            <center>
+                {getMediaDisplayContainer(mediaData)}
 
-                
-            <table className="text-custom-white">
+                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 bg-button-depressed m-24 px-8 pt-2 pb-4 rounded-3xl">
+                <table className="text-custom-white">
                     <tbody>
-                        <tr><td><p>{mediaData.title}</p></td></tr>
+                <p className="text-xl font-bold text-custom-white">{mediaData.title}</p>
                         <tr><td>{mediaData.description}</td></tr>
+                        <br/>
+                        {mediaData && mediaData.files && mediaData.files.map((file, index) => {
+                            return <div>
+                                <tr><td>SHA256: {file.hash}</td></tr>
+                                <tr><td>Size: {humanFileSize(file.file_size)}</td></tr>
+                                <tr><td>Duration: {msToTime(file.duration)}</td></tr>
+                                <tr><td>Width: {file.width}</td></tr>
+                                <tr><td>Height: {file.height}</td></tr>
+                            </div>
+                        })}
                     </tbody>
                 </table>
-            
+                </div>
+                </center>        
 
-                {getMediaDisplayContainer(mediaData)}
-                
             </main>
         </div>
 </div>
