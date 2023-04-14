@@ -213,48 +213,30 @@ export default function Default(props)
 
 
             <main className="flex-1 flex-wrap">
-            <table className="py-8 static inline-block">
-                <thead>
-                    <tr>
-                        <td>
-                            
-                   {
-                    function(){
+                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 bg-button-depressed m-24 px-8 pt-2 pb-4 rounded-3xl">
+                    <table className="py-8 static inline-block">
 
-                        if(displayProgress === "" || !displayProgress)
-                        {
-                            return ;
-                        }
-                        return <p>{displayProgress}</p>;
-                    }()
-                   }
-                        </td>
+                        <tbody>
+                    <tr><td><p className="text-xl font-bold">Title</p></td></tr>
+                    <tr><td><input type="text" placeholder="Title" className="w-[512px] h-8 text-xl" ref={title}/></td></tr>
+                    
+                    <tr><td><p className="text-xl font-bold pt-4">Description (optional)</p></td></tr>
+                    <tr><td><textarea placeholder="Description" className="w-[512px] h-32 text-lg" ref={description}/></td></tr>
+                    
+                    <tr><td><p className="text-xl font-bold pt-4">Upload Media</p></td></tr>
+                    <tr><td><input className="text-custom-white" type="file" accept="image/*,video/*" ref={mediaFile} onChange={generatePreview}/></td></tr>
+
+                    <tr><td>
+                        <button 
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+                        onClick={beginUpload}>Upload Media
+                        </button></td>
                     </tr>
-                </thead>
-                    <tbody>
-                <tr><td><p className="text-xl font-bold">Title</p></td></tr>
-                <tr><td><input type="text" placeholder="Title" className="w-[512px] h-8 text-xl" ref={title}/></td></tr>
-                
-                <tr><td><p className="text-xl font-bold pt-4">Description (optional)</p></td></tr>
-                <tr><td><textarea placeholder="Description" className="w-[512px] h-32 text-lg" ref={description}/></td></tr>
-                
-                <tr><td><p className="text-xl font-bold pt-4">Upload Media</p></td></tr>
-                <tr><td><input className="text-custom-white" type="file" multiple="multiple" accept="image/*,video/*" ref={mediaFile} onChange={generatePreview}/></td></tr>
+                    </tbody>
+                    </table>
 
-                <tr><td><p className="text-xl font-bold pt-4">Upload Subtitle Track</p></td></tr>
-                <tr><td><input className="text-custom-white pb-4" type="file" accept=".srt" ref={subFile}/></td></tr>
-
-                <tr><td>
-                    <button 
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
-                    onClick={beginUpload}>Upload Media
-                    </button></td>
-                </tr>
-                </tbody>
-                </table>
-
-                <div >
-{
+                    <div >
+                    {
                     files.map((file, index) => {
 
                         const props = {
@@ -286,6 +268,23 @@ export default function Default(props)
 
 
                 </div>
+                <div className="col-span-full text-center">
+                    {
+                        function(){
+
+                            if(displayProgress === "" || !displayProgress)
+                            {
+                                return ;
+                            }
+                            return <p>{displayProgress}</p>;
+                        }()
+                    }
+                </div>
+
+                </div>
+            
+
+                
                 
                 
             </main>

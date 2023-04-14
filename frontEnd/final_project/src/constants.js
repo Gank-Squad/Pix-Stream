@@ -63,6 +63,7 @@ export const API_TEMPLATES = {
     add_tag_to_file : { url: `${SERVER_HOST}files/{hash}/tag`, method: "POST" },
     upload_file     : { url: `${SERVER_HOST}files/upload/`   , method: "POST" },
     upload_post     : { url: `${SERVER_HOST}posts/upload/`   , method: "POST" },
+    create_tag      : { url: `${SERVER_HOST}tags/create/`   , method: "POST" },
 
     get_files_with_tags    : { url: `${SERVER_HOST}tags/files/` , method: "POST" },
     get_posts_with_tags    : { url: `${SERVER_HOST}tags/posts/` , method: "POST" },
