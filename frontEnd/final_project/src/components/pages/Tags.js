@@ -118,26 +118,23 @@ export default function Default(props)
     }
 
     return (
-        <div className="flex flex-col h-screen">
+<div className="flex flex-col h-screen">
+  <HeaderBar toggleSidebarVisibility={() => setSidebarVisible(!sidebarVisible)} />
+  
+  <div className="flex flex-row flex-1 overflow-y-auto">
+    {sidebarVisible && (
+      <nav
+        className="flex-none group h-full w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
+        data-te-sidenav-init
+        data-te-sidenav-hidden="false"
+      >
+        <ul className="relative m-0 h-full list-none px-[0.2rem]" data-te-sidenav-menu-ref>
+          <TagSidebar {...tagSidebarProps} />
+        </ul>
+      </nav>
+    )}
 
-                {/* create header */}
-                <HeaderBar toggleSidebarVisibility={()=>setSidebarVisible(!sidebarVisible)} />
-                <div className="flex flex-row flex-1">
-
-                    {/* display sidebar if its meant to be visible */}
-                    {sidebarVisible &&
-                    <nav
-                        className="group  top-0 left-0 h-screen w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
-                        data-te-sidenav-init
-                        data-te-sidenav-hidden="false"
-                        >
-                        <ul className="relative m-0 list-none px-[0.2rem]" data-te-sidenav-menu-ref>
-                            <TagSidebar {...tagSidebarProps} />
-                        </ul>
-                    </nav>}
-
-
-                    <main className="flex-1 flex-wrap">
+    <main className="flex-1 flex-wrap overflow-y-auto">
 
                         {/* Create Tag text boxes, button and title, set up to resize dynamically */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-8 bg-button-depressed m-24 px-8 pt-2 pb-4 rounded-3xl">

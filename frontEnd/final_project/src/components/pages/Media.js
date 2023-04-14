@@ -187,48 +187,64 @@ export default function Default(props)
 
     return (
 <div className="flex flex-col h-screen">
-        <HeaderBar toggleSidebarVisibility={()=>setSidebarVisible(!sidebarVisible)} />
-        <div className="flex flex-row flex-1">
+  <HeaderBar toggleSidebarVisibility={() => setSidebarVisible(!sidebarVisible)} />
+  
+  <div className="flex flex-row flex-1 overflow-y-auto">
+    {sidebarVisible && (
+      <nav
+        className="flex-none group h-full w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
+        data-te-sidenav-init
+        data-te-sidenav-hidden="false"
+      >
+        <ul className="relative m-0 h-full list-none px-[0.2rem]" data-te-sidenav-menu-ref>
+          <TagSidebar {...tagSidebarProps} />
+        </ul>
+      </nav>
+    )}
 
-            {sidebarVisible &&
-            <nav
-                className="group  top-0 left-0 h-screen w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
-                data-te-sidenav-init
-                data-te-sidenav-hidden="false"
-                >
-                <ul className="relative m-0 list-none px-[0.2rem] " data-te-sidenav-menu-ref>
-                    <TagSidebar {...tagSidebarProps} />
-                </ul>
-            </nav>}
+    <main className="flex-1 flex-wrap overflow-y-auto">
+      <center>
+        {getMediaDisplayContainer(mediaData)}
 
-
-            <main className="flex-1 flex-wrap">
-            <center>
-                {getMediaDisplayContainer(mediaData)}
-
-                <div className="mx-8 text-ellipsis truncate grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 bg-button-depressed px-8 pt-2 pb-4 rounded-3xl">
-                <table className="text-custom-white">
-                    <tbody>
-                <p className="text-xl font-bold text-custom-white">{mediaData.title}</p>
-                        <tr><td>{mediaData.description}</td></tr>
-                        <br/>
-                        {mediaData && mediaData.files && mediaData.files.map((file, index) => {
-                            return <div>
-                                <tr><td><span>SHA256: {file.hash}</span></td></tr>
-                                <tr><td>Size: {humanFileSize(file.file_size)}</td></tr>
-                                <tr><td>Duration: {msToTime(file.duration)}</td></tr>
-                                <tr><td>Width: {file.width}</td></tr>
-                                <tr><td>Height: {file.height}</td></tr>
-                            </div>
-                        })}
-                    </tbody>
-                </table>
-                </div>
-                </center>        
-
-            </main>
+        <div className="mx-8 text-ellipsis truncate grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 bg-button-depressed px-8 pt-2 pb-4 rounded-3xl">
+          <table className="text-custom-white">
+            <tbody>
+              <p className="text-xl font-bold text-custom-white">{mediaData.title}</p>
+              <tr>
+                <td>{mediaData.description}</td>
+              </tr>
+              <br />
+              {mediaData &&
+                mediaData.files &&
+                mediaData.files.map((file, index) => {
+                  return (
+                    <div>
+                      <tr>
+                        <td>
+                          <span>SHA256: {file.hash}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Size: {humanFileSize(file.file_size)}</td>
+                      </tr>
+                      <tr>
+                        <td>Duration: {msToTime(file.duration)}</td>
+                      </tr>
+                      <tr>
+                        <td>Width: {file.width}</td>
+                      </tr>
+                      <tr>
+                        <td>Height: {file.height}</td>
+                      </tr>
+                    </div>
+                  );
+                })}
+            </tbody>
+          </table>
         </div>
+      </center>
+    </main>
+  </div>
 </div>
-
     )
 }
