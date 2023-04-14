@@ -119,40 +119,46 @@ export default function Default(props)
                 setProgress(`${uploadFile}: uploaded ${loaded} / ${totalSize} bytes`);
             }
 
+            let pots_id = -1;
             await postData(API_TEMPLATES.upload_post.url, data, {}, progress)
             .then(response => JSON.parse(response.response))
             .then(json => 
             {
                 console.log(json);
 
+                pots_id = json.post_id;
                 if(json.files.length === 0)
                 {
                     console.log("Upload responded with 0 files json, skipping adding tags");
                     return;
                 }
+
+
                 // add tags to files/posts
                 for(const sub_json of json.files)
                 {
                     const url = formatStringB(API_TEMPLATES.add_tag_to_file.url, sub_json.hash);
                     console.log(url);
-                    fetch(url, {
+                    return fetch(url, {
                         method: "post",
                         "headers" : {
                             "Content-Type" : "application/json"
                         },
                         body:  JSON.stringify(searchItems)
-                    }).then(response => {
-                        console.log("Adding tag status " + response.status);
-                    })
-                }
-                
-                if(json.post_id)
-                {
-                    window.location.href = '/media?post=' + json.post_id;
-                }
-
+                    });
+                }})
+                .then(response => {
+                    console.log("Adding tag status " + response.status);
                 })
+                
                 .catch(err => console.log(err));
+
+
+                            
+            if(pots_id !== -1)
+            {
+                window.location.href = '/media?post=' + pots_id;
+            }
         }
     }
 
