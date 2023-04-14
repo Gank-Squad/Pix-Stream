@@ -146,6 +146,11 @@ export default function Default(props)
                     })
                 }
                 
+                if(json.post_id)
+                {
+                    window.location.href = '/media?post=' + json.post_id;
+                }
+
                 })
                 .catch(err => console.log(err));
         }

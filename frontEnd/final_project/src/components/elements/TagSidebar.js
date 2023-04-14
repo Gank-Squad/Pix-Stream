@@ -159,6 +159,8 @@ export default function TagSidebar(props)
         else if(parseInt(id))
         {
             updateTagSelection({"tag_id" : parseInt(id)});
+            tagSearch.current.value = "";
+            filterTags("");
         }
     }
 
@@ -284,21 +286,21 @@ export default function TagSidebar(props)
 
     function getClickableTagHTML(tag, index)
     {
+        let display =tag.subtag;
+        if(tag.namespace !== "")
+        {
+            display = tag.namespace + ":" + tag.subtag; 
+        }
+
         return <tr key={index} index={index} tag-id={tag.tag_id}>
         <td>
             <div className="tag">
                 <i className="fa fa-tag"></i>
-                <button onClick={(e) => updateTagSelection(tag)} 
+                <button title={display} onClick={(e) => updateTagSelection(tag)} 
                 className="text-custom-white text-ellipsis hover:bg-button-depressed truncate rounded px-2 w-48 text-left">
                     <label>
                         {
-                            function(){
-                                if(tag.namespace === "")
-                                {
-                                    return tag.subtag;
-                                }
-                                return tag.namespace + ":" + tag.subtag;
-                            }()
+                            display
                         }
                     </label>
                 </button>                                        
