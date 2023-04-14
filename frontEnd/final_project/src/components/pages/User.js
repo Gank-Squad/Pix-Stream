@@ -16,9 +16,10 @@ export default function Default(props)
 
     return (
         <div>
-
-            User profile page
-
+            <p>
+                User profile page, no planned functionality
+            </p>
+            <a href={"/home"}><p className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-40">Return Home</p></a>
         </div>
     )
 }

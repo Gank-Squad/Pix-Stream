@@ -4,14 +4,20 @@ export default function HeaderBar({ toggleSidebarVisibility })
 {
     function redirect_tags()
     {
+        // no point in refreshing a page thats already loaded and wont change
+        if (window.location.href.includes("/tags"))
+            return;
         window.location.href = '/tags';
     }
     function redirect_upload()
     {
+        if (window.location.href.includes("/upload"))
+            return;
         window.location.href = '/upload';
     }
     function redirect_home()
     {
+        // allow refresh of this in case we ever make backend give random stuff
         window.location.href = '/home';
     }
 

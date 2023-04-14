@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { MAX_HEIGHT, MAX_WIDTH, API_ENDPOINTS, API_TEMPLATES, ROUTES,DISPLAY_TYPES } from '../../constants';
+import { MAX_WIDTH, API_TEMPLATES, ROUTES, DISPLAY_TYPES } from '../../constants';
 import { formatStringB, addQueryParams } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
 import HeaderBar from '../elements/HeaderBar';
@@ -96,56 +96,11 @@ export default function Default(props)
         setSearch(searchItems);
     }
 
-    function redirect_tags()
-    {
-        window.location.href = '/tags';
-    }
-    function redirect_upload()
-    {
-        window.location.href = '/upload';
-    }
-    function redirect_home()
-    {
-        window.location.href = '/home';
-    }
-
     const tagSidebarProps = {
         "searchCallback" : searchCallback,
         "hideSearchButton" : false,
         "searchButtonPressed" : searchButtonPressed,
         "selectedTagIds" : tags_full
-    }
-
-    const sidebar = React.useRef("");
-    const hamburger = React.useRef("");
-    const main = React.useRef("");
-
-    function redirect_media(hash)
-    {
-        if (hash === null || hash === "")
-        {
-            console.log("hash is empty, doing nothing")
-            return;
-        }
-        console.log("hash " + hash);
-        window.location.href = '/media?hash=' + hash;
-    }
-
-    function toggleSidebarVisibility()
-    {
-        // ik this is really bad code, and now there isn't a css animation, but I couldn't get it to work
-        if (sidebar.current.getAttribute("data-te-sidenav-hidden") == "false")
-        {
-            sidebar.current.setAttribute("data-te-sidenav-hidden", "true");
-            hamburger.current.setAttribute("class", "bg-blue-700 hover:bg-blue-500 text-white font-bold py-2 px-4 border border-blue-700 rounded-l");
-            main.current.setAttribute("class", "overflow-y-scroll py-12 px-12")
-        }
-        else
-        {
-            sidebar.current.setAttribute("data-te-sidenav-hidden", "false");
-            hamburger.current.setAttribute("class", "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l");
-            main.current.setAttribute("class", "overflow-y-scroll py-12 px-72")
-        }
     }
 
     return (
@@ -168,63 +123,6 @@ export default function Default(props)
             <main className="flex-1 flex-wrap">
 
                 <p className="text-xl font-bold text-custom-white">Displaying search results:</p>
-
-
-                    {/* 
-
-                    [
-                    {
-                    "post_id": 1,
-                    "title": "Shondo looking cute today!!!",
-                    "description": "Just look at my Imouto Wifee!!! <3 <#",
-                    "created_at": 1681030933270,
-                    "files": [
-                    {
-                    "tags": null,
-                    "hash_id": 1,
-                    "mime": "image/jpg",
-                    "mime_int": 1,
-                    "file_size": 143885,
-                    "width": 850,
-                    "height": 1275,
-                    "duration": 0,
-                    "has_audio": false,
-                    "hash": "962b5042569c658beb15b16b257a290847e9ee71d3ecfa4ccf732512c16f7348"
-                    }
-                    ]
-                    }
-                    ]
-                    */}
-
-
-                    {/* {mediaData.map((json, index) => 
-                    {
-                        console.log(json);
-                        const props = {
-                            "image" : formatStringB(API_TEMPLATES.get_thumbnail.url, json.files[0].hash),
-                            "caption": `PostID  ${json.post_id}    ${json.title}           Created On ${json.created_at}       Description ${json.description}`,
-                            "style" : {
-                                display: 'inline-block',
-                                width: '200px',
-                                'margin': '20px',
-                                border: '1px solid white',
-                                "verticalAlign" : "bottom",
-                            }
-                        }
-                        
-                        function redirect_media(hash)
-                        {
-                            if (hash === null || hash === "")
-                            {
-                                console.log("hash is empty, doing nothing")
-                                return "";
-                            }
-                            console.log("post " + hash);
-                            return '/media?post=' + hash;
-                        }
-
-                        return <a key={index}  href={redirect_media(json.post_id)}><ImageContainer {...props} imgError={e => console.log("image errr")}></ImageContainer></a>;
-                    })} */}
 
                         { mediaData.map((json, index) => {
 

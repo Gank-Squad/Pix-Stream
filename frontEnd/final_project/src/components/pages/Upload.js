@@ -4,8 +4,6 @@ import TagSidebar from '../elements/TagSidebar';
 import { API_ENDPOINTS, API_TEMPLATES, DISPLAY_TYPES } from '../../constants';
 
 import { formatStringB } from '../../requests';
-import ImageContainer from '../elements/Image';
-import VideoPlayer from '../elements/Video';
 import HeaderBar from '../elements/HeaderBar';
 import MediaContainer from '../elements/MediaContainer';
 

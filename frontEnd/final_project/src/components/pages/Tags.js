@@ -1,17 +1,12 @@
 import React from 'react';
 
-import { API_ENDPOINTS, API_TEMPLATES } from '../../constants';
+import { API_ENDPOINTS } from '../../constants';
 import TagSidebar from '../elements/TagSidebar';
-import ImageContainer from '../elements/Image';
 import HeaderBar from '../elements/HeaderBar';
-import { formatStringB, addQueryParams } from '../../requests';
 
 export default function Default(props)
 {
     const { cookies } = props;
-
-    // const params = new URLSearchParams(window.location.search);
-    // const page = parseInt(params.get('page')) || 1;
 
     const API = API_ENDPOINTS.search.get_files_with_tags;
 
@@ -34,9 +29,9 @@ export default function Default(props)
     }, [])
 
 
-    function loadTags()
+    async function loadTags()
     {
-        fetch(
+        await fetch(
             API_ENDPOINTS.media.get_tags, {method:"GET"}
         ).then(resp =>{
             if (resp.status ===200)
