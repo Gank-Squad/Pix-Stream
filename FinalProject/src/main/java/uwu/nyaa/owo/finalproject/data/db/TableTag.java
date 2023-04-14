@@ -79,6 +79,11 @@ public class TableTag
     }
 
 
+    /**
+     * Inserts or selects the given tag
+     * @param fullTag The tag to insert or select
+     * @return The tag id of any existing tag or the id of a newly created tag, -1 if error 
+     */
     public static int insertOrSelectTag(String fullTag)
     {
         try (Connection c = DatabaseConnection.getConnection())
@@ -92,6 +97,13 @@ public class TableTag
 
         return -1;
     }
+    
+    
+    /**
+     * Inserts or selects the given tag
+     * @param fullTag The tag to insert or select
+     * @return The tag id of any existing tag or the id of a newly created tag, -1 if error 
+     */
     public static int insertOrSelectTag(String fullTag, Connection c) throws NullPointerException, SQLException
     {
         int tag_id = getTagId(fullTag, c);
@@ -101,6 +113,108 @@ public class TableTag
         
         return insertTag(fullTag, c);
     }
+   
+    
+    /**
+     * Inserts and selects many tags
+     * @param tags The list of tags to insert or select
+     * @return A list of FullTag objects, or an empty list
+     */
+    public static List<FullTag> insertAndSelectMany(List<String> tags)
+    {
+        try(Connection c = DatabaseConnection.getConnection())
+        {
+            return insertAndSelectMany(tags, c);
+        }
+        catch (SQLException e) 
+        {
+            Logger.warn(e, "Failed to insertAndSelectMany tags {}", tags);
+        }
+        
+        return new LinkedList<>();
+    }
+   
+    /**
+     * Inserts and selects many tags
+     * @param tags The list of tags to insert or select
+     * @return A list of FullTag objects, or an empty list
+     */
+    public static List<FullTag> insertAndSelectMany(List<String> tags, Connection c) throws SQLException
+    {
+        LinkedList<FullTag> return_tags = new LinkedList<>();
+        
+        for(String tag : tags)
+        {
+            int tag_id = insertOrSelectTag(tag, c);
+            
+            if(tag_id == -1)
+                continue;
+            
+            FullTag t = TableTag.getTag(tag_id, c);
+            
+            if(t != null)
+                return_tags.add(t);
+        }
+        
+        return return_tags;
+    }
+    
+    /**
+     * Gets a FullTag object for the given tag id
+     * @param tag_id The id of the tag to get
+     * @return The tag id or null
+     */
+    public static FullTag getTag(int tag_id)
+    {
+        try(Connection c = DatabaseConnection.getConnection())
+        {
+            return getTag(tag_id, c);
+        }
+        catch (SQLException e) 
+        {
+            Logger.warn(e, "Error while getting tag with id {}", tag_id);
+        }
+        return null;
+    }
+    
+    /**
+     * Gets a FullTag object for the given tag id
+     * @param tag_id The id of the tag to get
+     * @return The tag id or null
+     */
+    public static FullTag getTag(int tag_id, Connection c) throws SQLException
+    {
+        LinkedList<FullTag> items = new LinkedList<>();
+
+        final String SQL = "SELECT tbl_tag.tag_id, tbl_tag.namespace_id, tbl_tag.subtag_id, tbl_namespace.namespace, tbl_subtag.subtag " +
+                "FROM tbl_tag " +
+                "JOIN tbl_namespace ON tbl_tag.namespace_id = tbl_namespace.namespace_id " +
+                "JOIN tbl_subtag ON tbl_tag.subtag_id = tbl_subtag.subtag_id " +
+                "WHERE tbl_tag.tag_id = ?";
+
+        try (PreparedStatement pstmt = c.prepareStatement(SQL))
+        {
+
+            pstmt.setInt(1, tag_id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next())
+            {
+                FullTag a = new FullTag();
+
+                a.tag_id = rs.getInt(1);
+                a.namespace_id = rs.getInt(2);
+                a.subtag_id = rs.getInt(3);
+                a.namespace = rs.getString(4);
+                a.subtag = rs.getString(5);
+
+                return a;
+            }
+        }
+        return null;
+    }
+    
+    
     /**
      * gets the id for the given tag or -1
      * @param fulltag The tag to search
@@ -253,6 +367,11 @@ public class TableTag
         return -1;
     }
     
+    /**
+     * Gets a list of TagFileCount for the given list of tag ids
+     * @param tag_id The list of tag ids to search
+     * @return A list of TagFileCount object or an empty list
+     */
     public static List<TagFileCount> getFileCount(List<Integer> tag_id)
     {
         LinkedList<TagFileCount> items = new LinkedList<>();
@@ -274,6 +393,12 @@ public class TableTag
         
         return items;
     }
+    
+    /**
+     * Gets a list of TagFileCount for the given list of tag ids
+     * @param tag_id The int[] of tag ids to search
+     * @return A list of TagFileCount object or an empty list
+     */
     public static List<Integer> getFileCount(int[] tag_id, Connection c)
     {
         LinkedList<Integer> items = new LinkedList<>();

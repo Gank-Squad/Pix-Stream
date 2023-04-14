@@ -1,5 +1,6 @@
 package uwu.nyaa.owo.finalproject.api.endpoints;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.tinylog.Logger;
@@ -78,20 +79,72 @@ public class APITags
     }
     
     
-    @GET
-    @Path("/ass")
-    public Response associate(@QueryParam("limit") int limit) 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/create")
+    public Response createTags(String json)
     {
-        if (limit <= 0 || limit > 200)
+        List<FullTag> tags;
+        try
         {
-            limit = 200;
+            TypeFactory typeFactory = jsonMapper.getTypeFactory();
+            tags = jsonMapper.readValue(json, typeFactory.constructCollectionType(List.class, FullTag.class));
+        }
+        catch (RuntimeException e)
+        {
+            Logger.error(e);
+            return Response.status(500).build();
+        }
+        catch (JsonMappingException e)
+        {
+            Logger.warn(e, "Failed to map json in getFilesWithTags, ignoring");
+            return Response.status(400).build();
+        }
+        catch (JsonProcessingException e)
+        {
+            Logger.warn(e, "Failed to process json in getFilesWithTags, ignoring");
+            return Response.status(400).build();
+        }
+        
+
+        List<String> create = tags.stream().filter(ft -> 
+        {
+            return !(ft.subtag == null || ft.namespace == null || ft.subtag.isEmpty() || ft.subtag.isBlank());
+        })
+        .map(ft -> {
+            if(ft.namespace.strip().equals(""))
+            {
+                return ft.subtag;
+            }
+            
+            return ft.namespace + ":" + ft.subtag;
+        }).toList();
+        
+        if(create.size() == 0)
+        {
+            return Response.status(400, "Given tags was empty when parsed").build();
+        }
+        
+        Logger.debug("creating tags {}", create);
+        
+        List<FullTag> items = TableTag.insertAndSelectMany(create);
+
+        if(items.size() == 0)
+        {
+            return  Response.status(500, "oboy, server trouble").build();
         }
 
-        TableHashTag.insertRandomAccociations(limit);
-        
-        return Response.status(200).build();    
+        try 
+        {
+            return Response.status(200).entity(this.jsonMapper.writeValueAsString(items)).build();    
+        }
+        catch (JsonProcessingException e) 
+        {
+            Logger.error(e, "Error in createTags while processing json");
+            return Response.status(500).build();
+        }
     }
-
 
 
     @POST

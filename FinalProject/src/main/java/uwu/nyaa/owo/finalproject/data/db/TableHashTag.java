@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.StringJoiner;
 
 import org.tinylog.Logger;
 
