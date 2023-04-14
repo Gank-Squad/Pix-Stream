@@ -3,9 +3,7 @@ import React from 'react';
 import { API_TEMPLATES, ROUTES, DISPLAY_TYPES } from '../../constants';
 import { formatStringB } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
-import ImageContainer from '../elements/Image';
 import MediaContainer from '../elements/MediaContainer';
-import VideoPlayer from '../elements/Video';
 import HeaderBar from '../elements/HeaderBar';
 
 export default function Default(props)
@@ -18,6 +16,7 @@ export default function Default(props)
 
     const [sidebarVisible, setSidebarVisible] = React.useState(true);
 
+    // if there is no post, redirect to home page isntead of 404ing or displaying empty media page
     if(post <= 0)
     {
         window.location.href = ROUTES.home;
@@ -32,11 +31,14 @@ export default function Default(props)
         console.log(`Cookies from props: ${cookies}`);
     }, [cookies, page]);
 
+    // any time there is a change to mediaData log it
     React.useEffect(() => 
     {
         console.log(mediaData);
     }, [mediaData]);
 
+
+    // on page load, fetch data from api and set media data
     React.useEffect(() => 
     {
         if (post === null || post <= 0)
@@ -63,6 +65,7 @@ export default function Default(props)
                 }
             }
         ).then(dataJson => {
+            // set media data
             setMediaData(dataJson);
         }).catch(err => {
             if (err === "server") return
@@ -70,14 +73,13 @@ export default function Default(props)
         })
     }, []);
 
-
+    // redirect to search results page with correct tags
     function searchButtonPressed()
     {
-        let url = '/results?tags=';
-        const ids = search.map(elements => ({tag_id : elements.tag_id}));
-
-        ids.forEach(id => (url += id.tag_id + ","));
-
+        const url = formatStringB('/results?tags={IDS}', 
+        search.map(elements => elements.tag_id).join(","))
+    
+        console.log(url);
         window.location.href = url;
     }
 
@@ -86,18 +88,15 @@ export default function Default(props)
         setSearch(searchItems);
     }
 
+    // props for sidebar
     const tagSidebarProps = {
         "searchCallback" : searchCallback,
         "hideSearchButton" : false,
         "searchButtonPressed" : searchButtonPressed,
         "displayOnlyMode" : true,
-        "displayTags" : (mediaData && mediaData.files && mediaData.files[0]
-            && mediaData.files[0].tags ) ? mediaData.files[0]
-            && mediaData.files[0].tags  : []
-            
-        
+        "displayTags" : (mediaData && mediaData.files && mediaData.files[0].tags)
+        ? mediaData.files[0].tags : []
     }
-    console.log(tagSidebarProps);
 
     function getMediaDisplayContainer(mediaJson)
     {
@@ -120,7 +119,7 @@ export default function Default(props)
         };
 
         return (
-            <div>
+            <div className='m-4'>
                 <MediaContainer {...props} />
             </div>
         )
@@ -130,39 +129,122 @@ export default function Default(props)
     {
         return <div>Loading...</div>
     }
+    function humanFileSize(bytes, si=false, dp=1) {
+        const thresh = si ? 1000 : 1024;
+      
+        if (Math.abs(bytes) < thresh) {
+          return bytes + ' B';
+        }
+      
+        const units = si 
+          ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] 
+          : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+        let u = -1;
+        const r = 10**dp;
+      
+        do {
+          bytes /= thresh;
+          ++u;
+        } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+      
+      
+        return bytes.toFixed(dp) + ' ' + units[u];
+      }
+      
+    function msToTime(s) 
+    {
+        if(s <= 0)
+        return "N/A";
+        var ms = s % 1000;
+        s = (s - ms) / 1000;
+        var secs = s % 60;
+        s = (s - secs) / 60;
+        var mins = s % 60;
+        var hrs = (s - mins) / 60;
+      
+        hrs = hrs.toString()
+        mins = mins.toString()
+        secs = secs.toString()
+
+        if(hrs.length < 2)
+            hrs = "0" + hrs;
+
+        if(mins.length < 2)
+            mins = "0" + mins;
+
+        if(secs.length < 2)
+            secs = "0" + secs;
+
+        if(hrs === "00" && mins === "00")
+            return secs + " seconds";
+
+        if(hrs === "00")
+            return mins + " minutes & " + secs + " seconds";
+
+        return hrs + ':' + mins + ':' + secs;
+      }
+    
+
     return (
 <div className="flex flex-col h-screen">
-        <HeaderBar toggleSidebarVisibility={()=>setSidebarVisible(!sidebarVisible)} />
-        <div className="flex flex-row flex-1">
+  <HeaderBar toggleSidebarVisibility={() => setSidebarVisible(!sidebarVisible)} />
+  
+  <div className="flex flex-row flex-1 overflow-y-auto">
+    {sidebarVisible && (
+      <nav
+        className="flex-none group h-full w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
+        data-te-sidenav-init
+        data-te-sidenav-hidden="false"
+      >
+        <ul className="relative m-0 h-full list-none px-[0.2rem]" data-te-sidenav-menu-ref>
+          <TagSidebar {...tagSidebarProps} />
+        </ul>
+      </nav>
+    )}
 
-            {sidebarVisible &&
-            <nav
-                className="group  top-0 left-0 h-screen w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
-                data-te-sidenav-init
-                data-te-sidenav-hidden="false"
-                >
-                <ul className="relative m-0 list-none px-[0.2rem]" data-te-sidenav-menu-ref>
-                    <TagSidebar {...tagSidebarProps} />
-                </ul>
-            </nav>}
+    <main className="flex-1 flex-wrap overflow-y-auto">
+      <center>
+        {getMediaDisplayContainer(mediaData)}
 
-
-            <main className="flex-1 flex-wrap">
-
-                
-            <table className="text-custom-white">
-                    <tbody>
-                        <tr><td><p>{mediaData.title}</p></td></tr>
-                        <tr><td>{mediaData.description}</td></tr>
-                    </tbody>
-                </table>
-            
-
-                {getMediaDisplayContainer(mediaData)}
-                
-            </main>
+        <div className="mx-8 text-ellipsis truncate grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 bg-button-depressed px-8 pt-2 pb-4 rounded-3xl">
+          <table className="text-custom-white">
+            <tbody>
+              <p className="text-xl font-bold text-custom-white">{mediaData.title}</p>
+              <tr>
+                <td>{mediaData.description}</td>
+              </tr>
+              <br />
+              {mediaData &&
+                mediaData.files &&
+                mediaData.files.map((file, index) => {
+                  return (
+                    <div>
+                      <tr>
+                        <td>
+                          <span>SHA256: {file.hash}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Size: {humanFileSize(file.file_size)}</td>
+                      </tr>
+                      <tr>
+                        <td>Duration: {msToTime(file.duration)}</td>
+                      </tr>
+                      <tr>
+                        <td>Width: {file.width}</td>
+                      </tr>
+                      <tr>
+                        <td>Height: {file.height}</td>
+                      </tr>
+                    </div>
+                  );
+                })}
+            </tbody>
+          </table>
         </div>
+      </center>
+    </main>
+  </div>
 </div>
-
     )
 }

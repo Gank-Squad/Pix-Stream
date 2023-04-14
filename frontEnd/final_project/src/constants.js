@@ -1,3 +1,5 @@
+
+// max dimensions for media, mainly only effects MediaContainer
 export const MAX_DIMENSIONS = {
     preview_width   : 256,
     preview_height  : 256,
@@ -24,7 +26,7 @@ export const ROUTES = {
     user     : "/user",
 }
 
-// This seems to work but also causes errors in the console so, more testing is needed
+// for easier development, so we don't need to change it after every pull
 export const SERVER_HOST = ((window.navigator.userAgent.indexOf("Linux") != -1) ? 
 "http://192.168.1.148:8080/FinalProject-1.0-SNAPSHOT/api/": "http://localhost:8080/FinalProject-1.0-SNAPSHOT/api/");
 
@@ -53,6 +55,7 @@ export const DISPLAY_TYPES = {
 
 export const NO_MEDIA_IMG = "https://media.discordapp.net/attachments/447901281328168962/1094429564563894373/nomedia.png";
 
+// everything above this is a video/not an image
 export const MIME_IMG_CUTOFF = 19;
 
 export const API_TEMPLATES = {

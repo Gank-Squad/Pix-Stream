@@ -28,6 +28,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import uwu.nyaa.owo.finalproject.data.DatabaseSortBy;
 import uwu.nyaa.owo.finalproject.data.FileProcessor;
 import uwu.nyaa.owo.finalproject.data.MultiPartFormDataParser;
 import uwu.nyaa.owo.finalproject.data.PartInputStream;
@@ -64,14 +65,19 @@ public class APIPosts
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBulkPostMetadata(@QueryParam("limit") int limit,
-            @QueryParam("tags") @DefaultValue("true") boolean withTags)
+                                        @QueryParam("tags") @DefaultValue("true") boolean withTags,
+                                        @QueryParam("sort") @DefaultValue("-5") int sort)
     {
         if (limit <= 0)
         {
             limit = 200;
         }
+        if(sort < 0)
+        {
+            sort = DatabaseSortBy.RANDOM;
+        }
 
-        List<Post> items = TablePost.getPosts(limit, withTags);
+        List<Post> items = TablePost.getPosts(limit, withTags, sort);
 
         String json;
         try

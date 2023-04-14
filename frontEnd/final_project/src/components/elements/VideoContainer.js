@@ -2,6 +2,8 @@ import React from 'react'
 
 import VideoPlayer from './Video';
 
+// Deprecated code, do not use
+// use MediaContainer instead
 export default function VideoContainer(props)
 {
     const { hlsUrl, hlsDomain, caption, style  } = props;
@@ -11,6 +13,7 @@ export default function VideoContainer(props)
         return true;
     }
 
+    // return the video
     return (
         <div className="file-container" style={style} loading="lazy">
                 <VideoPlayer hlsUrl={hlsUrl} hlsDomain={hlsDomain}/>

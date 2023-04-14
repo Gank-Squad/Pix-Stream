@@ -11,8 +11,7 @@ import VideoPlayer from './Video';
 
 export default function VideoContainer(props)
 {
-    // const { hlsUrl, hlsDomain, caption, style  } = props;
-    // const { image, caption, style  } = props;
+    // define props that we'll use for display
     const { 
         link,
         hash, 
@@ -30,7 +29,8 @@ export default function VideoContainer(props)
         }
     } = props;
     
-
+    // tailwind is not letting us use custom height/width for images, not sure why
+    // so this function will give you the width needed to get the desired height
     function getWidthForDesiredHeight(oldWidth,oldHeight,newHeight)
     {
         const ratio = newHeight/oldHeight;
@@ -67,13 +67,11 @@ export default function VideoContainer(props)
         // this needs to be swapped out for code that does an aspect ratio check
         // const dx = Math.abs(max_width - props.metaData.width);
         // const dy = Math.abs(max_height - props.metaData.height);
-
         const dx = props.metaData.width;
         const dy = props.metaData.height;
 
-        // return <img className="border-dashed border-2 border-white" src="https://www.w3schools.com/tags/img_girl.jpg" alt="Girl in a jacket" height="10" />
-
         console.log("rendering thing");
+        // checking if width needs to be max, or height
         if (dx > dy)
         {
             // display width should = max_width
@@ -119,6 +117,7 @@ export default function VideoContainer(props)
     
     function generalDisplay()
     {
+        // set the url to get media data from
         let media_url;
         if(link)
         {
@@ -146,7 +145,7 @@ export default function VideoContainer(props)
                     <div className={"inline-block w-["+ MAX_DIMENSIONS.general_width + 
                     "px] h-[" + MAX_DIMENSIONS.general_height + "px] flex justify-center items-center"} loading="lazy">
                         <VideoPlayer hlsUrl={media_url} hlsDomain={hlsDomain}/>
-                        <div className="text-custom-white caption">{caption}</div>
+                        {/* <div className="text-custom-white caption">{caption}</div> */}
                     </div>
                 )
             }
@@ -203,11 +202,11 @@ export default function VideoContainer(props)
 
     function fullDisplay()
     {
-        console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-
+        // no functionality yet, plan is for this to display with no restriction on width or height, displaying media at true resolution
         return (<div></div>)
     }
 
+    // call correct function based on the display type given in props
     function getCorrectDisplay(displayType)
     {
         console.log("displayType:"+displayType)
@@ -220,21 +219,12 @@ export default function VideoContainer(props)
             case DISPLAY_TYPES.full_size_display:
                 return fullDisplay();
             default:
+                // if they don't give anything, or somethign invalid, just assume they want thumbnail preview
+                console.log("invalid display type: " + displayType);
                 return thumbnailPreview();
         }
     }
 
+    // call getCorrectDisplay so that we return just the desired media element
     return getCorrectDisplay(displayType);
-
-    // function imgError(image) 
-    // {
-    //     return true;
-    // }
-
-    // return (
-    //     <div className="file-container" style={style} loading="lazy">
-    //             <img src={image} width={"100%"} onError={imgError} alt={"failed to load"} loading="lazy" />
-    //             <div className="text-custom-white caption">{caption}</div>
-    //     </div>
-    // )
 }

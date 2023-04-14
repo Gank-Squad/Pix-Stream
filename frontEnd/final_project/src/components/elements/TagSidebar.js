@@ -1,6 +1,7 @@
 
 import React from "react";
 import { API_ENDPOINTS, API_TEMPLATES } from "../../constants";
+import { formatStringB } from "../../requests";
 export default function TagSidebar(props) 
 {
     const { createTagButton, searchCallback, hideSearchButton, 
@@ -24,19 +25,23 @@ export default function TagSidebar(props)
 
     const contextTagBox = React.useRef("");
 
-
+    // log changes to tags
     React.useEffect(() => {
         console.log("All tags: ", tags);
     }, [tags]);
 
-
+    // log changes to selected tags, update search
     React.useEffect(() => {
         console.log("Updating search with Selected tags: ", selectedTags);
         updateSearch();
     }, [selectedTags]);
 
 
+    // on page load, fetch tags from api
     React.useEffect(() => {
+
+        if(selectedTagIds)
+            setSelectedTags(selectedTagIds);
 
         if(displayOnlyMode)
             return;
@@ -52,24 +57,18 @@ export default function TagSidebar(props)
 
     }, []);
 
-
+    // if theres no tags to display, let user know
     if ((tags == null || tags.length === 0) && !displayOnlyMode) {
         return <p>Loading...</p>;
     }
 
     // standard functions 
-    function clearSelected() {
-        // selectedTagBox.current is the DOM element, selectedTagBox is the react object
-        // selectedTagBox.current can be used like normal js
-        const contextTags = selectedTagBox.current.querySelectorAll('tr');
-
-        const tbody = contextTagBox.current.querySelector('tbody');
-
-        contextTags.forEach(element => {
-            tbody.appendChild(element);
-        });
+    function clearSelected() 
+    {
+        setSelectedTags([]);
     }
 
+    // display tags
     function filterTags(entry) {
         let contextTags = contextTagBox.current.querySelectorAll('tr');
 
@@ -88,12 +87,14 @@ export default function TagSidebar(props)
         });
     }
 
+    // when button is pressed, add tag to selected tag
     function addOnlySelectedTag()
     {
         const entry = tagSearch.current.value;
         let contextTags = contextTagBox.current.querySelectorAll('tr');
 
         let onlyElement = null;
+        //iterate through all the context tags
         for(let element of contextTags)
         {
             const label = element.getElementsByTagName('label').item(0);
@@ -126,10 +127,10 @@ export default function TagSidebar(props)
     {
         let s = selectedTags;
 
-        if(selectedTagIds)
-        {
-            s = s.concat(selectedTagIds);
-        }
+        // if(selectedTagIds)
+        // {
+        //     s = s.concat(selectedTagIds);
+        // }
         
         const search = s.map(tag_id => {
 
@@ -151,13 +152,15 @@ export default function TagSidebar(props)
 
         const id = addOnlySelectedTag();
 
-        if(id === -1 && createTagButton)
+        if(id === -1)
         {
             createTagFromSearchBar();
         }
         else if(parseInt(id))
         {
             updateTagSelection({"tag_id" : parseInt(id)});
+            tagSearch.current.value = "";
+            filterTags("");
         }
     }
 
@@ -251,11 +254,24 @@ export default function TagSidebar(props)
         });
     }
 
+    function redirectToSearchPage(tags)
+    {
+        if(!tags || tags.length <= 0)
+            return;
+
+        const url = formatStringB('/results?tags={IDS}', tags.map(tag => tag.tag_id).join(","))
+    
+        window.location.href = url;
+    }
 
     function updateTagSelection(tag)
     {
         if(displayOnlyMode)
+        {
+            redirectToSearchPage([tag]);
             return;
+        }
+            
 
         if(selectedTags.includes(tag.tag_id))
         {
@@ -270,21 +286,21 @@ export default function TagSidebar(props)
 
     function getClickableTagHTML(tag, index)
     {
+        let display =tag.subtag;
+        if(tag.namespace !== "")
+        {
+            display = tag.namespace + ":" + tag.subtag; 
+        }
+
         return <tr key={index} index={index} tag-id={tag.tag_id}>
         <td>
             <div className="tag">
                 <i className="fa fa-tag"></i>
-                <button onClick={(e) => updateTagSelection(tag)} 
+                <button title={display} onClick={(e) => updateTagSelection(tag)} 
                 className="text-custom-white text-ellipsis hover:bg-button-depressed truncate rounded px-2 w-48 text-left">
                     <label>
                         {
-                            function(){
-                                if(tag.namespace === "")
-                                {
-                                    return tag.subtag;
-                                }
-                                return tag.namespace + ":" + tag.subtag;
-                            }()
+                            display
                         }
                     </label>
                 </button>                                        
@@ -341,18 +357,14 @@ export default function TagSidebar(props)
                         
                     tags.map((tag, index) => {
 
-                        if(!selectedTagIds && !selectedTags)
+                        if(!selectedTags)
                             return;
 
                         if(selectedTags && selectedTags.includes(tag.tag_id))
                         {
                             return getClickableTagHTML(tag, index);
                         }
-
-                        if((selectedTagIds && selectedTagIds.includes(tag.tag_id)))
-                        {
-                            return getClickableTagHTML(tag, index);
-                        }
+                        return;
                     })}
 
 
@@ -373,8 +385,7 @@ export default function TagSidebar(props)
                     <tbody>
                         {!displayOnlyMode&&
                         tags.map((tag, index) => {
-                            if(selectedTags && selectedTags.includes(tag.tag_id) ||
-                            selectedTagIds && selectedTagIds.includes(tag.tag_id))
+                            if(selectedTags && selectedTags.includes(tag.tag_id))
                             {
                                 return;
                             }

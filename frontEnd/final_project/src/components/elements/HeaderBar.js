@@ -11,6 +11,7 @@ export default function HeaderBar({ toggleSidebarVisibility })
     }
     function redirect_upload()
     {
+        // no point in refreshing a page thats already loaded and wont change
         if (window.location.href.includes("/upload"))
             return;
         window.location.href = '/upload';
@@ -48,6 +49,7 @@ export default function HeaderBar({ toggleSidebarVisibility })
                             </svg>
                         </span>
                     </button>}
+                    {/* create buttons for home, tags, and upload redirect */}
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-l" onClick={redirect_home}>Home</button>
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 border border-blue-700 px-4" onClick={redirect_tags}>Tags</button>
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-r" onClick={redirect_upload}>Upload</button>

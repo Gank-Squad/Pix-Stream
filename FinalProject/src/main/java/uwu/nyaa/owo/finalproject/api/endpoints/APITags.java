@@ -133,7 +133,7 @@ public class APITags
         List<String> create = tags.stream().filter(ft -> {
             return !(ft.subtag == null || ft.namespace == null || ft.subtag.isEmpty() || ft.subtag.isBlank());
         }).map(ft -> {
-            if (ft.namespace.strip().equals(""))
+            if (ft.namespace.strip().isBlank())
             {
                 return ft.subtag;
             }
@@ -275,6 +275,12 @@ public class APITags
         {
             Logger.warn(e, "Failed to process json in getFilesWithTags, ignoring");
             return Response.status(400).build();
+        }
+
+        // oya it's gamer time
+        if(tags.size() == 0)
+        {
+            return Response.status(200).entity("[]").build();
         }
 
         int[] tag_ids = tags.stream().mapToInt(FullTag::getTagId).toArray();

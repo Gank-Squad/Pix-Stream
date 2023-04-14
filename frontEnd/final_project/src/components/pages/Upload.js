@@ -13,10 +13,8 @@ export default function Default(props)
 {
     const { cookies } = props;
 
+    // create vars
     const API = API_ENDPOINTS.search.get_files_with_tags;
-
-    const params = new URLSearchParams(window.location.search);
-    const page = parseInt(params.get('page')) || 1;
 
     const [searchItems , setSearchItems] = React.useState([]);
     const [files       , setFiles  ] = React.useState([]);
@@ -24,77 +22,28 @@ export default function Default(props)
     const [displayProgress  , setProgress] = React.useState("");
     const [sidebarVisible, setSidebarVisible] = React.useState(true);
 
-    const [images, setImageData] = React.useState([]);
-
     const mediaFile = React.useRef("");
-    const subFile = React.useRef("");
     const title = React.useRef("");
     const description = React.useRef("");
 
-    const previewLoadCount = 5;
+    // number of images to display, limiting to 1 since we don't support more atm
+    const previewLoadCount = 1;
 
-    React.useEffect(() => {
-        console.log(searchItems);
-    }, [searchItems]);
-
+    // I don't think this is necessary, and making unneeded calls to api
     function searchCallback(searchItems)
     {
         setSearchItems(searchItems);
-
-        if(searchItems.length === 0)
-        {
-            setImageData([]);
-            return;
-        }
-
-        let ids = []
-        searchItems.forEach(element => 
-        {
-            ids.push({
-                tag_id: element.tag_id
-            })
-        });
-
-        console.log("sending " + JSON.stringify(ids));
-
-        fetch(API, {
-            method: "post",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(ids)
-        })
-            .then(resp => {
-                if (resp.status === 200) {
-                    return resp.json()
-                } else {
-                    console.log("Status: " + resp.status)
-                    return Promise.reject("server")
-                }
-            })
-            .then(dataJson => {
-
-                setImageData(dataJson);
-            })
-            .catch(err => {
-                if (err === "server") return
-                console.log(err)
-            })
     }
 
     const tagSidebarProps = {
         "searchCallback" : searchCallback,
         "hideSearchButton" : true,
-        "searchButtonPressed" : searchButtonPressed,
         "createTagButton" : true,
-    }
-
-
-    function searchButtonPressed()
-    {
-        window.location.href = '/results?tags=';
     }
 
     function generatePreview()
     {
+        // if there is no file uploaded, do nothing
         if (!mediaFile.current.files || mediaFile.current.files.length === 0)
         {
             return;
@@ -106,10 +55,10 @@ export default function Default(props)
         let newPreview = [];
         let x = 0;
 
+        // this should only have 1 file, but just go through and create preview of media
         for (let f of _files) 
         {
             newFiles.push(f);
-
             if (x < previewLoadCount)
             {
                 newPreview.push(URL.createObjectURL(f));
@@ -121,6 +70,7 @@ export default function Default(props)
         setPreview(newPreview);
     }
 
+    // this just checks some basic things so user doesn't forget to add tags, title, or media
     function checkForValidUpload()
     {
         if (title.current.value === "")
@@ -144,11 +94,14 @@ export default function Default(props)
 
     async function beginUpload(e)
     {
+        // stop page from doing stuff
         e.preventDefault();
 
+        // check if we're good to upload
         if (! await checkForValidUpload())
             return;
 
+        // upload each file to api as a post, with data given in forms
         for (let f of files)
         {
             const data = new FormData();
@@ -177,7 +130,7 @@ export default function Default(props)
                     console.log("Upload responded with 0 files json, skipping adding tags");
                     return;
                 }
-
+                // add tags to files/posts
                 for(const sub_json of json.files)
                 {
                     const url = formatStringB(API_TEMPLATES.add_tag_to_file.url, sub_json.hash);
@@ -193,6 +146,11 @@ export default function Default(props)
                     })
                 }
                 
+                if(json.post_id)
+                {
+                    window.location.href = '/media?post=' + json.post_id;
+                }
+
                 })
                 .catch(err => console.log(err));
         }
@@ -201,9 +159,10 @@ export default function Default(props)
     return (
 
         <div className="flex flex-col h-screen">
+            {/* create header */}
         <HeaderBar toggleSidebarVisibility={()=>setSidebarVisible(!sidebarVisible)} />
         <div className="flex flex-row flex-1">
-
+            {/* create sidebar */}
             {sidebarVisible &&
             <nav
                 className="group  top-0 left-0 h-screen w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
@@ -217,7 +176,9 @@ export default function Default(props)
 
 
             <main className="flex-1 flex-wrap">
+                {/* display stuff in a resizing grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 bg-button-depressed m-24 px-8 pt-2 pb-4 rounded-3xl">
+                    {/* table with submission data */}
                     <table className="py-8 static inline-block">
 
                         <tbody>
@@ -241,6 +202,7 @@ export default function Default(props)
 
                     <div >
                     {
+                    // display preview image for file(s) selected
                     files.map((file, index) => {
 
                         const props = {
@@ -261,6 +223,7 @@ export default function Default(props)
 
                         return <a key={index} 
                         className='border p-4 flex items-center justify-around inline-block '>
+                            {/* use media container for preview */}
                             <MediaContainer {...props} />
                             
                             <div >
@@ -272,6 +235,7 @@ export default function Default(props)
 
 
                 </div>
+                {/* display progress, in center bottom of the page */}
                 <div className="col-span-full text-center">
                     {
                         function(){
@@ -286,10 +250,6 @@ export default function Default(props)
                 </div>
 
                 </div>
-            
-
-                
-                
                 
             </main>
         </div>

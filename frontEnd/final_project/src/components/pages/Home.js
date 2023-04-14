@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { API_ENDPOINTS, DISPLAY_TYPES } from '../../constants';
+import { API_ENDPOINTS, DISPLAY_TYPES, MAX_DIMENSIONS } from '../../constants';
 import { formatStringB, addQueryParams } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
 import MediaContainer from '../elements/MediaContainer';
@@ -17,7 +17,7 @@ export default function Default(props)
     const [mediaData, setMediaData] = React.useState([]);
     const [sidebarVisible, setSidebarVisible] = React.useState(true);
 
-
+    // on page load, load media from api
     React.useEffect(() => {
         loadMedia();
     }, []);
@@ -28,8 +28,10 @@ export default function Default(props)
     }, [search]);
 
 
+    // fetch media from api, set media data appropriately
     function loadMedia()
     {
+        // arbitrarily setting the limit to 10, can be anything
         let url = addQueryParams(API_ENDPOINTS.media.get_posts, {limit : 10});
 
         const fetchData = {
@@ -46,6 +48,7 @@ export default function Default(props)
                 console.log("Status: " + resp.status);
                 return Promise.reject("server");
             }
+            // setting media data
         }).then(dataJson => {
             setMediaData(dataJson);
         }).catch(err => {
@@ -55,6 +58,7 @@ export default function Default(props)
     }
 
 
+    // redirect to search results page with correct tags
     function searchButtonPressed()
     {
         const url = formatStringB('/results?tags={IDS}', 
@@ -69,7 +73,7 @@ export default function Default(props)
         setSearch(searchItems);
     }
 
-
+    // props for sidebar
     const tagSidebarProps = {
         "searchCallback" : searchCallback,
         "hideSearchButton" : false,
@@ -78,24 +82,24 @@ export default function Default(props)
 
    
     return (
-    <div className="flex flex-col h-screen">
-        <HeaderBar toggleSidebarVisibility={()=>setSidebarVisible(!sidebarVisible)} />
-        <div className="flex flex-row flex-1">
+<div className="flex flex-col h-screen">
+  <HeaderBar toggleSidebarVisibility={() => setSidebarVisible(!sidebarVisible)} />
+  
+  <div className="flex flex-row flex-1 overflow-y-auto">
+    {sidebarVisible && (
+      <nav
+        className="flex-none group h-full w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
+        data-te-sidenav-init
+        data-te-sidenav-hidden="false"
+      >
+        <ul className="relative m-0 h-full list-none px-[0.2rem]" data-te-sidenav-menu-ref>
+          <TagSidebar {...tagSidebarProps} />
+        </ul>
+      </nav>
+    )}
 
-            {sidebarVisible &&
-            <nav
-                className="group  top-0 left-0 h-screen w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
-                data-te-sidenav-init
-                data-te-sidenav-hidden="false"
-                >
-                <ul className="relative m-0 list-none px-[0.2rem]" data-te-sidenav-menu-ref>
-                    <TagSidebar {...tagSidebarProps} />
-                </ul>
-            </nav>}
-
-
-            <main className="flex-1 flex-wrap">
-
+    <main className="flex-1 flex-wrap overflow-y-auto">
+                {/* create preview for all the images loaded from api */}
                 { mediaData.map((json, index) => {
 
                         const props = {
@@ -112,7 +116,7 @@ export default function Default(props)
                                 height : json.files[0].height,
                             }
                         }
-
+                        // function for getting the url for each post
                         function redirect_media(postId)
                         {
                             if (postId === null || postId < 1)
@@ -122,13 +126,13 @@ export default function Default(props)
                             }
                             return '/media?post=' + postId;
                         }
-
+                        // html to render the stuff, make them all links to redirect to the media page as well
                         return <a key={index} href={redirect_media(json.post_id)} 
                         className='border p-4 space-x-4 inline-block '>
                             <MediaContainer {...props} />
-                            
-                            <div>
-                                <p>{json.title}</p>
+                            {/* add the title here, needs to be changed in the future */}
+                            <div className={`w-[${MAX_DIMENSIONS.preview_width}px]`}>
+                                <p className='text-ellipsis truncate'>{json.title}</p>
                             </div>
                         </a>;
                     })

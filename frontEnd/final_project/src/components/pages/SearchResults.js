@@ -17,6 +17,7 @@ export default function Default(props)
     const tags_full = _tags_full.split(",").map(Number).filter((value) => !isNaN(value));;
     const [sidebarVisible, setSidebarVisible] = React.useState(true);
 
+    // if there are no tags in the search, redirect to home
     if(tags_full.length === 0)
     {
         window.location.href = ROUTES.home;
@@ -32,20 +33,23 @@ export default function Default(props)
         console.log(`Cookies from props: ${cookies}`);
     }, [cookies, page]);
 
+    // log changes to mediaData
     React.useEffect(() => 
     {
         console.log(`MediaData ${JSON.stringify(mediaData)} was loaded!`);
     }, [mediaData]);
     
+    // on page load, load media from api
     React.useEffect(() => 
     {
         console.log("Updating media with new search " + JSON.stringify(search));
         loadMedia();
     }, []); // search
 
-
+    // load media from api
     function loadMedia()
     {
+        // make json with tag ids
         const ids = tags_full.map(element => ({ "tag_id" : element}));
         
         console.log(JSON.stringify(ids));
@@ -61,6 +65,7 @@ export default function Default(props)
 
         console.log("loading media from api " + url + " " + JSON.stringify(fetchData));
 
+        // fetch posts from api with tags from param
         fetch(url, fetchData).then(resp => {
             if (resp.status === 200)
             {
@@ -73,6 +78,7 @@ export default function Default(props)
                 return Promise.reject("server");
             }
         }).then(dataJson => {
+            // set media data
             console.log(dataJson);
             setMediaData(dataJson);
         }).catch(err => {
@@ -82,13 +88,14 @@ export default function Default(props)
     }
 
 
+    // redirect to search results page with correct tags
     function searchButtonPressed()
     {
         const url = formatStringB('/results?tags={IDS}', 
-            search.map(elements => elements.tag_id).join(","))
-        
+        search.map(elements => elements.tag_id).join(","))
+
+        console.log(url);
         window.location.href = url;
-        
     }
 
     function searchCallback(searchItems)
@@ -96,6 +103,7 @@ export default function Default(props)
         setSearch(searchItems);
     }
 
+    // props for sidebar
     const tagSidebarProps = {
         "searchCallback" : searchCallback,
         "hideSearchButton" : false,
@@ -104,28 +112,29 @@ export default function Default(props)
     }
 
     return (
-        <div className="flex flex-col h-screen">
-                <HeaderBar toggleSidebarVisibility={()=>setSidebarVisible(!sidebarVisible)} />
-                <div className="flex flex-row flex-1">
+<div className="flex flex-col h-screen">
+  <HeaderBar toggleSidebarVisibility={() => setSidebarVisible(!sidebarVisible)} />
+  
+  <div className="flex flex-row flex-1 overflow-y-auto">
+    {sidebarVisible && (
+      <nav
+        className="flex-none group h-full w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
+        data-te-sidenav-init
+        data-te-sidenav-hidden="false"
+      >
+        <ul className="relative m-0 h-full list-none px-[0.2rem]" data-te-sidenav-menu-ref>
+          <TagSidebar {...tagSidebarProps} />
+        </ul>
+      </nav>
+    )}
 
-                    {sidebarVisible &&
-                    <nav
-                        className="group  top-0 left-0 h-screen w-60 -translate-x-60 overflow-y-auto overflow-x-hidden shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 bg-custom-dark-blue"
-                        data-te-sidenav-init
-                        data-te-sidenav-hidden="false"
-                        >
-                        <ul className="relative m-0 list-none px-[0.2rem]" data-te-sidenav-menu-ref>
-                            <TagSidebar {...tagSidebarProps} />
-                        </ul>
-                    </nav>}
-
-
-            <main className="flex-1 flex-wrap">
-
+    <main className="flex-1 flex-wrap overflow-y-auto">
+                        {/* display all the media in tiles using MediaContainer */}
                 <p className="text-xl font-bold text-custom-white">Displaying search results:</p>
 
                         { mediaData.map((json, index) => {
 
+                            // create props
                         const props = {
                             "hash" : json.files[0].hash,
                             "displayType" : DISPLAY_TYPES.thumb_preview,
@@ -140,7 +149,7 @@ export default function Default(props)
                                 height : json.files[0].height,
                             }
                         }
-
+                        // function to generate urls
                         function redirect_media(postId)
                         {
                             if (postId === null || postId < 1)
@@ -152,6 +161,7 @@ export default function Default(props)
                             return '/media?post=' + postId;
                         }
 
+                        // create preview and make it a link to the post
                         return <a key={index} href={redirect_media(json.post_id)} 
                         className='border p-4 space-x-4 inline-block '>
                             <MediaContainer {...props} />
