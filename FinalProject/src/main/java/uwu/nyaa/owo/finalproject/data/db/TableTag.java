@@ -60,7 +60,7 @@ public class TableTag
      */
     public static int insertTag(String fullTag, Connection c) throws SQLException, NullPointerException
     {
-        String[] tag = StringHelper.partitionTag(fullTag);
+        String[] tag = StringHelper.partitionTag(fullTag.toLowerCase());
 
         int namespace_id = TableNamespace.insertOrSelectByNamespace(tag[0], c);
         int subtag_id = TableSubtag.insertOrSelectBySubtag(tag[1], c);

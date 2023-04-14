@@ -66,7 +66,8 @@ public class APIPosts
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBulkPostMetadata(@QueryParam("limit") int limit,
                                         @QueryParam("tags") @DefaultValue("true") boolean withTags,
-                                        @QueryParam("sort") @DefaultValue("-5") int sort)
+                                        @QueryParam("sort") @DefaultValue("-5") int sort,
+                                        @QueryParam("asc") @DefaultValue("false") boolean order)
     {
         if (limit <= 0)
         {
@@ -76,7 +77,14 @@ public class APIPosts
         {
             sort = DatabaseSortBy.RANDOM;
         }
+        
+        if(order)
+        {
+            sort = sort & DatabaseSortBy.ASCENDING;
+        }
 
+        
+        
         List<Post> items = TablePost.getPosts(limit, withTags, sort);
 
         String json;

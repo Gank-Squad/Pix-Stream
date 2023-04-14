@@ -138,7 +138,7 @@ public class APITags
                 return ft.subtag;
             }
 
-            return ft.namespace + ":" + ft.subtag;
+            return (ft.namespace + ":" + ft.subtag).toLowerCase();
         }).toList();
 
         if (create.size() == 0)

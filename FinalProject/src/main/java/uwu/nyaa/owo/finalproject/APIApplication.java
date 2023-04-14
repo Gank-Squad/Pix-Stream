@@ -42,7 +42,7 @@ public class APIApplication extends Application
         {
             Logger.debug("Adding predefined random tags");
 //            TableFile.addFakeFiles(20);
-            TableTag.addPredefinedTags(30);
+//            TableTag.addPredefinedTags(30);
 //            TableHashTag.insertRandomAccociations(300);
         }
     }
