@@ -1,5 +1,7 @@
 import React from 'react'
 
+// Deprecated code, do not use
+// use MediaContainer instead
 export default function ImageContainer(props)
 {
     const { image, caption, style  } = props;
@@ -9,6 +11,7 @@ export default function ImageContainer(props)
         return true;
     }
 
+    // return the picture
     return (
         <div className="file-container" style={style} loading="lazy">
                 <img src={image} width={"100%"} onError={imgError} alt={"failed to load"} loading="lazy" />

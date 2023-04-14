@@ -3,9 +3,7 @@ import React from 'react';
 import { API_TEMPLATES, ROUTES, DISPLAY_TYPES } from '../../constants';
 import { formatStringB } from '../../requests';
 import TagSidebar from '../elements/TagSidebar';
-import ImageContainer from '../elements/Image';
 import MediaContainer from '../elements/MediaContainer';
-import VideoPlayer from '../elements/Video';
 import HeaderBar from '../elements/HeaderBar';
 
 export default function Default(props)
@@ -16,8 +14,9 @@ export default function Default(props)
     const page = parseInt(params.get('page')) || 1;
     const post = params.get("post") || 0;
 
-    const [sidebarVisible, setSidebarVisible] = React.useState(true);
+    const [sidebarVisible, setSidebarVisible] = React.useState(false);
 
+    // if there is no post, redirect to home page isntead of 404ing or displaying empty media page
     if(post <= 0)
     {
         window.location.href = ROUTES.home;
@@ -32,11 +31,14 @@ export default function Default(props)
         console.log(`Cookies from props: ${cookies}`);
     }, [cookies, page]);
 
+    // any time there is a change to mediaData log it
     React.useEffect(() => 
     {
         console.log(mediaData);
     }, [mediaData]);
 
+
+    // on page load, fetch data from api and set media data
     React.useEffect(() => 
     {
         if (post === null || post <= 0)
@@ -63,6 +65,7 @@ export default function Default(props)
                 }
             }
         ).then(dataJson => {
+            // set media data
             setMediaData(dataJson);
         }).catch(err => {
             if (err === "server") return
@@ -70,14 +73,13 @@ export default function Default(props)
         })
     }, []);
 
-
+    // redirect to search results page with correct tags
     function searchButtonPressed()
     {
-        let url = '/results?tags=';
-        const ids = search.map(elements => ({tag_id : elements.tag_id}));
-
-        ids.forEach(id => (url += id.tag_id + ","));
-
+        const url = formatStringB('/results?tags={IDS}', 
+        search.map(elements => elements.tag_id).join(","))
+    
+        console.log(url);
         window.location.href = url;
     }
 
@@ -86,18 +88,12 @@ export default function Default(props)
         setSearch(searchItems);
     }
 
+    // props for sidebar
     const tagSidebarProps = {
         "searchCallback" : searchCallback,
         "hideSearchButton" : false,
         "searchButtonPressed" : searchButtonPressed,
-        "displayOnlyMode" : true,
-        "displayTags" : (mediaData && mediaData.files && mediaData.files[0]
-            && mediaData.files[0].tags ) ? mediaData.files[0]
-            && mediaData.files[0].tags  : []
-            
-        
     }
-    console.log(tagSidebarProps);
 
     function getMediaDisplayContainer(mediaJson)
     {

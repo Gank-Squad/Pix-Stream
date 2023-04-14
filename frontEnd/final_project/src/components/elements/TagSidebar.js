@@ -24,18 +24,19 @@ export default function TagSidebar(props)
 
     const contextTagBox = React.useRef("");
 
-
+    // log changes to tags
     React.useEffect(() => {
         console.log("All tags: ", tags);
     }, [tags]);
 
-
+    // log changes to selected tags, update search
     React.useEffect(() => {
         console.log("Updating search with Selected tags: ", selectedTags);
         updateSearch();
     }, [selectedTags]);
 
 
+    // on page load, fetch tags from api
     React.useEffect(() => {
 
         if(displayOnlyMode)
@@ -52,7 +53,7 @@ export default function TagSidebar(props)
 
     }, []);
 
-
+    // if theres no tags to display, let user know
     if ((tags == null || tags.length === 0) && !displayOnlyMode) {
         return <p>Loading...</p>;
     }
@@ -70,6 +71,7 @@ export default function TagSidebar(props)
         });
     }
 
+    // display tags
     function filterTags(entry) {
         let contextTags = contextTagBox.current.querySelectorAll('tr');
 
@@ -88,12 +90,14 @@ export default function TagSidebar(props)
         });
     }
 
+    // when button is pressed, add tag to selected tag
     function addOnlySelectedTag()
     {
         const entry = tagSearch.current.value;
         let contextTags = contextTagBox.current.querySelectorAll('tr');
 
         let onlyElement = null;
+        //iterate through all the context tags
         for(let element of contextTags)
         {
             const label = element.getElementsByTagName('label').item(0);

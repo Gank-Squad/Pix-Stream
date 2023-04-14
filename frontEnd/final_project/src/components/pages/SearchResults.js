@@ -17,6 +17,7 @@ export default function Default(props)
     const tags_full = _tags_full.split(",").map(Number).filter((value) => !isNaN(value));;
     const [sidebarVisible, setSidebarVisible] = React.useState(true);
 
+    // if there are no tags in the search, redirect to home
     if(tags_full.length === 0)
     {
         window.location.href = ROUTES.home;
@@ -32,20 +33,23 @@ export default function Default(props)
         console.log(`Cookies from props: ${cookies}`);
     }, [cookies, page]);
 
+    // log changes to mediaData
     React.useEffect(() => 
     {
         console.log(`MediaData ${JSON.stringify(mediaData)} was loaded!`);
     }, [mediaData]);
     
+    // on page load, load media from api
     React.useEffect(() => 
     {
         console.log("Updating media with new search " + JSON.stringify(search));
         loadMedia();
     }, []); // search
 
-
+    // load media from api
     function loadMedia()
     {
+        // make json with tag ids
         const ids = tags_full.map(element => ({ "tag_id" : element}));
         
         console.log(JSON.stringify(ids));
@@ -61,6 +65,7 @@ export default function Default(props)
 
         console.log("loading media from api " + url + " " + JSON.stringify(fetchData));
 
+        // fetch posts from api with tags from param
         fetch(url, fetchData).then(resp => {
             if (resp.status === 200)
             {
@@ -73,6 +78,7 @@ export default function Default(props)
                 return Promise.reject("server");
             }
         }).then(dataJson => {
+            // set media data
             console.log(dataJson);
             setMediaData(dataJson);
         }).catch(err => {
@@ -82,13 +88,14 @@ export default function Default(props)
     }
 
 
+    // redirect to search results page with correct tags
     function searchButtonPressed()
     {
         const url = formatStringB('/results?tags={IDS}', 
-            search.map(elements => elements.tag_id).join(","))
-        
+        search.map(elements => elements.tag_id).join(","))
+
+        console.log(url);
         window.location.href = url;
-        
     }
 
     function searchCallback(searchItems)
@@ -96,16 +103,18 @@ export default function Default(props)
         setSearch(searchItems);
     }
 
+    // props for sidebar
     const tagSidebarProps = {
         "searchCallback" : searchCallback,
         "hideSearchButton" : false,
         "searchButtonPressed" : searchButtonPressed,
-        "selectedTagIds" : tags_full
     }
 
     return (
         <div className="flex flex-col h-screen">
+            {/* create header bar */}
                 <HeaderBar toggleSidebarVisibility={()=>setSidebarVisible(!sidebarVisible)} />
+                {/* create sidebar */}
                 <div className="flex flex-row flex-1">
 
                     {sidebarVisible &&
@@ -121,11 +130,12 @@ export default function Default(props)
 
 
             <main className="flex-1 flex-wrap">
-
+                        {/* display all the media in tiles using MediaContainer */}
                 <p className="text-xl font-bold text-custom-white">Displaying search results:</p>
 
                         { mediaData.map((json, index) => {
 
+                            // create props
                         const props = {
                             "hash" : json.files[0].hash,
                             "displayType" : DISPLAY_TYPES.thumb_preview,
@@ -140,7 +150,7 @@ export default function Default(props)
                                 height : json.files[0].height,
                             }
                         }
-
+                        // function to generate urls
                         function redirect_media(postId)
                         {
                             if (postId === null || postId < 1)
@@ -152,6 +162,7 @@ export default function Default(props)
                             return '/media?post=' + postId;
                         }
 
+                        // create preview and make it a link to the post
                         return <a key={index} href={redirect_media(json.post_id)} 
                         className='border p-4 space-x-4 inline-block '>
                             <MediaContainer {...props} />
