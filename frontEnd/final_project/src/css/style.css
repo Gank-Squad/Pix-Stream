@@ -88,6 +88,9 @@ html, body{
     position: sticky;
     margin-bottom: 5px;
 }
+table{
+    width: 100%;
+}
 header > label {
     font-size: medium;;
     font-weight: 900;
@@ -96,7 +99,8 @@ header > label {
     font-weight:800;
     color: rgb(160, 160, 160);
     flex-grow: 1;
-    padding: 15px;
+    padding-left: 15px;
+    padding-right: 5px;
 }
 #search-btn{
     height: 100%;
