@@ -6,14 +6,18 @@ export default function HeaderBar({ toggleSidebarVisibility })
     {
         // no point in refreshing a page thats already loaded and wont change
         if (window.location.href.includes("/tags"))
+        {
             return;
+        }
         window.location.href = '/tags';
     }
     function redirect_upload()
     {
         // no point in refreshing a page thats already loaded and wont change
         if (window.location.href.includes("/upload"))
+        {
             return;
+        }
         window.location.href = '/upload';
     }
     function redirect_home()

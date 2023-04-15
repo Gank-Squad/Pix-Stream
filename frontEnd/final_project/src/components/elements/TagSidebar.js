@@ -41,10 +41,14 @@ export default function TagSidebar(props)
     React.useEffect(() => {
 
         if(selectedTagIds)
+        {
             setSelectedTags(selectedTagIds);
+        }
 
         if(displayOnlyMode)
+        {
             return;
+        }
 
         fetch(TAGS_API, { 'method': 'get' })
             .then(response => response.json())
@@ -100,7 +104,9 @@ export default function TagSidebar(props)
             const label = element.getElementsByTagName('label').item(0);
 
             if (!label)
+            {
                 continue;
+            }
 
             if (label.textContent.includes(entry)) 
             {
@@ -112,13 +118,17 @@ export default function TagSidebar(props)
         }
 
         if(onlyElement == null)
+        {
             return -1;
+        }
 
         
         const id = onlyElement.getAttribute("tag-id");
 
         if(!id) 
+        {
             return -1;
+        }
 
         return id;
     }
@@ -148,7 +158,9 @@ export default function TagSidebar(props)
     function onKeyEnter(e)
     {
         if(e.keyCode !== 13)
+        {
             return;
+        }
 
         const id = addOnlySelectedTag();
 
@@ -168,7 +180,9 @@ export default function TagSidebar(props)
     {
      
         if(displayOnlyMode)
+        {
             return;
+        }
         filterTags(tagSearch.current.value);
     }
 
@@ -203,7 +217,9 @@ export default function TagSidebar(props)
         }
 
         if(subtag === "")
+        {
             return;
+        }
 
         const json = [
             {
@@ -221,7 +237,9 @@ export default function TagSidebar(props)
         })
         .then(r => {
             if(r.status !== 200)
-            return Promise.reject("server");
+            {
+                return Promise.reject("server");
+            }
 
             return r.json()
         })
@@ -249,7 +267,10 @@ export default function TagSidebar(props)
             filterTags("");
 
         }).catch(e => {
-            if(e === "server") return;
+            if(e === "server") 
+            {
+                return; 
+            }
             console.log(e)
         });
     }
@@ -257,7 +278,9 @@ export default function TagSidebar(props)
     function redirectToSearchPage(tags)
     {
         if(!tags || tags.length <= 0)
+        {
             return;
+        }
 
         const url = formatStringB('/results?tags={IDS}', tags.map(tag => tag.tag_id).join(","))
     

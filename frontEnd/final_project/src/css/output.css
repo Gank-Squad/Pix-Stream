@@ -622,21 +622,12 @@ p
   position: relative;
 }
 
-.inset-y-0 {
-  top: 0px;
-  bottom: 0px;
-}
-
 .left-0 {
   left: 0px;
 }
 
 .top-0 {
   top: 0px;
-}
-
-.right-0 {
-  right: 0px;
 }
 
 .col-span-full {
@@ -658,6 +649,10 @@ p
 .mx-8 {
   margin-left: 2rem;
   margin-right: 2rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
 }
 
 .ml-auto {
@@ -758,10 +753,6 @@ p
 
 .flex-none {
   flex: none;
-}
-
-.flex-grow {
-  flex-grow: 1;
 }
 
 .-translate-x-60 {
@@ -984,10 +975,6 @@ p
 
 .text-center {
   text-align: center;
-}
-
-.text-right {
-  text-align: right;
 }
 
 .font-sans {

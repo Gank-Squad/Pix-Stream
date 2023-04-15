@@ -68,7 +68,10 @@ export default function Default(props)
             // set media data
             setMediaData(dataJson);
         }).catch(err => {
-            if (err === "server") return
+            if (err === "server") 
+            {
+                return
+            }
             console.log(err)
         })
     }, []);
@@ -101,7 +104,9 @@ export default function Default(props)
     function getMediaDisplayContainer(mediaJson)
     {
         if(!mediaJson || !mediaJson.files)
+        {
             return;
+        }
 
         const props = {
             "hash" : mediaData.files[0].hash,
